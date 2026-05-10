@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — yieldcartography</title>
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+</head>
+<body>
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/about/" class="active">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+<section class="hero">
+  <h1>About <span class="accent">yieldcartography</span></h1>
+  <p class="lede">Methodology, data, and the research programme behind the dashboards.</p>
+</section>
+
+<section class="section">
+<h2 class="with-rule">Author</h2>
+<p><strong>Marcin Dec, PhD</strong> — Assistant Professor in the Department of Finance at Kozminski University in Warsaw, research fellow at FAME|GRAPE. Twenty-plus years of practitioner experience in Polish and international fixed-income markets (Treasurer at two Polish banks, Director of Central and Eastern European Markets at Rabobank London, board roles at Getin Noble Bank and Kredobank). Currently principal investigator on a National Science Centre (Poland) research grant on sovereign yield-curve modelling.</p>
+</section>
+
+<section class="section">
+<h2 class="with-rule">Methodology</h2>
+<p>The yield-curve dashboard uses the liquidity-weighted Nelson-Siegel-Svensson (LW-NSS) framework: NSS curve fits with bond-level weights derived from yield-space Glosten-Milgrom microstructure (turnover-weighted) plus Ho-Stoll inventory mechanism (outstanding-weighted). Implementation details and asymptotic theory are in the working paper "Microstructure-Efficient Estimation of Sovereign Yield Curves in Less-Liquid Markets".</p>
+<p>The term-premia dashboard uses the Adrian-Crump-Moench (2013) affine term-structure model decomposition, with Bauer-Rudebusch-Wu (2014) bias correction for finite-sample bias under persistent factors. Five Svensson-fit zero-curve principal components serve as state variables.</p>
+</section>
+
+<section class="section">
+<h2 class="with-rule">Data sources</h2>
+<p>BondSpot (TBSP) regulated venue daily closing fixings. Polish Ministry of Finance disclosures of outstanding amounts, monthly turnover, and primary auction calendar. National Bank of Poland MPC rate decisions (live updates), holdings-by-investor-sector statistics, and the NBP Survey of Professional Forecasters. Daily updates trigger overnight; the site refreshes the next business morning.</p>
+</section>
+
+<section class="section">
+<h2 class="with-rule">Working papers and publications</h2>
+<p>Active research outputs in 2026 (selected). Coming-soon links to be added once papers are posted publicly.</p>
+<ul>
+<li>Microstructure-Efficient Estimation of Sovereign Yield Curves in Less-Liquid Markets — working paper, under review at Studies in Nonlinear Dynamics and Econometrics.</li>
+<li>Closer to New York than to Frankfurt? The Expectations Hypothesis in Poland, the US and the euro area — working paper, under review at International Review of Economics and Finance.</li>
+<li>Supply, habitat and the price of liquidity in less-liquid sovereign bond markets — working paper, under review at Emerging Markets Review.</li>
+<li>Forecasting accuracy of survey- vs ACM-implied policy paths on the Polish curve — working paper, under review at Journal of International Money and Finance.</li>
+<li>Welfare Measurements with Heterogeneous Agents (with Marek Weretka) — published in Journal of Economic Dynamics and Control, 2025.</li>
+</ul>
+</section>
+
+<section class="section">
+<h2 class="with-rule">Code, data, replication</h2>
+<p>The site source is on <a href="https://github.com/yieldcartography/yield-cartography_site">GitHub</a>. The full data-and-code replication archive for each working paper is available on request to the corresponding email below.</p>
+</section>
+
+<section class="section">
+<h2 class="with-rule">Contact</h2>
+<p><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a> · <a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></p>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · last build 2026-05-10</div>
+</footer>
+</body>
+</html>

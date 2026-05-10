@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yieldcartography — mapping the term structure</title>
+<meta name="description" content="Interactive yield-curve and term-premium dashboards for less-liquid sovereign bond markets, with a focus on Polish sovereigns and a comparative international view.">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg" alt="yieldcartography"></a>
+  <nav>
+    <a href="/" class="active">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+  <section class="hero">
+    <h1>Mapping the <span class="accent">term structure</span> of less-liquid sovereign bond markets.</h1>
+    <p class="lede">Interactive yield-curve and term-premium dashboards built on a 21-year daily panel of Polish sovereigns, with comparative views against US and euro-area benchmarks. Open methodology, open source code, daily refreshes.</p>
+    <p class="tagline">// better vaguely right than precisely wrong</p>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">Explore</h2>
+    <div class="cards">
+      <a class="card" href="/curves/">
+        <div class="card-label">Dashboard</div>
+        <h3>Yield curves</h3>
+        <p>Daily NSS-fitted zero-coupon yield curves on the Polish sovereign panel from 2005 to today. Interactive snapshot viewer plus full time-series of fitted parameters.</p>
+      </a>
+      <a class="card" href="/term-premia/">
+        <div class="card-label">Dashboard</div>
+        <h3>Term premia</h3>
+        <p>Adrian-Crump-Moench and Bauer-Rudebusch-Wu decompositions across 1y, 2y, 5y, 10y horizons. Compare expected-rate path against the risk-premium component.</p>
+      </a>
+      <a class="card" href="/about/">
+        <div class="card-label">Background</div>
+        <h3>About the project</h3>
+        <p>Methodology, data sources, related publications, and the research programme behind the dashboards. Built on the LW-NSS framework and the BondSpot venue panel.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">What this is</h2>
+    <p>This site publishes daily-refreshed sovereign yield-curve estimates, term-premium decompositions, and supporting diagnostics for less-liquid sovereign bond markets. The Polish curve is the running empirical case, with the methodology general enough to extend to other Central and Eastern European sovereigns. The underlying methods follow the published research programme on liquidity-weighted Nelson-Siegel-Svensson curve fitting, Adrian-Crump-Moench affine term-structure modelling, and the Bauer-Rudebusch-Wu small-sample bias correction.</p>
+    <p>Everything is built from publicly-available data: BondSpot venue closing fixings, Polish Ministry of Finance disclosures of outstanding amounts and turnover, NBP monetary-policy rates, and the NBP Survey of Professional Forecasters. Code, replication scripts, and underlying CSVs are linked from the about page.</p>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">Latest</h2>
+    <p>Daily snapshots updated through April 2026. Curves dashboard refreshed continuously. Term-premia dashboard refreshed weekly. Working papers and publications listed on the about page.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <h4>Dashboards</h4>
+      <ul>
+        <li><a href="/curves/">Yield curves</a></li>
+        <li><a href="/term-premia/">Term premia</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Project</h4>
+      <ul>
+        <li><a href="/about/">About</a></li>
+        <li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-inner copyright">
+    yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-10
+  </div>
+</footer>
+
+</body>
+</html>
