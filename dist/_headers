@@ -6,3 +6,7 @@
 
 /assets/*
   Cache-Control: public, max-age=86400
+
+/data/*
+  Cache-Control: public, max-age=600
+  Content-Type: application/json; charset=utf-8
