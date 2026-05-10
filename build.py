@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 import json
 import os
+import datetime as dt
 from pathlib import Path
 
 YIELDS_DIR = Path('/Users/marcinhdec/Library/Mobile Documents/com~apple~CloudDocs/YIELDS')
@@ -31,6 +32,10 @@ SNAP_TENORS_FULL = [0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 # 1y forwards: f_0_1, f_1_2, ..., f_9_10
 FWD_COLS = [f'f_{i}_{i+1}' for i in range(10)]
+
+# ACM / BRW available rf-yield tenors
+ACM_RF_TENORS = [1, 2, 5, 10]
+BRW_RF_TENORS = [1, 2, 3, 5, 7, 10]
 
 
 # ------------------------------ NSS helpers ------------------------------ #
@@ -84,6 +89,10 @@ def build():
     fwd   = _try_read('eh_panel_forward.csv',      parse_dates=['date'])
     spf   = _try_read('prof_forecasters_implied.csv', parse_dates=['fcast_date'])
     bond  = _try_read('liquidity_bond_day_full.csv',  parse_dates=['date'])
+
+    # Index ACM and BRW by trade date for fast lookup per snapshot
+    acm_ix = acm.set_index('tradedate').sort_index()
+    brw_ix = brw.set_index('tradedate').sort_index()
 
     # NSS-derived zero rates on standard tenors (in percent)
     for tau in TENORS_STD:
@@ -165,6 +174,14 @@ def build():
         if snap['pl_fwds'] is None:
             snap['pl_fwds'] = [round(fwd_1y(r, h), 4) for h in range(10)]
 
+        # ACM rf yield curve at integer tenors (expected average short rate over horizon)
+        snap['rf_acm'] = _acm_rf(acm_ix, d, ACM_RF_TENORS)
+        # BRW rf yield curve (vanilla) and bias-corrected variant
+        snap['rf_brw']    = _brw_rf(brw_ix, d, BRW_RF_TENORS, bc=False)
+        snap['rf_brw_bc'] = _brw_rf(brw_ix, d, BRW_RF_TENORS, bc=True)
+        snap['acm_rf_tenors'] = ACM_RF_TENORS
+        snap['brw_rf_tenors'] = BRW_RF_TENORS
+
         # SPF latest implied path (5 annual readings: y0..y4)
         snap['spf_path'], snap['spf_date'] = _spf_path(spf, d)
 
@@ -190,6 +207,8 @@ def build():
             'n_dates_weekly':      int(len(nss_w)),
             'n_snapshots_monthly': int(len(month_ends)),
             'n_isins_in_history':  int(len(all_isins)),
+            'build_ts':            dt.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'schema_version':      'v5',
         },
         'tenor_labels': TENOR_LABELS,
         'tenor_years':  SNAP_TENORS_FULL,
@@ -385,6 +404,25 @@ def _nearest_fwd(df, d):
         return None
     row = sub.iloc[-1]
     return [round(float(row[c]) * 100, 4) if c in row and pd.notna(row[c]) else None for c in FWD_COLS]
+
+
+def _acm_rf(acm_ix, d, tenors):
+    """Pull ACM expected-rate yield curve at the given trade date and tenor list (in percent)."""
+    sub = acm_ix.loc[acm_ix.index <= d]
+    if sub.empty:
+        return None
+    row = sub.iloc[-1]
+    return [round(float(row[f'y_rf_{t}y_pct']), 4) if f'y_rf_{t}y_pct' in row and pd.notna(row[f'y_rf_{t}y_pct']) else None for t in tenors]
+
+
+def _brw_rf(brw_ix, d, tenors, bc=False):
+    """Pull BRW expected-rate yield curve (vanilla or bias-corrected)."""
+    sub = brw_ix.loc[brw_ix.index <= d]
+    if sub.empty:
+        return None
+    row = sub.iloc[-1]
+    pre = 'y_rf_bc_' if bc else 'y_rf_'
+    return [round(float(row[f'{pre}{t}y_pct']), 4) if f'{pre}{t}y_pct' in row and pd.notna(row[f'{pre}{t}y_pct']) else None for t in tenors]
 
 
 def _spf_path(spf, d):

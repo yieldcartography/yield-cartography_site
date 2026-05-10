@@ -115,7 +115,7 @@
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a></li></ul></div>
   </div>
-  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-10</div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · <span id="buildBadge">data: loading…</span></div>
 </footer>
 
 <script>
@@ -135,11 +135,20 @@ let curWin = 'all';
 let curHorizon = '10y';
 
 async function load(){
-  const r = await fetch('/data/yields.json', { cache: 'force-cache' });
+  const r = await fetch('/data/yields.json?v=5', { cache: 'force-cache' });
   DATA = await r.json();
+  if (!DATA.meta || !DATA.meta.schema_version){
+    console.warn('yields.json appears to be an older schema — some panels may render empty');
+  }
+  showBuildBadge();
   initStats();
   bindPills();
   drawAll();
+}
+function showBuildBadge(){
+  const m = DATA.meta || {};
+  const el = document.getElementById('buildBadge');
+  if (el) el.textContent = `data: ${m.build_ts || '?'} · schema ${m.schema_version || 'unknown'}`;
 }
 load();
 

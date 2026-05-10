@@ -8,5 +8,5 @@
   Cache-Control: public, max-age=86400
 
 /data/*
-  Cache-Control: public, max-age=600
+  Cache-Control: public, max-age=60
   Content-Type: application/json; charset=utf-8

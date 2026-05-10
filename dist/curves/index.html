@@ -92,13 +92,15 @@
   <div class="grid-2">
 
     <div class="panel">
-      <h3>1-year forwards and NBP forecasters</h3>
-      <p class="note">Implied 1-year-spaced forward rates from the NSS fit (solid line) compared to the latest NBP Survey of Professional Forecasters short-rate path (dashed). Both shown with origin at the snapshot date.</p>
+      <h3>Forecast family — NSS forwards, ACM &amp; BRW rf, NBP SPF</h3>
+      <p class="note">Four short-rate forecast paths overlaid: NSS 1-year-spaced forwards from the fitted curve, ACM expected average short rate (rf), BRW rf with the Bauer-Rudebusch-Wu bias correction, and the most recent NBP Survey of Professional Forecasters implied path. <span id="spfVintage" style="font-family:var(--mono);color:var(--accent);font-weight:600">SPF vintage: —</span></p>
       <div id="snapFwd" class="plot-frame"></div>
       <div class="legend-inline">
         <span><span class="swatch" style="background:var(--accent);"></span>NSS 1y forwards</span>
-        <span><span class="swatch" style="background:transparent;border-top:1px dashed var(--salmon);"></span>NBP SPF implied path</span>
-        <span><span class="dot" style="background:#2e7d32"></span>NBP reference rate</span>
+        <span><span class="swatch" style="background:#666;"></span>ACM rf</span>
+        <span><span class="swatch" style="background:transparent;border-top:1.6px solid #666;border-style:dashed"></span>BRW rf (bias-corrected)</span>
+        <span><span class="swatch" style="background:transparent;border-top:1.6px dashed var(--salmon);"></span>NBP SPF implied</span>
+        <span><span class="dot" style="background:#2e7d32"></span>NBP reference</span>
       </div>
     </div>
 
@@ -151,7 +153,7 @@
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a></li></ul></div>
   </div>
-  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-10</div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · <span id="buildBadge">data: loading…</span></div>
 </footer>
 
 <script>
@@ -195,13 +197,23 @@ let curIdx = 0;
 let selectedISIN = null;
 
 async function load(){
-  const r = await fetch('/data/yields.json', { cache: 'force-cache' });
+  // Cache-busted by schema version. Bump build.py schema_version to force a fresh fetch.
+  const r = await fetch('/data/yields.json?v=5', { cache: 'force-cache' });
   DATA = await r.json();
+  if (!DATA.meta || !DATA.meta.schema_version){
+    console.warn('yields.json appears to be an older schema — some panels may render empty');
+  }
+  showBuildBadge();
   initStats();
   buildSlider();
   bindPills();
   bindCsvButtons();
   draw();
+}
+function showBuildBadge(){
+  const m = DATA.meta || {};
+  const el = document.getElementById('buildBadge');
+  if (el) el.textContent = `data: ${m.build_ts || '?'} · schema ${m.schema_version || 'unknown'}`;
 }
 load();
 
@@ -289,13 +301,27 @@ function drawSnapFwd(s){
   const traces = [];
   if (s.pl_fwds){
     const xs = s.pl_fwds.map((_,i)=>i+0.5);
-    traces.push({ x: xs, y: s.pl_fwds, mode:'lines+markers', line:{color:PALETTE.accent,width:2.2}, marker:{size:5,color:PALETTE.accent}, name:'NSS 1y forwards', hovertemplate:'%{x:.1f}y fwd · %{y:.2f}%<extra></extra>' });
+    traces.push({ x: xs, y: s.pl_fwds, mode:'lines+markers', line:{color:PALETTE.accent,width:2.4}, marker:{size:5,color:PALETTE.accent}, name:'NSS 1y forwards', hovertemplate:'%{x:.1f}y fwd · %{y:.2f}%<extra></extra>' });
+  }
+  if (s.rf_acm && s.acm_rf_tenors){
+    traces.push({ x:s.acm_rf_tenors, y:s.rf_acm, mode:'lines+markers', line:{color:'#555',width:1.6}, marker:{size:5,color:'#555',symbol:'circle-open'}, name:'ACM rf', hovertemplate:'ACM rf %{x}y · %{y:.2f}%<extra></extra>' });
+  }
+  if (s.rf_brw_bc && s.brw_rf_tenors){
+    traces.push({ x:s.brw_rf_tenors, y:s.rf_brw_bc, mode:'lines+markers', line:{color:'#555',width:1.6,dash:'dash'}, marker:{size:5,color:'#555',symbol:'diamond-open'}, name:'BRW rf (BC)', hovertemplate:'BRW rf %{x}y · %{y:.2f}%<extra></extra>' });
   }
   if (s.spf_path){
     const xs = s.spf_path.map((_,i)=>i+0.5);
-    traces.push({ x: xs, y: s.spf_path, mode:'lines+markers', line:{color:PALETTE.salmon,width:1.8,dash:'dash'}, marker:{size:5,color:PALETTE.salmon,symbol:'square'}, name:'SPF implied', hovertemplate:'SPF Y%{x:.1f} · %{y:.2f}%<extra></extra>' });
+    traces.push({ x: xs, y: s.spf_path, mode:'lines+markers', line:{color:PALETTE.salmon,width:1.8,dash:'dash'}, marker:{size:5,color:PALETTE.salmon,symbol:'square'}, name:'NBP SPF', hovertemplate:'SPF Y%{x:.1f} · %{y:.2f}%<extra></extra>' });
   }
-  if (s.nbp != null) traces.push({ x:[0.0], y:[s.nbp], mode:'markers', marker:{symbol:'diamond', size:11, color:PALETTE.green, line:{color:'#fff',width:1}}, hovertemplate:`NBP reference ${s.nbp.toFixed(2)}%<extra></extra>` });
+  if (s.nbp != null) traces.push({ x:[0.0], y:[s.nbp], mode:'markers', marker:{symbol:'diamond', size:11, color:PALETTE.green, line:{color:'#fff',width:1}}, hovertemplate:`NBP reference ${s.nbp.toFixed(2)}%<extra></extra>`, showlegend:false });
+
+  // SPF vintage label
+  const vintageEl = document.getElementById('spfVintage');
+  if (vintageEl){
+    if (s.spf_date){ vintageEl.textContent = `SPF vintage: ${s.spf_date}`; }
+    else { vintageEl.textContent = 'SPF vintage: not yet available'; }
+  }
+
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.xaxis.title = { text:'horizon (years)', font:FONT_MONO }; lay.xaxis.range=[0,11];
   lay.yaxis.title = { text:'rate (%)', font:FONT_MONO };
