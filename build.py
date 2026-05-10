@@ -14,7 +14,7 @@ import json
 import re
 from pathlib import Path
 
-YIELDS_DIR = Path('/Users/marcinhdec/Documents/YIELDS')  # adjust as needed
+YIELDS_DIR = Path('/Users/marcinhdec/Library/Mobile Documents/com~apple~CloudDocs/YIELDS')
 SITE_DIR = Path(__file__).parent
 DIST = SITE_DIR / 'dist'
 
