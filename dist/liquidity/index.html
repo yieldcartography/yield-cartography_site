@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liquidity measures — yieldcartography</title>
+<meta name="description" content="Microstructure liquidity measures for the Polish sovereign bond panel: bid-ask spreads, zero-trading-day frequency, Amihud, Roll, Pastor-Stambaugh gamma, Corwin-Schultz, and a composite liquidity index. Monthly aggregates, 2005-2026.">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+<script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<style>
+  .plot-frame { width: 100%; height: 360px; }
+  .plot-frame.tall { height: 420px; }
+  .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 10px 0; }
+  .pill { font-family: var(--mono); font-size: 10.5px; padding: 4px 9px; border: 1px solid var(--rule); border-radius: 12px; background: var(--bg); color: var(--ink-soft); cursor: pointer; user-select: none; letter-spacing: 0.4px; text-transform: uppercase; }
+  .pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .pill:hover:not(.active) { border-color: var(--accent-soft); color: var(--accent); }
+  .small-note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.3px; margin: 6px 0 0 0; }
+  .control-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+  .control-row .label-mono { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/liquidity/" class="active">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main>
+
+  <h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Liquidity measures on the Polish sovereign panel</h1>
+  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">Cross-sectional medians of standard microstructure liquidity measures across the BondSpot panel, monthly from 2005 to today. Data are computed at the bond-day level and aggregated to monthly cross-sectional medians (means for ZTD and the composite z-score).</p>
+
+  <div class="stats">
+    <div class="stat"><div class="label">Sample period</div><div class="value" id="stat-period">—</div><div class="delta">monthly aggregates</div></div>
+    <div class="stat"><div class="label">Months</div><div class="value" id="stat-n">—</div><div class="delta">cross-section per month</div></div>
+    <div class="stat"><div class="label">Latest BAS median</div><div class="value" id="stat-bas">—</div><div class="delta">basis points</div></div>
+    <div class="stat"><div class="label">Latest ZTD share</div><div class="value" id="stat-ztd">—</div><div class="delta">% of bond-days with no trading</div></div>
+    <div class="stat"><div class="label">Latest composite z</div><div class="value" id="stat-cz">—</div><div class="delta">positive = less liquid</div></div>
+  </div>
+
+  <div class="control-row">
+    <span class="label-mono">Window:</span>
+    <div class="pill-row" id="winPills" style="margin:0">
+      <span class="pill active" data-win="all">Full sample</span>
+      <span class="pill" data-win="5y">Last 5 years</span>
+      <span class="pill" data-win="2y">Last 2 years</span>
+      <span class="pill" data-win="1y">Last 1 year</span>
+    </div>
+  </div>
+
+  <div class="grid-2">
+
+    <div class="panel">
+      <h3>Bid-ask spread (basis points)</h3>
+      <p class="note">Cross-sectional median (line) plus 25th–75th percentile band across the BondSpot panel each month. Spreads in basis points of yield, computed from BondSpot best bid and best ask fixings.</p>
+      <div id="basChart" class="plot-frame tall"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Zero-trading-day share (% of bond-days)</h3>
+      <p class="note">Average share of bond-days within the cross-section for which no trades occurred. A higher series indicates a less continuously-traded panel.</p>
+      <div id="ztdChart" class="plot-frame tall"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Composite liquidity z-index</h3>
+      <p class="note">Standardised average of the underlying liquidity measures (BAS, Amihud, Roll, gamma, Corwin-Schultz, ZTD), with positive values indicating less liquid markets and negative values indicating more liquid markets relative to the panel-period mean.</p>
+      <div id="czChart" class="plot-frame"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Amihud illiquidity (median)</h3>
+      <p class="note">Cross-sectional median of the Amihud (2002) ratio: |daily return| / daily turnover. Higher values indicate larger price impact per unit traded.</p>
+      <div id="amihudChart" class="plot-frame"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Roll implicit spread (median)</h3>
+      <p class="note">Cross-sectional median of the Roll (1984) implicit spread estimator: 2 × √(-cov(Δp_t, Δp_{t-1})). Set to NA where the autocovariance is positive.</p>
+      <div id="rollChart" class="plot-frame"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Corwin-Schultz high-low spread (median)</h3>
+      <p class="note">Cross-sectional median of the Corwin-Schultz (2012) high-low spread estimator. A robust intra-day spread proxy that doesn't require quote data.</p>
+      <div id="csChart" class="plot-frame"></div>
+    </div>
+
+    <div class="panel full">
+      <h3>Cross-section size — bonds in the monthly panel</h3>
+      <p class="note">Number of distinct ISINs included in the BondSpot panel each month. Drives the precision of the cross-sectional medians and means above.</p>
+      <div id="nbondsChart" class="plot-frame"></div>
+    </div>
+
+  </div>
+
+  <p class="small-note">Methodology: bid-ask spread (BAS) computed from BondSpot best-bid / best-ask fixings; zero-trading-day (ZTD) frequency from BondSpot turnover-volume records; Amihud (2002) illiquidity ratio; Roll (1984) implicit spread; Pastor-Stambaugh γ from daily return-on-flow regressions; Corwin-Schultz (2012) high-low spread estimator; composite z-score = mean of standardised measures. All measures computed at the bond-day level and aggregated to monthly cross-sectional medians (or means for ZTD and composite). See about page for full methodology references.</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-10</div>
+</footer>
+
+<script>
+const PALETTE = { ink:'#1a1a1a', soft:'#3a3a3a', muted:'#6a6a6a', rule:'#d8d8d8',
+                  accent:'#1f4e79', accentSoft:'#2e75b6', tint:'#e8f0f7',
+                  salmon:'#c2522d', green:'#2e7d32', short:'#888888' };
+const FONT_BODY = { family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif", size: 11, color: PALETTE.soft };
+const FONT_MONO = { family: "'JetBrains Mono','Fira Code',Menlo,Consolas,monospace", size: 10, color: PALETTE.muted };
+const PLOT_BASE = { paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff', font:FONT_BODY,
+                    margin:{l:55,r:18,t:12,b:42}, hovermode:'x',
+                    xaxis:{gridcolor:'#eeeeee',zerolinecolor:'#dddddd',tickfont:FONT_MONO,linecolor:'#cccccc'},
+                    yaxis:{gridcolor:'#eeeeee',zerolinecolor:'#dddddd',tickfont:FONT_MONO,linecolor:'#cccccc'} };
+const CFG = { displayModeBar:false, responsive:true };
+
+let DATA = null;
+let curWin = 'all';
+
+async function load(){
+  const r = await fetch('/data/yields.json', { cache: 'force-cache' });
+  DATA = await r.json();
+  initStats();
+  bindPills();
+  drawAll();
+}
+load();
+
+function initStats(){
+  const liq = DATA.liquidity;
+  if (!liq){ return; }
+  document.getElementById('stat-period').textContent = liq.dates[0] + ' to ' + liq.dates[liq.dates.length-1];
+  document.getElementById('stat-n').textContent = liq.dates.length;
+  document.getElementById('stat-bas').textContent = (liq.bas_bp_med[liq.bas_bp_med.length-1] || 0).toFixed(1) + ' bp';
+  document.getElementById('stat-ztd').textContent = (liq.ztd_pct[liq.ztd_pct.length-1] || 0).toFixed(1) + '%';
+  document.getElementById('stat-cz').textContent = (liq.composite_z[liq.composite_z.length-1] || 0).toFixed(2);
+}
+
+function bindPills(){
+  document.querySelectorAll('#winPills .pill').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      document.querySelectorAll('#winPills .pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      curWin = p.dataset.win;
+      drawAll();
+    });
+  });
+}
+
+function sliceWindow(dates, ...arrs){
+  if (curWin === 'all') return [dates, ...arrs];
+  // Liquidity dates are monthly strings 'YYYY-MM'
+  const last = new Date(dates[dates.length-1] + '-01');
+  const cutoff = new Date(last);
+  if (curWin === '5y') cutoff.setFullYear(cutoff.getFullYear()-5);
+  else if (curWin === '2y') cutoff.setFullYear(cutoff.getFullYear()-2);
+  else if (curWin === '1y') cutoff.setFullYear(cutoff.getFullYear()-1);
+  let start = 0;
+  for (let i = 0; i < dates.length; i++){
+    if (new Date(dates[i] + '-01') >= cutoff){ start = i; break; }
+  }
+  return [dates.slice(start), ...arrs.map(a => a.slice(start))];
+}
+
+function drawAll(){
+  const liq = DATA.liquidity;
+  if (!liq) return;
+  drawBasChart(liq);
+  drawZtdChart(liq);
+  drawCzChart(liq);
+  drawSimple('amihudChart', liq, 'amihud_med', 'Amihud (median)', PALETTE.accent);
+  drawSimple('rollChart', liq, 'roll_med', 'Roll (median)', PALETTE.salmon);
+  drawSimple('csChart', liq, 'cs_med', 'Corwin-Schultz (median)', PALETTE.green);
+  drawSimple('nbondsChart', liq, 'n_bonds', 'bonds', PALETTE.short);
+}
+
+function drawBasChart(liq){
+  const [dates, med, p25, p75] = sliceWindow(liq.dates, liq.bas_bp_med, liq.bas_bp_p25, liq.bas_bp_p75);
+  const traces = [
+    { x:dates.concat([...dates].reverse()), y:p75.concat([...p25].reverse()), fill:'toself', fillcolor:'rgba(31,78,121,0.12)', line:{color:'transparent'}, hoverinfo:'skip', showlegend:false },
+    { x:dates, y:med, mode:'lines', line:{color:PALETTE.accent,width:2}, name:'BAS median (bp)', hovertemplate:'%{x} · %{y:.1f} bp<extra></extra>' }
+  ];
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.yaxis.title = { text:'bid-ask spread (bp)', font:FONT_MONO };
+  lay.legend = { orientation:'h', y:1.08, x:0, font:FONT_MONO };
+  Plotly.react('basChart', traces, lay, CFG);
+}
+
+function drawZtdChart(liq){
+  const [dates, ztd] = sliceWindow(liq.dates, liq.ztd_pct);
+  const traces = [
+    { x:dates, y:ztd, mode:'lines', line:{color:PALETTE.salmon,width:1.8}, name:'ZTD share (%)', fill:'tozeroy', fillcolor:'rgba(194,82,45,0.10)', hovertemplate:'%{x} · %{y:.1f}%<extra></extra>' }
+  ];
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.yaxis.title = { text:'zero-trading-day share (%)', font:FONT_MONO };
+  Plotly.react('ztdChart', traces, lay, CFG);
+}
+
+function drawCzChart(liq){
+  const [dates, cz] = sliceWindow(liq.dates, liq.composite_z);
+  const traces = [
+    { x:dates, y:cz, mode:'lines', line:{color:PALETTE.accent,width:1.8}, name:'composite z', hovertemplate:'%{x} · %{y:.2f}<extra></extra>' }
+  ];
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.yaxis.title = { text:'composite liquidity z-score', font:FONT_MONO };
+  lay.shapes = [{ type:'line', xref:'paper', x0:0, x1:1, y0:0, y1:0, line:{color:'#bbb',width:1,dash:'dot'} }];
+  Plotly.react('czChart', traces, lay, CFG);
+}
+
+function drawSimple(divId, liq, key, label, color){
+  const [dates, vals] = sliceWindow(liq.dates, liq[key]);
+  const traces = [
+    { x:dates, y:vals, mode:'lines', line:{color:color,width:1.6}, name:label, hovertemplate:'%{x} · %{y}<extra></extra>' }
+  ];
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.yaxis.title = { text:label, font:FONT_MONO };
+  Plotly.react(divId, traces, lay, CFG);
+}
+</script>
+
+</body>
+</html>

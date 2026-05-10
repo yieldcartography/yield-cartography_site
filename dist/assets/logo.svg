@@ -55,7 +55,7 @@
   <g transform="translate(150,52)">
     <text font-family="'JetBrains Mono', 'Fira Code', 'Source Code Pro', Menlo, Consolas, monospace"
           font-weight="700" font-size="26" fill="#1a1a1a" letter-spacing="-0.5">
-      <tspan x="0" y="28">yield_</tspan><tspan x="86" y="28" fill="#1f4e79">cartography</tspan>
+      <tspan x="0" y="28">yield</tspan><tspan x="68" y="28" fill="#c2522d">_</tspan><tspan x="86" y="28" fill="#1f4e79">cartography</tspan>
     </text>
     <text x="0" y="56" font-family="'JetBrains Mono', 'Fira Code', monospace" font-size="10" fill="#6a6a6a" letter-spacing="0.5">
       // better vaguely right than precisely wrong

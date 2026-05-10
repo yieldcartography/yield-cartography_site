@@ -4,13 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Yield curves — yieldcartography</title>
-<meta name="description" content="Interactive Polish sovereign zero-coupon yield curve dashboard, 2005-2026, with NSS-fitted parameters, bond bubbles, forwards, NBP forecasters, and US/EA comparison.">
+<meta name="description" content="Interactive Polish sovereign zero-coupon yield curve dashboard, 2005-2026, with NSS-fitted parameters, bond bubbles, forwards, NBP forecasters, US/EA comparison, PCA loadings, and CSV downloads.">
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
 <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
 <style>
   .plot-frame { width: 100%; height: 360px; }
-  .plot-frame.tall { height: 420px; }
+  .plot-frame.tall { height: 460px; }
+  .plot-frame.huge { height: 560px; }
   .plot-frame.short { height: 260px; }
   .bond-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 11px; }
   .bond-table th, .bond-table td { padding: 4px 6px; text-align: right; border-bottom: 1px solid var(--rule); }
@@ -29,6 +30,9 @@
   .legend-inline .swatch { display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: 4px; }
   .legend-inline .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
   .small-note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.3px; margin: 6px 0 0 0; }
+  .csv-btn { font-family: var(--mono); font-size: 10.5px; padding: 5px 11px; border: 1px solid var(--accent); border-radius: 4px; background: #fff; color: var(--accent); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 8px; }
+  .csv-btn:hover { background: var(--accent); color: #fff; }
+  .panel-head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 </style>
 </head>
 <body>
@@ -39,6 +43,8 @@
     <a href="/">home</a>
     <a href="/curves/" class="active">curves</a>
     <a href="/term-premia/">term premia</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
     <a href="/about/">about</a>
   </nav>
 </header>
@@ -46,7 +52,7 @@
 <main>
 
   <h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Polish sovereign zero-coupon yield curve</h1>
-  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">Daily NSS-fitted curves, 2005-2026. Monthly snapshots with the underlying bond panel, 1y forwards, the NBP Survey of Professional Forecasters implied path, and US/euro-area comparison.</p>
+  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">Daily NSS-fitted curves, 2005-2026. Monthly snapshots with the underlying bond panel, 1y forwards, the NBP Survey of Professional Forecasters implied path, and US/euro-area comparison at 12 tenors. Click bonds to see their YTM history. Download the snapshot panel as CSV.</p>
 
   <div class="stats">
     <div class="stat"><div class="label">Sample period</div><div class="value" id="stat-period">—</div><div class="delta">21 years of daily observations</div></div>
@@ -62,30 +68,44 @@
     <span class="selected-date" id="selDate">—</span>
   </div>
 
-  <div class="grid-2">
-
-    <div class="panel">
-      <h3>Zero-coupon curve and bond panel</h3>
-      <p class="note">NSS fit (solid line) with the underlying coupon-bond panel as bubbles, sized by outstanding amount. Salmon dots are long-end bonds (&gt;7y), dark blue is the belly (1.5–7y), grey is the short end. Click any bond row in the table to highlight it on the curve and show its YTM history.</p>
-      <div id="snapCurve" class="plot-frame tall"></div>
-      <div class="legend-inline">
-        <span><span class="swatch" style="background:var(--accent);"></span>NSS fit</span>
-        <span><span class="dot" style="background:#888"></span>short ≤1.5y</span>
-        <span><span class="dot" style="background:var(--accent);"></span>belly 1.5-7y</span>
-        <span><span class="dot" style="background:var(--salmon);"></span>long &gt;7y</span>
-        <span><span class="dot" style="background:#2e7d32"></span>NBP bill rate</span>
+  <!-- Wide hero panel: zero-coupon curve + bond bubbles -->
+  <div class="panel" style="margin-bottom:18px">
+    <div class="panel-head-row">
+      <h3 style="margin:0">Zero-coupon curve and bond panel</h3>
+      <div>
+        <button class="csv-btn" id="csvCurve">CSV — fitted curve</button>
+        <button class="csv-btn" id="csvBonds">CSV — bond panel</button>
       </div>
     </div>
+    <p class="note">NSS fit (solid line) with the underlying coupon-bond panel as bubbles, sized by outstanding amount. Salmon dots are long-end bonds (&gt;7y), dark blue is the belly (1.5–7y), grey is the short end. Click any bond row in the table below to highlight it on the curve and show its YTM history.</p>
+    <div id="snapCurve" class="plot-frame huge"></div>
+    <div class="legend-inline">
+      <span><span class="swatch" style="background:var(--accent);"></span>NSS fit</span>
+      <span><span class="dot" style="background:#888"></span>short ≤1.5y</span>
+      <span><span class="dot" style="background:var(--accent);"></span>belly 1.5-7y</span>
+      <span><span class="dot" style="background:var(--salmon);"></span>long &gt;7y</span>
+      <span><span class="dot" style="background:#2e7d32"></span>NBP bill rate</span>
+    </div>
+  </div>
+
+  <!-- Below: forwards + cross-country (side-by-side) -->
+  <div class="grid-2">
 
     <div class="panel">
       <h3>1-year forwards and NBP forecasters</h3>
       <p class="note">Implied 1-year-spaced forward rates from the NSS fit (solid line) compared to the latest NBP Survey of Professional Forecasters short-rate path (dashed). Both shown with origin at the snapshot date.</p>
-      <div id="snapFwd" class="plot-frame tall"></div>
+      <div id="snapFwd" class="plot-frame"></div>
       <div class="legend-inline">
         <span><span class="swatch" style="background:var(--accent);"></span>NSS 1y forwards</span>
         <span><span class="swatch" style="background:transparent;border-top:1px dashed var(--salmon);"></span>NBP SPF implied path</span>
         <span><span class="dot" style="background:#2e7d32"></span>NBP reference rate</span>
       </div>
+    </div>
+
+    <div class="panel">
+      <h3>Cross-country snapshot — full curve at all tenors</h3>
+      <p class="note">PL versus US (GSW Treasury) versus euro-area AAA zero-coupon yields at 3m, 6m, 1y, 2y, 3y, 4y, 5y, 6y, 7y, 8y, 9y, 10y on the snapshot date.</p>
+      <div id="xcountrySnap" class="plot-frame"></div>
     </div>
 
     <div class="panel full">
@@ -99,16 +119,10 @@
       </div>
     </div>
 
-    <div class="panel">
+    <div class="panel full">
       <h3>Selected bond — YTM history</h3>
       <p class="note" id="bondHistNote">Click a bond row above to load its weekly YTM history.</p>
       <div id="bondHist" class="plot-frame"></div>
-    </div>
-
-    <div class="panel">
-      <h3>Cross-country snapshot</h3>
-      <p class="note">PL versus US (GSW Treasury) versus euro-area AAA zero-coupon yields at 2y, 5y, 10y on the snapshot date.</p>
-      <div id="xcountrySnap" class="plot-frame"></div>
     </div>
 
     <div class="panel full">
@@ -118,20 +132,22 @@
         <span class="pill" data-mode="beta">NSS betas</span>
         <span class="pill" data-mode="tau">NSS taus</span>
         <span class="pill" data-mode="diag">Fit diagnostics</span>
+        <span class="pill" data-mode="pca">PCA factors (level/slope/curvature)</span>
         <span class="pill" data-mode="xcountry">PL vs US vs EA, 10y</span>
+        <span class="pill" data-mode="xspread">PL vs US vs EA, 10y-2y spread</span>
       </div>
       <div id="tsPanel" class="plot-frame tall"></div>
     </div>
 
   </div>
 
-  <p class="small-note">Methodology: liquidity-weighted Nelson-Siegel-Svensson (LW-NSS) on BondSpot venue closing fixings. Weights derived from Min-Fin disclosures of outstanding amounts and prior-month turnover. NBP Survey of Professional Forecasters implied path constructed from quarterly survey releases. US zeros from Gürkaynak-Sack-Wright. Euro-area zeros from the ECB AAA spot-rate database. Build date 2026-05-10.</p>
+  <p class="small-note">Methodology: liquidity-weighted Nelson-Siegel-Svensson (LW-NSS) on BondSpot venue closing fixings. Weights derived from Min-Fin disclosures of outstanding amounts and prior-month turnover. NBP Survey of Professional Forecasters implied path constructed from quarterly survey releases per PhD Chapter 5.4. US zeros from Gürkaynak-Sack-Wright. Euro-area zeros from the ECB AAA spot-rate database. PCA factors from the EH-paper panel. Build date 2026-05-10.</p>
 
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li></ul></div>
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a></li></ul></div>
   </div>
@@ -145,7 +161,7 @@ const PALETTE = { ink:'#1a1a1a', soft:'#3a3a3a', muted:'#6a6a6a', rule:'#d8d8d8'
 const FONT_BODY = { family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif", size: 11, color: PALETTE.soft };
 const FONT_MONO = { family: "'JetBrains Mono','Fira Code',Menlo,Consolas,monospace", size: 10, color: PALETTE.muted };
 const PLOT_BASE = { paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff', font:FONT_BODY,
-                    margin:{l:50,r:18,t:12,b:38}, hovermode:'closest',
+                    margin:{l:55,r:18,t:12,b:42}, hovermode:'closest',
                     xaxis:{gridcolor:'#eeeeee',zerolinecolor:'#dddddd',tickfont:FONT_MONO,linecolor:'#cccccc'},
                     yaxis:{gridcolor:'#eeeeee',zerolinecolor:'#dddddd',tickfont:FONT_MONO,linecolor:'#cccccc'} };
 const CFG = { displayModeBar:false, responsive:true };
@@ -165,6 +181,14 @@ function segClass(seg){ if(!seg) return 'seg-short';
   if (lo >= 7.0) return 'seg-long';
   return 'seg-belly';
 }
+function downloadCSV(filename, rows){
+  const csv = rows.map(r => r.map(v => (v===null||v===undefined)?'':String(v)).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
 
 let DATA = null;
 let curIdx = 0;
@@ -176,6 +200,7 @@ async function load(){
   initStats();
   buildSlider();
   bindPills();
+  bindCsvButtons();
   draw();
 }
 load();
@@ -194,7 +219,6 @@ function buildSlider(){
   curIdx = +slider.value;
   slider.addEventListener('input', e => { curIdx = +e.target.value; selectedISIN = null; draw(); });
 }
-
 function bindPills(){
   document.querySelectorAll('#tsPills .pill').forEach(p=>{
     p.addEventListener('click', ()=>{
@@ -202,6 +226,21 @@ function bindPills(){
       p.classList.add('active');
       drawTimeseries(p.dataset.mode);
     });
+  });
+}
+function bindCsvButtons(){
+  document.getElementById('csvCurve').addEventListener('click', ()=>{
+    const s = DATA.snaps[curIdx];
+    const grid = curveGrid();
+    const rows = [['maturity_years','nss_zero_pct']];
+    grid.forEach(t => rows.push([t, (nss_y(t, s.beta0, s.beta1, s.beta2, s.beta3, s.tau1, s.tau2)*100).toFixed(4)]));
+    downloadCSV('nss_curve_' + s.date + '.csv', rows);
+  });
+  document.getElementById('csvBonds').addEventListener('click', ()=>{
+    const s = DATA.snaps[curIdx];
+    const rows = [['date','isin','series','ttm_years','ytm_pct','outstanding_pln_bn','turnover_prev_month_pln_bn','segment']];
+    (s.bonds||[]).forEach(b => rows.push([s.date, b.isin, b.name, b.ttm, b.ytm, b.out, b.turnover, '"'+(b.segment||'')+'"']));
+    downloadCSV('bond_panel_' + s.date + '.csv', rows);
   });
 }
 
@@ -224,22 +263,22 @@ function drawSnapCurve(s){
   const grid = curveGrid();
   const yfit = grid.map(t => nss_y(t, s.beta0, s.beta1, s.beta2, s.beta3, s.tau1, s.tau2)*100);
   const traces = [];
-  traces.push({ x: grid, y: yfit, mode:'lines', line:{color:PALETTE.accent,width:2.4}, name:'NSS', hovertemplate:'%{x:.2f}y · %{y:.2f}%<extra></extra>', showlegend:false });
+  traces.push({ x: grid, y: yfit, mode:'lines', line:{color:PALETTE.accent,width:2.6}, name:'NSS', hovertemplate:'%{x:.2f}y · %{y:.2f}%<extra></extra>', showlegend:false });
   if (s.bonds && s.bonds.length){
     const buckets = { short:[], belly:[], long:[] };
     s.bonds.forEach(b => { const c=segClass(b.segment); const k=c==='seg-belly'?'belly':c==='seg-long'?'long':'short'; buckets[k].push(b); });
-    const map = { short:{color:PALETTE.short,name:'short ≤1.5y'}, belly:{color:PALETTE.accent,name:'belly 1.5–7y'}, long:{color:PALETTE.salmon,name:'long >7y'} };
+    const map = { short:{color:PALETTE.short}, belly:{color:PALETTE.accent}, long:{color:PALETTE.salmon} };
     Object.keys(buckets).forEach(k=>{
       const arr = buckets[k]; if(!arr.length) return;
-      const sizes = arr.map(b => Math.max(6, Math.min(28, Math.sqrt(Math.max(0,b.out||0)/1000)*1.6)));
-      const opacities = arr.map(b => selectedISIN && b.isin===selectedISIN ? 1.0 : 0.55);
+      const sizes = arr.map(b => Math.max(8, Math.min(34, Math.sqrt(Math.max(0,b.out||0))*3.0)));
+      const opacities = arr.map(b => selectedISIN && b.isin===selectedISIN ? 1.0 : 0.6);
       traces.push({ x: arr.map(b=>b.ttm), y: arr.map(b=>b.ytm), mode:'markers',
         marker:{size:sizes, color:map[k].color, opacity:opacities, line:{color:'#fff',width:1}},
-        text: arr.map(b => `<b>${b.name}</b> · ${b.isin}<br>TTM ${b.ttm.toFixed(2)}y · YTM ${b.ytm.toFixed(2)}%<br>Outstanding ${(b.out||0).toFixed(0)} PLNbn · turnover ${(b.turnover||0).toFixed(2)} PLNbn`),
-        hoverinfo:'text', name: map[k].name, showlegend:false });
+        text: arr.map(b => `<b>${b.name}</b> · ${b.isin}<br>TTM ${b.ttm.toFixed(2)}y · YTM ${b.ytm.toFixed(2)}%<br>Outstanding ${(b.out||0).toFixed(1)} PLNbn · turnover ${(b.turnover||0).toFixed(2)} PLNbn`),
+        hoverinfo:'text', showlegend:false });
     });
   }
-  if (s.nbp != null) traces.push({ x:[0.05], y:[s.nbp], mode:'markers', marker:{symbol:'diamond', size:11, color:PALETTE.green, line:{color:'#fff',width:1}}, name:'NBP rate', hovertemplate:`NBP reference ${s.nbp.toFixed(2)}%<extra></extra>`, showlegend:false });
+  if (s.nbp != null) traces.push({ x:[0.05], y:[s.nbp], mode:'markers', marker:{symbol:'diamond', size:13, color:PALETTE.green, line:{color:'#fff',width:1}}, hovertemplate:`NBP reference ${s.nbp.toFixed(2)}%<extra></extra>`, showlegend:false });
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.xaxis.title = { text:'maturity (years)', font:FONT_MONO }; lay.xaxis.range=[0,15];
   lay.yaxis.title = { text:'yield (%)', font:FONT_MONO };
@@ -256,7 +295,7 @@ function drawSnapFwd(s){
     const xs = s.spf_path.map((_,i)=>i+0.5);
     traces.push({ x: xs, y: s.spf_path, mode:'lines+markers', line:{color:PALETTE.salmon,width:1.8,dash:'dash'}, marker:{size:5,color:PALETTE.salmon,symbol:'square'}, name:'SPF implied', hovertemplate:'SPF Y%{x:.1f} · %{y:.2f}%<extra></extra>' });
   }
-  if (s.nbp != null) traces.push({ x:[0.0], y:[s.nbp], mode:'markers', marker:{symbol:'diamond', size:11, color:PALETTE.green, line:{color:'#fff',width:1}}, name:'NBP rate', hovertemplate:`NBP reference ${s.nbp.toFixed(2)}%<extra></extra>` });
+  if (s.nbp != null) traces.push({ x:[0.0], y:[s.nbp], mode:'markers', marker:{symbol:'diamond', size:11, color:PALETTE.green, line:{color:'#fff',width:1}}, hovertemplate:`NBP reference ${s.nbp.toFixed(2)}%<extra></extra>` });
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.xaxis.title = { text:'horizon (years)', font:FONT_MONO }; lay.xaxis.range=[0,11];
   lay.yaxis.title = { text:'rate (%)', font:FONT_MONO };
@@ -265,14 +304,15 @@ function drawSnapFwd(s){
 }
 
 function drawXcountrySnap(s){
-  const tenors = [2,5,10];
-  const traces = [
-    { x:tenors, y:[s.pl_2y, s.pl_5y, s.pl_10y], mode:'lines+markers', name:'PL', line:{color:PALETTE.accent,width:2.2}, marker:{size:8,color:PALETTE.accent} },
-    { x:tenors, y:[s.us_2y, s.us_5y, s.us_10y], mode:'lines+markers', name:'US', line:{color:PALETTE.salmon,width:2.2}, marker:{size:8,color:PALETTE.salmon} },
-    { x:tenors, y:[s.ea_2y, s.ea_5y, s.ea_10y], mode:'lines+markers', name:'EA AAA', line:{color:PALETTE.green,width:2.2}, marker:{size:8,color:PALETTE.green} }
-  ];
+  const tenors = DATA.tenor_years;
+  const traces = [];
+  traces.push({ x:tenors, y:s.pl_curve, mode:'lines+markers', name:'PL', line:{color:PALETTE.accent,width:2.2}, marker:{size:6,color:PALETTE.accent} });
+  if (s.us_curve) traces.push({ x:tenors, y:s.us_curve, mode:'lines+markers', name:'US', line:{color:PALETTE.salmon,width:2.0}, marker:{size:6,color:PALETTE.salmon} });
+  if (s.ea_curve) traces.push({ x:tenors, y:s.ea_curve, mode:'lines+markers', name:'EA AAA', line:{color:PALETTE.green,width:2.0}, marker:{size:6,color:PALETTE.green} });
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
-  lay.xaxis.title = { text:'tenor (years)', font:FONT_MONO }; lay.xaxis.tickvals=[2,5,10];
+  lay.xaxis.title = { text:'tenor (years)', font:FONT_MONO };
+  lay.xaxis.tickvals = [0.25, 1, 2, 3, 5, 7, 10];
+  lay.xaxis.ticktext = ['3m','1y','2y','3y','5y','7y','10y'];
   lay.yaxis.title = { text:'yield (%)', font:FONT_MONO };
   lay.legend = { orientation:'h', y:1.12, x:0, font:FONT_MONO };
   Plotly.react('xcountrySnap', traces, lay, CFG);
@@ -287,7 +327,7 @@ function drawBondTable(s){
     const tr = document.createElement('tr');
     if (b.isin === selectedISIN) tr.classList.add('selected');
     const segCls = segClass(b.segment);
-    tr.innerHTML = `<td class="lbl">${b.isin}</td><td class="lbl">${b.name}</td><td>${b.ttm.toFixed(2)}</td><td>${b.ytm.toFixed(2)}</td><td>${(b.out||0).toFixed(0)}</td><td>${(b.turnover||0).toFixed(2)}</td><td class="lbl ${segCls}">${b.segment||'—'}</td>`;
+    tr.innerHTML = `<td class="lbl">${b.isin}</td><td class="lbl">${b.name}</td><td>${b.ttm.toFixed(2)}</td><td>${b.ytm.toFixed(2)}</td><td>${(b.out||0).toFixed(1)}</td><td>${(b.turnover||0).toFixed(2)}</td><td class="lbl ${segCls}">${b.segment||'—'}</td>`;
     tr.addEventListener('click', ()=>{ selectedISIN = b.isin; drawSnapCurve(s); drawBondTable(s); drawBondHist(); });
     tbody.appendChild(tr);
   });
@@ -312,7 +352,7 @@ function drawBondHist(){
 }
 
 function drawTimeseries(mode){
-  const ts = DATA.ts; const xc = DATA.xcountry_m;
+  const ts = DATA.ts; const xc = DATA.xcountry_m; const pca = DATA.pca;
   let traces = [];
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.legend = { orientation:'h', y:1.10, x:0, font:FONT_MONO };
@@ -344,12 +384,26 @@ function drawTimeseries(mode){
     ];
     lay.yaxis.title = { text:'fit MAE (bp)', font:FONT_MONO };
     lay.yaxis2 = { title:{text:'bonds',font:FONT_MONO}, overlaying:'y', side:'right', tickfont:FONT_MONO, showgrid:false };
+  } else if (mode === 'pca' && pca){
+    traces = [
+      { x:pca.dates, y:pca.level,     name:'level',     mode:'lines', line:{color:PALETTE.accent,width:1.6} },
+      { x:pca.dates, y:pca.slope,     name:'slope',     mode:'lines', line:{color:PALETTE.salmon,width:1.6} },
+      { x:pca.dates, y:pca.curvature, name:'curvature', mode:'lines', line:{color:PALETTE.green,width:1.4} }
+    ];
+    lay.yaxis.title = { text:'PCA factor (yield-curve loadings)', font:FONT_MONO };
   } else if (mode === 'xcountry'){
     traces = [
       { x:xc.dates, y:xc.pl_10y, name:'PL 10y', mode:'lines', line:{color:PALETTE.accent,width:1.8} },
       { x:xc.dates, y:xc.us_10y, name:'US 10y', mode:'lines', line:{color:PALETTE.salmon,width:1.5} },
       { x:xc.dates, y:xc.ea_10y, name:'EA 10y', mode:'lines', line:{color:PALETTE.green,width:1.5} }
     ];
+  } else if (mode === 'xspread'){
+    traces = [
+      { x:xc.dates, y:xc.pl_spread, name:'PL 10y-2y', mode:'lines', line:{color:PALETTE.accent,width:1.8} },
+      { x:xc.dates, y:xc.us_spread, name:'US 10y-2y', mode:'lines', line:{color:PALETTE.salmon,width:1.5} },
+      { x:xc.dates, y:xc.ea_spread, name:'EA 10y-2y', mode:'lines', line:{color:PALETTE.green,width:1.5} }
+    ];
+    lay.yaxis.title = { text:'spread (%)', font:FONT_MONO };
   }
   Plotly.react('tsPanel', traces, lay, CFG);
 }

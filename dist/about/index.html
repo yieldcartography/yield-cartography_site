@@ -4,74 +4,179 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About — yieldcartography</title>
+<meta name="description" content="About Marcin Dec, methodology, data sources, and research programme behind the yieldcartography dashboards.">
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+<style>
+  .bio-grid { display: grid; grid-template-columns: 200px 1fr; gap: 28px; margin: 0 0 30px 0; align-items: start; }
+  .bio-grid .label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; padding-top: 4px; }
+  .bio-grid .val { font-size: 14px; color: var(--ink); }
+  .bio-grid .val ul { margin: 0; padding-left: 18px; }
+  .bio-grid .val a { color: var(--accent); }
+  .pub-list { list-style: none; padding: 0; margin: 0; }
+  .pub-list li { padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 13.5px; color: var(--ink-soft); }
+  .pub-list li:last-child { border-bottom: none; }
+  .pub-list .ttl { font-weight: 600; color: var(--ink); display: block; margin-bottom: 2px; }
+  .pub-list .meta { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .ext-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .ext-card { display: block; padding: 14px 16px; border: 1px solid var(--rule); border-radius: 4px; background: var(--panel); border-bottom: 1px solid var(--rule); }
+  .ext-card:hover { border-color: var(--accent); }
+  .ext-card .ext-label { font-family: var(--mono); font-size: 10.5px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+  .ext-card .ext-name { font-size: 14px; color: var(--ink); font-weight: 600; }
+  .ext-card .ext-url { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 3px; word-break: break-all; }
+</style>
 </head>
 <body>
+
 <header class="site-header">
   <a href="/" class="logo-link"><img src="/assets/logo.svg" alt="yieldcartography"></a>
   <nav>
     <a href="/">home</a>
     <a href="/curves/">curves</a>
     <a href="/term-premia/">term premia</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
     <a href="/about/" class="active">about</a>
   </nav>
 </header>
 
 <main class="narrow">
 
-<section class="hero">
-  <h1>About <span class="accent">yieldcartography</span></h1>
-  <p class="lede">Methodology, data, and the research programme behind the dashboards.</p>
-</section>
+  <h1 style="margin:18px 0 6px 0;font-size:26px;letter-spacing:-0.3px">About</h1>
+  <p style="color:var(--muted);margin:0 0 28px 0;font-size:14px">Author bio, methodology, data sources, related publications, and external profiles.</p>
 
-<section class="section">
-<h2 class="with-rule">Author</h2>
-<p><strong>Marcin Dec, PhD</strong> — Assistant Professor in the Department of Finance at Kozminski University in Warsaw, research fellow at FAME|GRAPE. Twenty-plus years of practitioner experience in Polish and international fixed-income markets (Treasurer at two Polish banks, Director of Central and Eastern European Markets at Rabobank London, board roles at Getin Noble Bank and Kredobank). Currently principal investigator on a National Science Centre (Poland) research grant on sovereign yield-curve modelling.</p>
-</section>
+  <section class="section">
+    <h2 class="with-rule">Bio</h2>
+    <div class="bio-grid">
+      <div class="label">Author</div>
+      <div class="val">
+        <strong>Marcin Dec, PhD</strong><br>
+        Assistant Professor in Finance, Department of Finance, Kozminski University, Warsaw.<br>
+        PhD in Quantitative Economics, Collegium of Economic Analysis, SGH Warsaw School of Economics. Research Assistant at FAME|GRAPE since 2019. Twenty-plus years of fixed-income practitioner experience as senior analyst, portfolio manager, and risk manager before entering academia.
+      </div>
 
-<section class="section">
-<h2 class="with-rule">Methodology</h2>
-<p>The yield-curve dashboard uses the liquidity-weighted Nelson-Siegel-Svensson (LW-NSS) framework: NSS curve fits with bond-level weights derived from yield-space Glosten-Milgrom microstructure (turnover-weighted) plus Ho-Stoll inventory mechanism (outstanding-weighted). Implementation details and asymptotic theory are in the working paper "Microstructure-Efficient Estimation of Sovereign Yield Curves in Less-Liquid Markets".</p>
-<p>The term-premia dashboard uses the Adrian-Crump-Moench (2013) affine term-structure model decomposition, with Bauer-Rudebusch-Wu (2014) bias correction for finite-sample bias under persistent factors. Five Svensson-fit zero-curve principal components serve as state variables.</p>
-</section>
+      <div class="label">Research focus</div>
+      <div class="val">
+        Yield-curve modelling for less-liquid sovereign bond markets, term-premium estimation, multi-curve HJM, money-market benchmarks, valuation adjustments (XVA), and welfare measurement with heterogeneous agents. Empirical anchor is the Polish PLN sovereign curve, with comparative work against US Treasury and euro-area AAA benchmarks.
+      </div>
 
-<section class="section">
-<h2 class="with-rule">Data sources</h2>
-<p>BondSpot (TBSP) regulated venue daily closing fixings. Polish Ministry of Finance disclosures of outstanding amounts, monthly turnover, and primary auction calendar. National Bank of Poland MPC rate decisions (live updates), holdings-by-investor-sector statistics, and the NBP Survey of Professional Forecasters. Daily updates trigger overnight; the site refreshes the next business morning.</p>
-</section>
+      <div class="label">Funding</div>
+      <div class="val">
+        National Science Centre Poland, Preludium grant <span style="font-family:var(--mono);font-size:12px">UMO-2020/37/N/HS4/02202</span> (2021–2024). Multiple SGH Rector's scholarships for best doctoral students, 2017–2021.
+      </div>
 
-<section class="section">
-<h2 class="with-rule">Working papers and publications</h2>
-<p>Active research outputs in 2026 (selected). Coming-soon links to be added once papers are posted publicly.</p>
-<ul>
-<li>Microstructure-Efficient Estimation of Sovereign Yield Curves in Less-Liquid Markets — working paper, under review at Studies in Nonlinear Dynamics and Econometrics.</li>
-<li>Closer to New York than to Frankfurt? The Expectations Hypothesis in Poland, the US and the euro area — working paper, under review at International Review of Economics and Finance.</li>
-<li>Supply, habitat and the price of liquidity in less-liquid sovereign bond markets — working paper, under review at Emerging Markets Review.</li>
-<li>Forecasting accuracy of survey- vs ACM-implied policy paths on the Polish curve — working paper, under review at Journal of International Money and Finance.</li>
-<li>Welfare Measurements with Heterogeneous Agents (with Marek Weretka) — published in Journal of Economic Dynamics and Control, 2025.</li>
-</ul>
-</section>
+      <div class="label">This site</div>
+      <div class="val">
+        yieldcartography.com publishes the daily-refreshed empirical outputs of the research programme: NSS-fitted zero-coupon yield curves, ACM and BRW term-premium decompositions, microstructure-based liquidity measures, and expectations-hypothesis test results. All code is open, all data is publicly sourced, and the underlying CSVs are linked below.
+      </div>
+    </div>
+  </section>
 
-<section class="section">
-<h2 class="with-rule">Code, data, replication</h2>
-<p>The site source is on <a href="https://github.com/yieldcartography/yield-cartography_site">GitHub</a>. The full data-and-code replication archive for each working paper is available on request to the corresponding email below.</p>
-</section>
+  <section class="section">
+    <h2 class="with-rule">External profiles &amp; media</h2>
+    <div class="ext-links">
+      <a class="ext-card" href="https://grape.org.pl/mdec" target="_blank" rel="noopener">
+        <div class="ext-label">GRAPE</div>
+        <div class="ext-name">FAME|GRAPE researcher page</div>
+        <div class="ext-url">grape.org.pl/mdec</div>
+      </a>
+      <a class="ext-card" href="https://www.kozminski.edu.pl/en/community/card/phd-marcin-dec" target="_blank" rel="noopener">
+        <div class="ext-label">University</div>
+        <div class="ext-name">Kozminski University faculty page</div>
+        <div class="ext-url">kozminski.edu.pl/en/community/card/phd-marcin-dec</div>
+      </a>
+      <a class="ext-card" href="https://www.linkedin.com/in/marcin-dec-6a7a974b/" target="_blank" rel="noopener">
+        <div class="ext-label">LinkedIn</div>
+        <div class="ext-name">Professional profile</div>
+        <div class="ext-url">linkedin.com/in/marcin-dec-6a7a974b</div>
+      </a>
+      <a class="ext-card" href="https://ideas.repec.org/f/pde1169.html" target="_blank" rel="noopener">
+        <div class="ext-label">RePEc</div>
+        <div class="ext-name">IDEAS / RePEc author profile</div>
+        <div class="ext-url">ideas.repec.org/f/pde1169.html</div>
+      </a>
+      <a class="ext-card" href="https://www.researchgate.net/profile/Marcin-Dec" target="_blank" rel="noopener">
+        <div class="ext-label">ResearchGate</div>
+        <div class="ext-name">ResearchGate profile</div>
+        <div class="ext-url">researchgate.net/profile/Marcin-Dec</div>
+      </a>
+      <a class="ext-card" href="http://grape.org.pl/sites/default/files/user/CV_MarcinDec_Grape_Inference.pdf" target="_blank" rel="noopener">
+        <div class="ext-label">CV</div>
+        <div class="ext-name">Full curriculum vitae (PDF)</div>
+        <div class="ext-url">grape.org.pl/sites/default/files/user/CV_MarcinDec_Grape_Inference.pdf</div>
+      </a>
+      <a class="ext-card" href="https://grape.org.pl/podcast" target="_blank" rel="noopener">
+        <div class="ext-label">Podcast</div>
+        <div class="ext-name">"Tloczone z danych" — GRAPE podcast for Dziennik Gazety Prawnej</div>
+        <div class="ext-url">grape.org.pl/podcast</div>
+      </a>
+      <a class="ext-card" href="https://github.com/yieldcartography/yield-cartography_site" target="_blank" rel="noopener">
+        <div class="ext-label">Code</div>
+        <div class="ext-name">GitHub — site source</div>
+        <div class="ext-url">github.com/yieldcartography/yield-cartography_site</div>
+      </a>
+    </div>
+  </section>
 
-<section class="section">
-<h2 class="with-rule">Contact</h2>
-<p><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a> · <a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></p>
-</section>
+  <section class="section">
+    <h2 class="with-rule">Selected publications</h2>
+    <ul class="pub-list">
+      <li>
+        <span class="ttl">Welfare measurements with heterogeneous agents</span>
+        <span class="meta">with Marek Weretka — Journal of Economic Dynamics and Control, 2025</span>
+      </li>
+      <li>
+        <span class="ttl">Yield Curve Modelling with the Nelson-Siegel Method for Poland</span>
+        <span class="meta">Gospodarka Narodowa, 2/2022, 44–56</span>
+      </li>
+      <li>
+        <span class="ttl">Forecasting the Yield Curve for Poland</span>
+        <span class="meta">Econometric Research in Finance, 5(2), 103–117, 2020</span>
+      </li>
+      <li>
+        <span class="ttl">Markovian and multi-curve friendly parametrisation of HJM model used in valuation adjustment of interest rate derivatives</span>
+        <span class="meta">working paper</span>
+      </li>
+      <li>
+        <span class="ttl">Parsimonious yield curve modeling in less liquid markets</span>
+        <span class="meta">FAME|GRAPE working paper</span>
+      </li>
+      <li>
+        <span class="ttl">Extracting Risk-Free Interest Rate Expectations in Less Liquid Government Bond Markets</span>
+        <span class="meta">FAME|GRAPE working paper</span>
+      </li>
+    </ul>
+    <p class="meta" style="margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted)">For the full publication list and ongoing working papers see the GRAPE and RePEc profiles linked above.</p>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">Data sources</h2>
+    <p style="font-size:14px;color:var(--ink-soft)">
+      <strong>Polish bond panel:</strong> BondSpot venue closing fixings (price, bid, ask, turnover) — aggregated from Polish Ministry of Finance disclosures.<br>
+      <strong>Outstanding amounts and turnover weights:</strong> Polish Min-Fin monthly statistics; pre-2014 panel reconstructed from KDPW MD pivots.<br>
+      <strong>Short-end anchor:</strong> NBP money-market bill rate.<br>
+      <strong>NBP Survey of Professional Forecasters:</strong> 57 quarterly survey releases, implied short-rate path constructed per PhD Chapter 5.4 methodology.<br>
+      <strong>US Treasury zeros:</strong> Gürkaynak-Sack-Wright (GSW) updated panel.<br>
+      <strong>Euro-area zeros:</strong> ECB AAA spot-rate database.<br>
+      <strong>Macro panel:</strong> CPI, unemployment, FX volatility, NBP rate changes.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">Methodology in one paragraph</h2>
+    <p style="font-size:14px;color:var(--ink-soft)">The Polish zero-coupon curve is fitted with a liquidity-weighted Nelson-Siegel-Svensson specification (LW-NSS), where bond-level weights are derived from prior-month BondSpot turnover and outstanding amounts. The fitter enforces standard sign and ordering constraints on β₀, β₀+β₁, τ₁ and τ₂, applies a τ₁ floor of 1.0 to suppress short-end curvature artefacts, and uses a small β₂/β₃ ridge penalty to stabilise the curvature factors. Term premia are computed via the Adrian-Crump-Moench (2013) affine term-structure model on five Nelson-Siegel principal components, with the Bauer-Rudebusch-Wu small-sample bias correction (iterated bootstrap with common random numbers and Kilian shrinkage) as the robustness benchmark. Liquidity measures follow the standard microstructure literature: bid-ask spreads, zero-trading-day frequency, Amihud (2002) illiquidity, Roll (1984), Pastor-Stambaugh γ, Corwin-Schultz (2012) high-low spread, and a composite z-index. Expectations-hypothesis tests follow the Fama-Bliss FB1/FB2 framework, the Cochrane-Piazzesi single and seagull factor regressions, an out-of-sample STV exercise against a random walk, and the cross-market PL/US/EA pooling robustness.</p>
+  </section>
 
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li></ul></div>
-    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub</a></li></ul></div>
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a></li></ul></div>
   </div>
-  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · last build 2026-05-10</div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-10</div>
 </footer>
+
 </body>
 </html>

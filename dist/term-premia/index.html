@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Term premia — yieldcartography</title>
-<meta name="description" content="Adrian-Crump-Moench and Bauer-Rudebusch-Wu term-premium decompositions for the Polish sovereign curve, 2005-2026, with cross-country comparison.">
+<meta name="description" content="Adrian-Crump-Moench and Bauer-Rudebusch-Wu term-premium decompositions for the Polish sovereign curve, 2005-2026, with cross-country comparison and full correlation heatmap.">
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
 <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
 <style>
   .plot-frame { width: 100%; height: 360px; }
   .plot-frame.tall { height: 420px; }
+  .plot-frame.square { height: 420px; }
   .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 10px 0; }
   .pill { font-family: var(--mono); font-size: 10.5px; padding: 4px 9px; border: 1px solid var(--rule); border-radius: 12px; background: var(--bg); color: var(--ink-soft); cursor: pointer; user-select: none; letter-spacing: 0.4px; text-transform: uppercase; }
   .pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
   .pill:hover:not(.active) { border-color: var(--accent-soft); color: var(--accent); }
   .legend-inline { display: flex; gap: 16px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; color: var(--muted); margin: 4px 0 0 0; }
-  .legend-inline .swatch { display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: 4px; }
   .small-note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.3px; margin: 6px 0 0 0; }
   .control-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
   .control-row .label-mono { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -30,6 +30,8 @@
     <a href="/">home</a>
     <a href="/curves/">curves</a>
     <a href="/term-premia/" class="active">term premia</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
     <a href="/about/">about</a>
   </nav>
 </header>
@@ -37,7 +39,7 @@
 <main>
 
   <h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Polish sovereign term-premium decomposition</h1>
-  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">Adrian-Crump-Moench (ACM) affine term-structure model and the Bauer-Rudebusch-Wu small-sample bias correction (BRW), estimated weekly on the LW-NSS zero-coupon panel. Includes 10y nominal-yield decomposition and cross-country term-spread comparison.</p>
+  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">Adrian-Crump-Moench (ACM) affine term-structure model and the Bauer-Rudebusch-Wu small-sample bias correction (BRW), estimated weekly on the LW-NSS zero-coupon panel. Includes 10y nominal-yield decomposition, cross-country term-spread comparison, and a full ACM/BRW correlation heatmap.</p>
 
   <div class="stats">
     <div class="stat"><div class="label">Sample period</div><div class="value" id="stat-period">—</div><div class="delta">21 years, weekly</div></div>
@@ -89,10 +91,16 @@
       <div id="xcountrySpread" class="plot-frame"></div>
     </div>
 
-    <div class="panel full">
+    <div class="panel">
+      <h3>Correlation heatmap — ACM &amp; BRW across horizons</h3>
+      <p class="note">Pearson correlations across all eight term-premium series. Diagonal is unity. The strong off-diagonal blocks tell you that within-model correlations are extremely high (expected: same factor structure), while ACM-vs-BRW pairs at the same horizon sit around 0.95+ in the Polish sample.</p>
+      <div id="corrHeatmap" class="plot-frame square"></div>
+    </div>
+
+    <div class="panel">
       <h3>10y term premium — PL benchmark</h3>
-      <p class="note">Headline 10y term-premium series with both ACM and BRW. The BRW correction averages roughly 2 bp above ACM on the Polish sample over 2005-2026 (smaller than the ~50 bp gap in US data because the Polish Φ matrix is less persistent).</p>
-      <div id="tp10Headline" class="plot-frame tall"></div>
+      <p class="note">Headline 10y term-premium series with both ACM and BRW. The BRW correction averages roughly 2 bp above ACM on the Polish sample over 2005-2026 (smaller than the ~50 bp gap typically reported on US data because the Polish Φ matrix is less persistent).</p>
+      <div id="tp10Headline" class="plot-frame"></div>
     </div>
 
   </div>
@@ -103,7 +111,7 @@
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li></ul></div>
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a></li></ul></div>
   </div>
@@ -117,7 +125,7 @@ const PALETTE = { ink:'#1a1a1a', soft:'#3a3a3a', muted:'#6a6a6a', rule:'#d8d8d8'
 const FONT_BODY = { family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif", size: 11, color: PALETTE.soft };
 const FONT_MONO = { family: "'JetBrains Mono','Fira Code',Menlo,Consolas,monospace", size: 10, color: PALETTE.muted };
 const PLOT_BASE = { paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff', font:FONT_BODY,
-                    margin:{l:50,r:18,t:12,b:38}, hovermode:'x unified',
+                    margin:{l:55,r:18,t:12,b:42}, hovermode:'x unified',
                     xaxis:{gridcolor:'#eeeeee',zerolinecolor:'#dddddd',tickfont:FONT_MONO,linecolor:'#cccccc'},
                     yaxis:{gridcolor:'#eeeeee',zerolinecolor:'#dddddd',tickfont:FONT_MONO,linecolor:'#cccccc'} };
 const CFG = { displayModeBar:false, responsive:true };
@@ -182,17 +190,19 @@ function drawAll(){
   drawDecomp('decompBRW', 'rf10_brw_pct', 'tp10_brw_bp');
   drawTpHorizon();
   drawXcountrySpread();
+  drawCorrHeatmap();
   drawTp10Headline();
 }
 
 function drawDecomp(divId, rfKey, tpKey){
   const ts = DATA.ts;
   const [dates, y10, rf, tp_bp] = sliceWindow(ts.dates, ts.y10, ts[rfKey], ts[tpKey]);
-  const tp_pct = tp_bp.map(v => v/100);
+  const tp_pct = tp_bp.map(v => v==null ? null : v/100);
+  const sumLine = rf.map((v,i)=> (v==null||tp_pct[i]==null) ? null : v + tp_pct[i]);
   const traces = [
     { x:dates, y:rf, mode:'lines', name:'rf path (%)', line:{color:PALETTE.accent,width:1.7}, hovertemplate:'rf %{y:.2f}%<extra></extra>' },
     { x:dates, y:y10, mode:'lines', name:'10y nominal (%)', line:{color:PALETTE.ink,width:1.5}, hovertemplate:'y10 %{y:.2f}%<extra></extra>' },
-    { x:dates, y:rf.map((v,i)=>v + tp_pct[i]), mode:'lines', name:'rf + TP (%)', line:{color:PALETTE.salmon,width:0}, fill:'tonexty', fillcolor:'rgba(194,82,45,0.18)', hoverinfo:'skip', showlegend:false }
+    { x:dates, y:sumLine, mode:'lines', name:'rf + TP', line:{color:PALETTE.salmon,width:0}, fill:'tonexty', fillcolor:'rgba(194,82,45,0.18)', hoverinfo:'skip', showlegend:false }
   ];
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:'percent', font:FONT_MONO };
@@ -227,6 +237,34 @@ function drawXcountrySpread(){
   lay.yaxis.title = { text:'spread (%)', font:FONT_MONO };
   lay.legend = { orientation:'h', y:1.10, x:0, font:FONT_MONO };
   Plotly.react('xcountrySpread', traces, lay, CFG);
+}
+
+function drawCorrHeatmap(){
+  const c = DATA.corr;
+  if (!c){ Plotly.react('corrHeatmap', [], PLOT_BASE, CFG); return; }
+  const traces = [{
+    type: 'heatmap',
+    z: c.matrix, x: c.labels, y: c.labels,
+    colorscale: [[0, '#c2522d'], [0.5, '#ffffff'], [1, '#1f4e79']],
+    zmin: -1, zmax: 1,
+    hovertemplate: '%{y} ↔ %{x}<br>ρ = %{z:.3f}<extra></extra>',
+    colorbar: { thickness: 12, len: 0.85, tickfont: FONT_MONO },
+  }];
+  // Add text annotations
+  const annotations = [];
+  c.labels.forEach((row, i) => {
+    c.labels.forEach((col, j) => {
+      const v = c.matrix[i][j];
+      annotations.push({ x: col, y: row, text: v.toFixed(2), showarrow: false,
+        font: { size: 10, color: Math.abs(v) > 0.6 ? '#ffffff' : '#1a1a1a', family: FONT_MONO.family } });
+    });
+  });
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.xaxis.tickfont = FONT_MONO; lay.yaxis.tickfont = FONT_MONO;
+  lay.yaxis.autorange = 'reversed';
+  lay.annotations = annotations;
+  lay.margin = { l: 80, r: 18, t: 12, b: 80 };
+  Plotly.react('corrHeatmap', traces, lay, CFG);
 }
 
 function drawTp10Headline(){
