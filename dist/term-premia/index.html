@@ -4,22 +4,31 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Term premia — yieldcartography</title>
-<meta name="description" content="Adrian-Crump-Moench and Bauer-Rudebusch-Wu term-premium decompositions for the Polish sovereign curve, 2005-2026, with cross-country comparison and full correlation heatmap.">
+<meta name="description" content="Adrian-Crump-Moench and Bauer-Rudebusch-Wu term-premium decompositions for the Polish sovereign curve, with cross-country PL/US/EA comparison and correlation heatmaps.">
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
 <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
 <style>
   .plot-frame { width: 100%; height: 360px; }
-  .plot-frame.tall { height: 420px; }
+  .plot-frame.tall { height: 460px; }
+  .plot-frame.huge { height: 540px; }
   .plot-frame.square { height: 420px; }
   .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 10px 0; }
   .pill { font-family: var(--mono); font-size: 10.5px; padding: 4px 9px; border: 1px solid var(--rule); border-radius: 12px; background: var(--bg); color: var(--ink-soft); cursor: pointer; user-select: none; letter-spacing: 0.4px; text-transform: uppercase; }
   .pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
   .pill:hover:not(.active) { border-color: var(--accent-soft); color: var(--accent); }
-  .legend-inline { display: flex; gap: 16px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; color: var(--muted); margin: 4px 0 0 0; }
   .small-note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.3px; margin: 6px 0 0 0; }
   .control-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
   .control-row .label-mono { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .stats-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+  .stats-table th, .stats-table td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); }
+  .stats-table th { color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; background: #f5f5f5; }
+  .stats-table th.lbl, .stats-table td.lbl { text-align: left; }
+  .stats-table tbody tr { cursor: pointer; }
+  .stats-table tbody tr:hover { background: #f7f7f7; }
+  .stats-table tbody tr.selected { background: var(--accent-tint); }
+  .stats-table .pct-bar { display: inline-block; width: 60px; height: 5px; background: #eee; border-radius: 3px; vertical-align: middle; margin-left: 6px; position: relative; }
+  .stats-table .pct-bar .fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--accent); border-radius: 3px; }
 </style>
 </head>
 <body>
@@ -39,14 +48,14 @@
 <main>
 
   <h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Polish sovereign term-premium decomposition</h1>
-  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">Adrian-Crump-Moench (ACM) affine term-structure model and the Bauer-Rudebusch-Wu small-sample bias correction (BRW), estimated weekly on the LW-NSS zero-coupon panel. Includes 10y nominal-yield decomposition, cross-country term-spread comparison, and a full ACM/BRW correlation heatmap.</p>
+  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">Adrian-Crump-Moench (ACM) affine term-structure model and the Bauer-Rudebusch-Wu small-sample bias correction (BRW), estimated weekly on the LW-NSS zero-coupon panel. Cross-country comparison runs the same ACM specification on the GSW US Treasury panel and the ECB euro-area AAA panel.</p>
 
   <div class="stats">
     <div class="stat"><div class="label">Sample period</div><div class="value" id="stat-period">—</div><div class="delta">21 years, weekly</div></div>
-    <div class="stat"><div class="label">Latest 10y TP (ACM)</div><div class="value" id="stat-tp10-acm">—</div><div class="delta" id="stat-tp10-acm-d">basis points</div></div>
-    <div class="stat"><div class="label">Latest 10y TP (BRW)</div><div class="value" id="stat-tp10-brw">—</div><div class="delta" id="stat-tp10-brw-d">basis points, bias-corrected</div></div>
-    <div class="stat"><div class="label">Latest 10y nominal</div><div class="value" id="stat-y10">—</div><div class="delta">NSS-fitted</div></div>
-    <div class="stat"><div class="label">Latest 10y rf path</div><div class="value" id="stat-rf10">—</div><div class="delta">expected short rate, ACM</div></div>
+    <div class="stat"><div class="label">Latest 10y TP (BRW PL)</div><div class="value" id="stat-tp10-brw">—</div><div class="delta" id="stat-tp10-brw-d">basis points</div></div>
+    <div class="stat"><div class="label">Latest 10y TP (US ACM)</div><div class="value" id="stat-tp10-us">—</div><div class="delta">cross-country benchmark</div></div>
+    <div class="stat"><div class="label">Latest 10y TP (EA ACM)</div><div class="value" id="stat-tp10-ea">—</div><div class="delta">cross-country benchmark</div></div>
+    <div class="stat"><div class="label">Latest 10y nominal PL</div><div class="value" id="stat-y10">—</div><div class="delta">NSS-fitted</div></div>
   </div>
 
   <div class="control-row">
@@ -59,53 +68,40 @@
     </div>
   </div>
 
-  <div class="grid-2">
-
-    <div class="panel">
-      <h3>10y nominal yield decomposition (ACM)</h3>
-      <p class="note">Decomposition of the fitted 10y zero-coupon yield into the expected average short-rate path (rf, dark blue) and the residual term premium (salmon shading). Adrian-Crump-Moench affine model on five Nelson-Siegel principal components.</p>
-      <div id="decompACM" class="plot-frame tall"></div>
+  <div class="panel" style="margin-bottom:18px">
+    <h3>PL term-premium statistics by horizon — click a row to drive the chart below</h3>
+    <p class="note">Cross-sectional summary statistics of the PL ACM and BRW term premia at standard horizons (1y, 2y, 3y, 5y, 7y, 10y) over the selected window. The "% rank" column shows where the latest observation sits in the windowed distribution: 0% = at the historical minimum, 100% = at the historical maximum, 50% = at the median. Click any row to load that horizon into the time-series chart below.</p>
+    <div style="overflow-x:auto;">
+      <table class="stats-table" id="statsTable"></table>
     </div>
-
-    <div class="panel">
-      <h3>10y nominal yield decomposition (BRW)</h3>
-      <p class="note">Same decomposition with the Bauer-Rudebusch-Wu indirect-inference bias correction. The BRW correction tilts mass from the rf path to the term-premium component, which matters most when the autoregressive matrix is close to a unit root.</p>
-      <div id="decompBRW" class="plot-frame tall"></div>
-    </div>
-
-    <div class="panel">
-      <h3>PL term premia by horizon — ACM versus BRW</h3>
-      <p class="note">All four horizons (1y, 2y, 5y, 10y) for both models. Use the pills below to switch which horizons are visible.</p>
-      <div class="pill-row" id="horizonPills">
-        <span class="pill active" data-horizon="10y">10y</span>
-        <span class="pill" data-horizon="5y">5y</span>
-        <span class="pill" data-horizon="2y">2y</span>
-        <span class="pill" data-horizon="1y">1y</span>
-      </div>
-      <div id="tpHorizon" class="plot-frame"></div>
-    </div>
-
-    <div class="panel">
-      <h3>Cross-country 10y-2y term spread</h3>
-      <p class="note">Polish 10y-2y zero-coupon spread compared with US (GSW Treasury) and euro-area AAA. Monthly, from the same NSS-fitted curves on the curves page.</p>
-      <div id="xcountrySpread" class="plot-frame"></div>
-    </div>
-
-    <div class="panel">
-      <h3>Correlation heatmap — ACM &amp; BRW across horizons</h3>
-      <p class="note">Pearson correlations across all eight term-premium series. Diagonal is unity. The strong off-diagonal blocks tell you that within-model correlations are extremely high (expected: same factor structure), while ACM-vs-BRW pairs at the same horizon sit around 0.95+ in the Polish sample.</p>
-      <div id="corrHeatmap" class="plot-frame square"></div>
-    </div>
-
-    <div class="panel">
-      <h3>10y term premium — PL benchmark</h3>
-      <p class="note">Headline 10y term-premium series with both ACM and BRW. The BRW correction averages roughly 2 bp above ACM on the Polish sample over 2005-2026 (smaller than the ~50 bp gap typically reported on US data because the Polish Φ matrix is less persistent).</p>
-      <div id="tp10Headline" class="plot-frame"></div>
-    </div>
-
   </div>
 
-  <p class="small-note">Methodology: ACM five-factor affine term-structure model, OLS regression of monthly excess returns on lagged Nelson-Siegel principal components, no cross-sectional restrictions imposed. BRW correction follows Bauer, Rudebusch and Wu (2012, 2014), iterated bootstrap with common-random-numbers and Kilian shrinkage on the risky-recursion VAR. Estimation runs on the weekly NSS panel from the curves page. See about page for full references.</p>
+  <div class="panel" style="margin-bottom:18px">
+    <h3 id="byHorizonTitle">PL term premia by horizon — ACM versus BRW</h3>
+    <p class="note">Time-series of PL ACM and BRW term premia at the horizon selected above. Both lines are weekly-Friday closes from the LW-NSS curve. The window pills at the top of the page restrict the visible range.</p>
+    <div id="tpHorizon" class="plot-frame huge"></div>
+  </div>
+
+  <div class="panel" style="margin-bottom:18px">
+    <h3>Cross-country term-premia comparison</h3>
+    <p class="note">Polish (BRW) vs US (ACM) vs euro-area AAA (ACM) term premia at the selected horizon. US and EA term premia are estimated on the GSW Treasury and ECB AAA panels respectively, using the same Adrian-Crump-Moench five-factor specification. Monthly resampling (last observation of month).</p>
+    <div id="xcountryTp" class="plot-frame tall"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <h3>Correlation heatmap — PL BRW × US ACM</h3>
+      <p class="note">Pearson correlations between PL BRW term premia and US ACM term premia at all horizon pairs. Off-diagonal cells tell you how Polish term premia at one tenor co-move with US term premia at another tenor.</p>
+      <div id="corrPlUs" class="plot-frame square"></div>
+    </div>
+    <div class="panel">
+      <h3>Correlation heatmap — PL BRW × EA ACM</h3>
+      <p class="note">Same construction with euro-area AAA term premia. Higher PL-EA correlations than PL-US would be the prior, given closer business cycle and monetary policy linkages.</p>
+      <div id="corrPlEa" class="plot-frame square"></div>
+    </div>
+  </div>
+
+  <p class="small-note">Methodology: ACM five-factor affine term-structure model, OLS regression of monthly excess returns on lagged Nelson-Siegel principal components, no cross-sectional restrictions imposed. BRW correction follows Bauer, Rudebusch and Wu (2012, 2014), iterated bootstrap with common-random-numbers and Kilian shrinkage on the risky-recursion VAR. US and EA panels are interpolated to a 120-month TTM grid via cubic spline before fitting the same specification. See about page for full references.</p>
 
 </main>
 
@@ -130,19 +126,21 @@ const PLOT_BASE = { paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff', font:FONT_B
                     yaxis:{gridcolor:'#eeeeee',zerolinecolor:'#dddddd',tickfont:FONT_MONO,linecolor:'#cccccc'} };
 const CFG = { displayModeBar:false, responsive:true };
 
+const HORIZONS = ['1y','2y','3y','5y','7y','10y'];
+
 let DATA = null;
 let curWin = 'all';
 let curHorizon = '10y';
 
 async function load(){
-  const r = await fetch('/data/yields.json?v=5', { cache: 'force-cache' });
+  const r = await fetch('/data/yields.json?v=6', { cache: 'force-cache' });
   DATA = await r.json();
-  if (!DATA.meta || !DATA.meta.schema_version){
-    console.warn('yields.json appears to be an older schema — some panels may render empty');
+  if (!DATA.meta || DATA.meta.schema_version !== 'v6'){
+    console.warn('yields.json schema is older than v6 — TP comparison panels may be empty until you redeploy with the new build.py');
   }
   showBuildBadge();
   initStats();
-  bindPills();
+  bindWinPills();
   drawAll();
 }
 function showBuildBadge(){
@@ -154,16 +152,19 @@ load();
 
 function initStats(){
   document.getElementById('stat-period').textContent = DATA.meta.first_date.slice(0,7) + ' to ' + DATA.meta.last_date.slice(0,7);
+  const xtp = DATA.xcountry_tp_m;
+  if (xtp){
+    const i = xtp.dates.length-1;
+    document.getElementById('stat-tp10-brw').textContent = (xtp.pl_tp_10y_bp[i]||0).toFixed(0) + ' bp';
+    document.getElementById('stat-tp10-brw-d').textContent = 'as of ' + xtp.dates[i];
+    document.getElementById('stat-tp10-us').textContent  = (xtp.us_tp_10y_bp[i]||0).toFixed(0) + ' bp';
+    document.getElementById('stat-tp10-ea').textContent  = (xtp.ea_tp_10y_bp[i]||0).toFixed(0) + ' bp';
+  }
   const ts = DATA.ts; const i = ts.dates.length-1;
-  document.getElementById('stat-tp10-acm').textContent = (ts.tp10_acm_bp[i]).toFixed(0) + ' bp';
-  document.getElementById('stat-tp10-acm-d').textContent = 'as of ' + ts.dates[i];
-  document.getElementById('stat-tp10-brw').textContent = (ts.tp10_brw_bp[i]).toFixed(0) + ' bp';
-  document.getElementById('stat-tp10-brw-d').textContent = 'as of ' + ts.dates[i];
   document.getElementById('stat-y10').textContent = (ts.y10[i]).toFixed(2) + '%';
-  document.getElementById('stat-rf10').textContent = (ts.rf10_acm_pct[i]).toFixed(2) + '%';
 }
 
-function bindPills(){
+function bindWinPills(){
   document.querySelectorAll('#winPills .pill').forEach(p=>{
     p.addEventListener('click', ()=>{
       document.querySelectorAll('#winPills .pill').forEach(x=>x.classList.remove('active'));
@@ -172,97 +173,131 @@ function bindPills(){
       drawAll();
     });
   });
-  document.querySelectorAll('#horizonPills .pill').forEach(p=>{
-    p.addEventListener('click', ()=>{
-      document.querySelectorAll('#horizonPills .pill').forEach(x=>x.classList.remove('active'));
-      p.classList.add('active');
-      curHorizon = p.dataset.horizon;
-      drawTpHorizon();
-    });
-  });
 }
 
 function sliceWindow(dates, ...arrs){
   if (curWin === 'all') return [dates, ...arrs];
-  const last = new Date(dates[dates.length-1]);
+  const last = new Date(dates[dates.length-1].length === 7 ? dates[dates.length-1] + '-01' : dates[dates.length-1]);
   const cutoff = new Date(last);
   if (curWin === '5y') cutoff.setFullYear(cutoff.getFullYear()-5);
   else if (curWin === '2y') cutoff.setFullYear(cutoff.getFullYear()-2);
   else if (curWin === '1y') cutoff.setFullYear(cutoff.getFullYear()-1);
   let start = 0;
-  for (let i = 0; i < dates.length; i++){ if (new Date(dates[i]) >= cutoff){ start = i; break; } }
+  for (let i = 0; i < dates.length; i++){
+    const d = new Date(dates[i].length === 7 ? dates[i] + '-01' : dates[i]);
+    if (d >= cutoff){ start = i; break; }
+  }
   return [dates.slice(start), ...arrs.map(a => a.slice(start))];
 }
 
 function drawAll(){
-  drawDecomp('decompACM', 'rf10_acm_pct', 'tp10_acm_bp');
-  drawDecomp('decompBRW', 'rf10_brw_pct', 'tp10_brw_bp');
+  drawStatsTable();
   drawTpHorizon();
-  drawXcountrySpread();
-  drawCorrHeatmap();
-  drawTp10Headline();
+  drawXcountryTp();
+  drawCorrHeatmap('corrPlUs', DATA.corr_pl_us, '#1f4e79', '#c2522d');
+  drawCorrHeatmap('corrPlEa', DATA.corr_pl_ea, '#1f4e79', '#2e7d32');
 }
 
-function drawDecomp(divId, rfKey, tpKey){
-  const ts = DATA.ts;
-  const [dates, y10, rf, tp_bp] = sliceWindow(ts.dates, ts.y10, ts[rfKey], ts[tpKey]);
-  const tp_pct = tp_bp.map(v => v==null ? null : v/100);
-  const sumLine = rf.map((v,i)=> (v==null||tp_pct[i]==null) ? null : v + tp_pct[i]);
-  const traces = [
-    { x:dates, y:rf, mode:'lines', name:'rf path (%)', line:{color:PALETTE.accent,width:1.7}, hovertemplate:'rf %{y:.2f}%<extra></extra>' },
-    { x:dates, y:y10, mode:'lines', name:'10y nominal (%)', line:{color:PALETTE.ink,width:1.5}, hovertemplate:'y10 %{y:.2f}%<extra></extra>' },
-    { x:dates, y:sumLine, mode:'lines', name:'rf + TP', line:{color:PALETTE.salmon,width:0}, fill:'tonexty', fillcolor:'rgba(194,82,45,0.18)', hoverinfo:'skip', showlegend:false }
-  ];
-  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
-  lay.yaxis.title = { text:'percent', font:FONT_MONO };
-  lay.legend = { orientation:'h', y:1.10, x:0, font:FONT_MONO };
-  Plotly.react(divId, traces, lay, CFG);
+function statsForArr(arr){
+  const x = arr.filter(v => v !== null && v !== undefined && !Number.isNaN(v));
+  if (!x.length) return null;
+  const n = x.length;
+  const min = Math.min(...x), max = Math.max(...x);
+  const mean = x.reduce((s,v)=>s+v,0) / n;
+  const sd = Math.sqrt(x.reduce((s,v)=>s+(v-mean)**2, 0) / Math.max(1, n-1));
+  const last = arr.findLast ? arr.findLast(v => v !== null && v !== undefined && !Number.isNaN(v)) : x[x.length-1];
+  // percentile rank of last in x
+  const lt = x.filter(v => v < last).length;
+  const eq = x.filter(v => v === last).length;
+  const pct = (lt + 0.5 * eq) / n * 100;
+  return { n, min, max, mean, sd, last, pct };
+}
+
+function drawStatsTable(){
+  const ts = DATA.ts; const [dates] = sliceWindow(ts.dates, []);
+  const startIdx = ts.dates.indexOf(dates[0]);
+  const rows = [];
+  HORIZONS.forEach(h => {
+    const acm = ts[`tp${h.replace('y','')}_acm_bp`].slice(startIdx);
+    const brw = ts[`tp${h.replace('y','')}_brw_bp`].slice(startIdx);
+    rows.push({ h, acm: statsForArr(acm), brw: statsForArr(brw) });
+  });
+  let html = '<thead><tr><th class="lbl">Horizon</th><th>n</th>'
+    + '<th>ACM min</th><th>ACM max</th><th>ACM mean</th><th>ACM std</th><th>ACM last</th><th>ACM % rank</th>'
+    + '<th>BRW min</th><th>BRW max</th><th>BRW mean</th><th>BRW std</th><th>BRW last</th><th>BRW % rank</th></tr></thead><tbody>';
+  rows.forEach(r => {
+    if (!r.acm || !r.brw){ return; }
+    const sel = (r.h === curHorizon) ? ' class="selected"' : '';
+    const pctBarA = `${r.acm.pct.toFixed(0)}%<span class="pct-bar"><span class="fill" style="width:${r.acm.pct.toFixed(0)}%"></span></span>`;
+    const pctBarB = `${r.brw.pct.toFixed(0)}%<span class="pct-bar"><span class="fill" style="width:${r.brw.pct.toFixed(0)}%"></span></span>`;
+    html += `<tr data-h="${r.h}"${sel}>`
+      + `<td class="lbl">${r.h}</td><td>${r.acm.n}</td>`
+      + `<td>${r.acm.min.toFixed(0)}</td><td>${r.acm.max.toFixed(0)}</td><td>${r.acm.mean.toFixed(0)}</td><td>${r.acm.sd.toFixed(0)}</td><td><b>${r.acm.last.toFixed(0)}</b></td><td>${pctBarA}</td>`
+      + `<td>${r.brw.min.toFixed(0)}</td><td>${r.brw.max.toFixed(0)}</td><td>${r.brw.mean.toFixed(0)}</td><td>${r.brw.sd.toFixed(0)}</td><td><b>${r.brw.last.toFixed(0)}</b></td><td>${pctBarB}</td>`
+      + `</tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('statsTable').innerHTML = html;
+  // Click handlers
+  document.querySelectorAll('#statsTable tbody tr').forEach(tr => {
+    tr.addEventListener('click', () => {
+      curHorizon = tr.dataset.h;
+      document.querySelectorAll('#statsTable tbody tr').forEach(x => x.classList.remove('selected'));
+      tr.classList.add('selected');
+      drawTpHorizon();
+      drawXcountryTp();
+    });
+  });
 }
 
 function drawTpHorizon(){
   const ts = DATA.ts;
   const acmKey = `tp${curHorizon.replace('y','')}_acm_bp`;
   const brwKey = `tp${curHorizon.replace('y','')}_brw_bp`;
+  if (!ts[acmKey] || !ts[brwKey]){ Plotly.react('tpHorizon', [], PLOT_BASE, CFG); return; }
   const [dates, acm, brw] = sliceWindow(ts.dates, ts[acmKey], ts[brwKey]);
   const traces = [
-    { x:dates, y:acm, name:`${curHorizon} ACM`, mode:'lines', line:{color:PALETTE.accent,width:1.7}, hovertemplate:'ACM %{y:.0f} bp<extra></extra>' },
-    { x:dates, y:brw, name:`${curHorizon} BRW`, mode:'lines', line:{color:PALETTE.salmon,width:1.7}, hovertemplate:'BRW %{y:.0f} bp<extra></extra>' }
+    { x:dates, y:acm, name:`PL ACM ${curHorizon}`, mode:'lines', line:{color:PALETTE.accent,width:1.8}, hovertemplate:'ACM %{y:.0f} bp<extra></extra>' },
+    { x:dates, y:brw, name:`PL BRW ${curHorizon}`, mode:'lines', line:{color:PALETTE.salmon,width:1.8}, hovertemplate:'BRW %{y:.0f} bp<extra></extra>' }
   ];
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:'term premium (bp)', font:FONT_MONO };
-  lay.legend = { orientation:'h', y:1.10, x:0, font:FONT_MONO };
+  lay.legend = { orientation:'h', y:1.06, x:0, font:FONT_MONO };
+  document.getElementById('byHorizonTitle').textContent =
+    `PL term premia at ${curHorizon} — ACM versus BRW`;
   Plotly.react('tpHorizon', traces, lay, CFG);
 }
 
-function drawXcountrySpread(){
-  const xc = DATA.xcountry_m;
-  const [dates, pl, us, ea] = sliceWindow(xc.dates, xc.pl_spread, xc.us_spread, xc.ea_spread);
+function drawXcountryTp(){
+  const xtp = DATA.xcountry_tp_m;
+  if (!xtp){ Plotly.react('xcountryTp', [], PLOT_BASE, CFG); return; }
+  const h = curHorizon;
+  const plKey = `pl_tp_${h}_bp`, usKey = `us_tp_${h}_bp`, eaKey = `ea_tp_${h}_bp`;
+  const [dates, pl, us, ea] = sliceWindow(xtp.dates, xtp[plKey], xtp[usKey], xtp[eaKey]);
   const traces = [
-    { x:dates, y:pl, name:'PL 10y-2y', mode:'lines', line:{color:PALETTE.accent,width:1.8}, hovertemplate:'PL %{y:.2f}%<extra></extra>' },
-    { x:dates, y:us, name:'US 10y-2y', mode:'lines', line:{color:PALETTE.salmon,width:1.5}, hovertemplate:'US %{y:.2f}%<extra></extra>' },
-    { x:dates, y:ea, name:'EA AAA 10y-2y', mode:'lines', line:{color:PALETTE.green,width:1.5}, hovertemplate:'EA %{y:.2f}%<extra></extra>' }
+    { x:dates, y:pl, name:`PL BRW ${h}`, mode:'lines', line:{color:PALETTE.accent,width:2.0}, hovertemplate:'PL %{y:.0f} bp<extra></extra>' },
+    { x:dates, y:us, name:`US ACM ${h}`, mode:'lines', line:{color:PALETTE.salmon,width:1.8}, hovertemplate:'US %{y:.0f} bp<extra></extra>' },
+    { x:dates, y:ea, name:`EA ACM ${h}`, mode:'lines', line:{color:PALETTE.green,width:1.8}, hovertemplate:'EA %{y:.0f} bp<extra></extra>' }
   ];
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
-  lay.yaxis.title = { text:'spread (%)', font:FONT_MONO };
-  lay.legend = { orientation:'h', y:1.10, x:0, font:FONT_MONO };
-  Plotly.react('xcountrySpread', traces, lay, CFG);
+  lay.yaxis.title = { text:`${h} term premium (bp)`, font:FONT_MONO };
+  lay.legend = { orientation:'h', y:1.06, x:0, font:FONT_MONO };
+  Plotly.react('xcountryTp', traces, lay, CFG);
 }
 
-function drawCorrHeatmap(){
-  const c = DATA.corr;
-  if (!c){ Plotly.react('corrHeatmap', [], PLOT_BASE, CFG); return; }
+function drawCorrHeatmap(divId, c, low, high){
+  if (!c){ Plotly.react(divId, [], PLOT_BASE, CFG); return; }
   const traces = [{
     type: 'heatmap',
-    z: c.matrix, x: c.labels, y: c.labels,
-    colorscale: [[0, '#c2522d'], [0.5, '#ffffff'], [1, '#1f4e79']],
+    z: c.matrix, x: c.x_labels, y: c.pl_labels,
+    colorscale: [[0, '#c2522d'], [0.5, '#ffffff'], [1, low]],
     zmin: -1, zmax: 1,
     hovertemplate: '%{y} ↔ %{x}<br>ρ = %{z:.3f}<extra></extra>',
     colorbar: { thickness: 12, len: 0.85, tickfont: FONT_MONO },
   }];
-  // Add text annotations
   const annotations = [];
-  c.labels.forEach((row, i) => {
-    c.labels.forEach((col, j) => {
+  c.pl_labels.forEach((row, i) => {
+    c.x_labels.forEach((col, j) => {
       const v = c.matrix[i][j];
       annotations.push({ x: col, y: row, text: v.toFixed(2), showarrow: false,
         font: { size: 10, color: Math.abs(v) > 0.6 ? '#ffffff' : '#1a1a1a', family: FONT_MONO.family } });
@@ -272,21 +307,8 @@ function drawCorrHeatmap(){
   lay.xaxis.tickfont = FONT_MONO; lay.yaxis.tickfont = FONT_MONO;
   lay.yaxis.autorange = 'reversed';
   lay.annotations = annotations;
-  lay.margin = { l: 80, r: 18, t: 12, b: 80 };
-  Plotly.react('corrHeatmap', traces, lay, CFG);
-}
-
-function drawTp10Headline(){
-  const ts = DATA.ts;
-  const [dates, acm, brw] = sliceWindow(ts.dates, ts.tp10_acm_bp, ts.tp10_brw_bp);
-  const traces = [
-    { x:dates, y:acm, name:'10y ACM', mode:'lines', line:{color:PALETTE.accent,width:1.8}, hovertemplate:'ACM %{y:.0f} bp<extra></extra>' },
-    { x:dates, y:brw, name:'10y BRW', mode:'lines', line:{color:PALETTE.salmon,width:1.8}, hovertemplate:'BRW %{y:.0f} bp<extra></extra>' }
-  ];
-  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
-  lay.yaxis.title = { text:'term premium (bp)', font:FONT_MONO };
-  lay.legend = { orientation:'h', y:1.08, x:0, font:FONT_MONO };
-  Plotly.react('tp10Headline', traces, lay, CFG);
+  lay.margin = { l: 100, r: 18, t: 12, b: 80 };
+  Plotly.react(divId, traces, lay, CFG);
 }
 </script>
 

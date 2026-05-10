@@ -108,7 +108,9 @@ def build():
         'dates': nss_w['tradedate'].dt.strftime('%Y-%m-%d').tolist(),
         'y2': safe_list(nss_w['y2']), 'y5': safe_list(nss_w['y5']), 'y10': safe_list(nss_w['y10']),
         'tp10_acm_bp': safe_list(acm_w['tp_10y_bp']), 'tp10_brw_bp': safe_list(brw_w['tp_bc_10y_bp']),
+        'tp7_acm_bp':  safe_list(acm_w['tp_7y_bp']),  'tp7_brw_bp':  safe_list(brw_w['tp_bc_7y_bp']),
         'tp5_acm_bp':  safe_list(acm_w['tp_5y_bp']),  'tp5_brw_bp':  safe_list(brw_w['tp_bc_5y_bp']),
+        'tp3_acm_bp':  safe_list(acm_w['tp_3y_bp']),  'tp3_brw_bp':  safe_list(brw_w['tp_bc_3y_bp']),
         'tp2_acm_bp':  safe_list(acm_w['tp_2y_bp']),  'tp2_brw_bp':  safe_list(brw_w['tp_bc_2y_bp']),
         'tp1_acm_bp':  safe_list(acm_w['tp_1y_bp']),  'tp1_brw_bp':  safe_list(brw_w['tp_bc_1y_bp']),
         'rf10_acm_pct': safe_list(acm_w['y_rf_10y_pct']), 'rf10_brw_pct': safe_list(brw_w['y_rf_bc_10y_pct']),
@@ -121,6 +123,12 @@ def build():
 
     # ---- monthly cross-country panel (PL / US / EA, full 12 tenors + spreads) ----
     xc = _build_xcountry(eh_pl, eh_us, eh_ea)
+
+    # ---- cross-country term premia (PL BRW + US ACM + EA ACM, monthly) ----
+    xtp = _build_xcountry_tp(YIELDS_DIR / 'gsw_us.csv', YIELDS_DIR / 'ecb_ea.csv', brw)
+    # Correlation matrices (PL BRW × US ACM, PL BRW × EA ACM)
+    corr_pl_us = _tp_xcountry_corr(xtp, 'us')
+    corr_pl_ea = _tp_xcountry_corr(xtp, 'ea')
 
     # ---- PCA loadings on PL zero-rate panel: level / slope / curvature ----
     pca = _build_pca(eh_pl)
@@ -208,18 +216,21 @@ def build():
             'n_snapshots_monthly': int(len(month_ends)),
             'n_isins_in_history':  int(len(all_isins)),
             'build_ts':            dt.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-            'schema_version':      'v5',
+            'schema_version':      'v6',
         },
-        'tenor_labels': TENOR_LABELS,
-        'tenor_years':  SNAP_TENORS_FULL,
-        'ts':           ts,
-        'xcountry_m':   xc,
-        'pca':          pca,
-        'corr':         corr,
-        'liquidity':    liq,
-        'eh':           eh,
-        'snaps':        snaps,
-        'bond_hist':    bond_hist,
+        'tenor_labels':  TENOR_LABELS,
+        'tenor_years':   SNAP_TENORS_FULL,
+        'ts':            ts,
+        'xcountry_m':    xc,
+        'xcountry_tp_m': xtp,
+        'corr':          corr,
+        'corr_pl_us':    corr_pl_us,
+        'corr_pl_ea':    corr_pl_ea,
+        'pca':           pca,
+        'liquidity':     liq,
+        'eh':            eh,
+        'snaps':         snaps,
+        'bond_hist':     bond_hist,
     }
 
 
@@ -477,6 +488,108 @@ def _bond_hist(bond, isins):
             'ttm':   [round(float(v), 4) for v in sub_w['ttm']],
         }
     return out
+
+
+def _fit_xcountry_acm(zero_csv):
+    """Fit ACM 5-factor model on a daily/monthly zero panel, return DataFrame with
+    monthly term-premia at 1y, 2y, 3y, 5y, 7y, 10y. Reuses acm_tp.estimate_acm
+    and acm_tp.project_daily so the methodology matches the PL fit."""
+    import sys as _sys
+    if str(YIELDS_DIR) not in _sys.path:
+        _sys.path.insert(0, str(YIELDS_DIR))
+    import acm_tp
+    from scipy.interpolate import CubicSpline
+
+    df = pd.read_csv(zero_csv, parse_dates=['date']).sort_values('date').reset_index(drop=True)
+    cols = ['y_3m','y_6m','y_1y','y_2y','y_3y','y_4y','y_5y','y_6y','y_7y','y_8y','y_9y','y_10y']
+    tenors = np.array([0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    Y = df[cols].values  # cc-yields as decimal fractions
+    TTM = np.linspace(1/12, 10, 120)
+
+    Y_full = np.full((len(df), len(TTM)), np.nan)
+    for i in range(len(df)):
+        row = Y[i]
+        if np.isnan(row).any():
+            continue
+        cs = CubicSpline(tenors, row)
+        Y_full[i] = cs(TTM)
+    valid = ~np.isnan(Y_full).any(axis=1)
+    df = df.loc[valid].reset_index(drop=True)
+    Y_full = Y_full[valid]
+
+    daily_df = pd.DataFrame(Y_full, index=df['date'])
+    monthly_df = daily_df.resample('MS').first().dropna(how='all')
+    Y_monthly = monthly_df.values
+
+    model = acm_tp.estimate_acm(Y_monthly, TTM, K=5, min_pca_tenor_months=3,
+                                dates_monthly=monthly_df.index)
+    daily_out = acm_tp.project_daily(Y_full, model)
+    tp = daily_out['term_premia_cc']  # cc, decimal
+
+    horizons = {'1y': 12, '2y': 24, '3y': 36, '5y': 60, '7y': 84, '10y': 120}
+    out = pd.DataFrame({'date': df['date']})
+    for k, m in horizons.items():
+        out[f'tp_{k}_bp'] = tp[:, m - 1] * 1e4
+    out['m'] = out['date'].dt.to_period('M')
+    monthly = out.groupby('m').last().reset_index()
+    monthly['date'] = monthly['m'].astype(str)
+    return monthly[['date'] + [c for c in monthly.columns if c.startswith('tp_')]].copy()
+
+
+def _build_xcountry_tp(us_csv, ea_csv, brw):
+    """Return monthly cross-country term-premium panel with PL BRW + US ACM + EA ACM."""
+    out = {'dates': []}
+    horizons = ['1y', '2y', '3y', '5y', '7y', '10y']
+    for tag in ('pl', 'us', 'ea'):
+        for h in horizons:
+            out[f'{tag}_tp_{h}_bp'] = []
+
+    # PL BRW monthly resample (last obs of month from weekly BRW history)
+    pl = brw.copy()
+    pl['m'] = pl['tradedate'].dt.to_period('M')
+    pl_m = pl.sort_values('tradedate').groupby('m').last().reset_index()
+    pl_m['date'] = pl_m['m'].astype(str)
+
+    # US / EA ACM fits
+    us_m = _fit_xcountry_acm(us_csv) if us_csv.exists() else None
+    ea_m = _fit_xcountry_acm(ea_csv) if ea_csv.exists() else None
+    if us_m is not None: print(f'  US ACM fit: {len(us_m)} months')
+    if ea_m is not None: print(f'  EA ACM fit: {len(ea_m)} months')
+
+    months = sorted(set(pl_m['date'])
+                    & set(us_m['date'] if us_m is not None else [])
+                    & set(ea_m['date'] if ea_m is not None else []))
+    for d in months:
+        out['dates'].append(d)
+        plr = pl_m[pl_m['date'] == d].iloc[0]
+        usr = us_m[us_m['date'] == d].iloc[0]  if us_m is not None else None
+        ear = ea_m[ea_m['date'] == d].iloc[0]  if ea_m is not None else None
+        for h in horizons:
+            out[f'pl_tp_{h}_bp'].append(round(float(plr[f'tp_bc_{h}_bp']), 1) if pd.notna(plr[f'tp_bc_{h}_bp']) else None)
+            out[f'us_tp_{h}_bp'].append(round(float(usr[f'tp_{h}_bp']), 1) if (usr is not None and pd.notna(usr[f'tp_{h}_bp'])) else None)
+            out[f'ea_tp_{h}_bp'].append(round(float(ear[f'tp_{h}_bp']), 1) if (ear is not None and pd.notna(ear[f'tp_{h}_bp'])) else None)
+    return out
+
+
+def _tp_xcountry_corr(xtp, other='us'):
+    """6×6 correlation matrix between PL BRW TPs and {US|EA} ACM TPs at 1/2/3/5/7/10y."""
+    horizons = ['1y', '2y', '3y', '5y', '7y', '10y']
+    if not xtp or not xtp.get('dates'):
+        return None
+    df_pl = pd.DataFrame({h: xtp[f'pl_tp_{h}_bp'] for h in horizons})
+    df_x  = pd.DataFrame({h: xtp[f'{other}_tp_{h}_bp'] for h in horizons})
+    df = pd.concat([df_pl.add_suffix('_pl'), df_x.add_suffix(f'_{other}')], axis=1).dropna()
+    if df.empty:
+        return None
+    M = np.zeros((len(horizons), len(horizons)))
+    for i, hi in enumerate(horizons):
+        for j, hj in enumerate(horizons):
+            M[i, j] = df[f'{hi}_pl'].corr(df[f'{hj}_{other}'])
+    return {
+        'pl_labels': [f'PL BRW {h}' for h in horizons],
+        'x_labels':  [f'{other.upper()} ACM {h}' for h in horizons],
+        'matrix':    np.round(M, 3).tolist(),
+    }
 
 
 # ------------------------------ entry ------------------------------ #
