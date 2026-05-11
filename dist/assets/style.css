@@ -43,7 +43,7 @@ a:hover { border-bottom-color: var(--accent); }
   z-index: 10;
 }
 .site-header .logo-link { display: flex; align-items: center; border: none; }
-.site-header .logo-link img { height: 264px; width: auto; }
+.site-header .logo-link img { height: 317px; width: auto; }
 .site-header nav { display: flex; gap: 24px; align-items: center; }
 .site-header nav a {
   font-family: var(--mono);
