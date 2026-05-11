@@ -1,67 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 170" width="540" height="170">
-  <defs>
-    <marker id="arr-final-r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c2522d"/>
-    </marker>
-    <marker id="arr-final-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f4e79"/>
-    </marker>
-  </defs>
-
-  <g transform="translate(20,20)">
-    <!-- Caption: aligned to baseline rule width, slimmer weight, tighter spacing -->
-    <text x="2" y="-3"
-          font-family="'JetBrains Mono', 'Fira Code', 'Source Code Pro', Menlo, Consolas, monospace"
-          font-size="5.4" fill="#6a6a6a" opacity="0.7" font-weight="400"
-          textLength="116" lengthAdjust="spacingAndGlyphs"
-          letter-spacing="0.4">
-      PAST · PRESENT · PROJECTED
-    </text>
-
-    <!-- Bottom ridge: pushed down for wider gap between lowest two ridges -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 80" width="460" height="80">
+  <!-- Compact ridge mark, fits in a 70x70 box on the left -->
+  <g transform="translate(8,8) scale(0.5)">
     <path d="M 10 118 C 25 113, 40 107, 60 99 S 90 84, 110 80"
-          fill="none" stroke="#1f4e79" stroke-width="0.95" opacity="0.18"/>
-    <!-- Second ridge -->
+          fill="none" stroke="#1f4e79" stroke-width="2.0" opacity="0.20"/>
     <path d="M 10 100 C 25 96, 40 88, 60 78 S 90 62, 110 58"
-          fill="none" stroke="#1f4e79" stroke-width="1.2" opacity="0.32"/>
-    <!-- Third ridge -->
+          fill="none" stroke="#1f4e79" stroke-width="2.6" opacity="0.35"/>
     <path d="M 10 90 C 25 84, 40 74, 60 62 S 90 44, 110 38"
-          fill="none" stroke="#1f4e79" stroke-width="1.6" opacity="0.50"/>
-    <!-- Present (red) curve -->
+          fill="none" stroke="#1f4e79" stroke-width="3.2" opacity="0.55"/>
     <path d="M 10 78 C 25 70, 40 58, 60 44 S 90 24, 110 18"
-          fill="none" stroke="#c2522d" stroke-width="2.6" stroke-linecap="round"/>
-
-    <!-- Bond dots with adjacent residual arrows (gradient vectors) -->
-    <circle cx="34" cy="80" r="2.4" fill="#1f4e79"/>
-    <line x1="34" y1="80" x2="34" y2="74" stroke="#1f4e79" stroke-width="0.7" opacity="0.7" marker-end="url(#arr-final-b)"/>
-
-    <circle cx="50" cy="50" r="2.0" fill="#1f4e79"/>
-    <line x1="50" y1="50" x2="50" y2="56" stroke="#1f4e79" stroke-width="0.7" opacity="0.7" marker-end="url(#arr-final-b)"/>
-
-    <circle cx="68" cy="38" r="2.4" fill="#c2522d"/>
-    <line x1="68" y1="38" x2="68" y2="32" stroke="#c2522d" stroke-width="0.7" opacity="0.7" marker-end="url(#arr-final-r)"/>
-
-    <circle cx="86" cy="32" r="2.0" fill="#1f4e79"/>
-    <line x1="86" y1="32" x2="86" y2="26" stroke="#1f4e79" stroke-width="0.7" opacity="0.7" marker-end="url(#arr-final-b)"/>
-
-    <circle cx="100" cy="22" r="2.6" fill="#c2522d" stroke="#fff" stroke-width="0.6"/>
-
-    <!-- Wider baseline rule, aligned with caption above -->
-    <line x1="2" y1="124" x2="118" y2="124" stroke="#1a1a1a" stroke-width="0.6" opacity="0.45"/>
+          fill="none" stroke="#c2522d" stroke-width="4.6" stroke-linecap="round"/>
+    <circle cx="100" cy="22" r="5" fill="#c2522d" stroke="#fff" stroke-width="1.2"/>
+    <circle cx="68"  cy="38" r="4" fill="#c2522d"/>
+    <circle cx="50"  cy="50" r="3.6" fill="#1f4e79"/>
   </g>
 
-  <!-- Monospace wordmark from V3g -->
-  <g transform="translate(150,52)">
+  <!-- Wordmark on the right, vertically centred -->
+  <g transform="translate(86,52)">
     <text font-family="'JetBrains Mono', 'Fira Code', 'Source Code Pro', Menlo, Consolas, monospace"
-          font-weight="700" font-size="26" fill="#1a1a1a" letter-spacing="-0.5">
-      <tspan x="0" y="28">yield</tspan><tspan x="68" y="28" fill="#c2522d">_</tspan><tspan x="86" y="28" fill="#1f4e79">cartography</tspan>
-    </text>
-    <text x="0" y="56" font-family="'JetBrains Mono', 'Fira Code', monospace" font-size="10" fill="#6a6a6a" letter-spacing="0.5">
-      // better vaguely right than precisely wrong
+          font-weight="700" font-size="34" letter-spacing="-0.6">
+      <tspan x="0" y="0" fill="#1a1a1a">yield</tspan><tspan x="89" y="0" fill="#c2522d">_</tspan><tspan x="111" y="0" fill="#1f4e79">cartography</tspan>
     </text>
   </g>
-
-  <!-- Underline rule -->
-  <line x1="150" y1="92" x2="430" y2="92" stroke="#1f4e79" stroke-width="0.7" opacity="0.4"/>
 </svg>
