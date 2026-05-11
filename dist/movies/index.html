@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Movies — yieldcartography</title>
+<meta name="description" content="4K daily time-lapses of the Polish sovereign zero-coupon yield curve, term premia and microstructure liquidity, 2005–2026.">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+<style>
+  .movie-block { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 22px 24px; margin: 18px 0; }
+  .movie-block h3 { font-size: 20px; margin: 0 0 6px 0; color: var(--ink); letter-spacing: -0.2px; }
+  .movie-block .sub { font-family: var(--mono); font-size: 11.5px; color: var(--muted); letter-spacing: 0.4px; margin: 0 0 14px 0; text-transform: uppercase; }
+  .movie-frame { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 4px; overflow: hidden; margin: 12px 0; }
+  .movie-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+  .movie-block p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; margin: 10px 0; }
+  .ep-list { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); columns: 2; column-gap: 32px; margin: 12px 0; line-height: 1.8; }
+  .ep-list li { break-inside: avoid; }
+  .yt-link { display: inline-block; padding: 6px 12px; border: 1px solid var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 11px; color: var(--muted); text-decoration: none; margin: 8px 8px 0 0; border-bottom: 1px solid var(--rule); }
+  .yt-link:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/">shorts</a>
+    <a href="/movies/" class="active">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+  <h1 style="margin:18px 0 6px 0;font-size:26px;letter-spacing:-0.3px">Movies</h1>
+  <p style="color:var(--muted);margin:0 0 18px 0;font-size:14px;max-width:760px;line-height:1.55">Daily 4K time-lapses of the Polish sovereign zero-coupon yield curve, ACM/BRW term premia, fit diagnostics and the NSS/SPF forecast family. Built from the same daily slides that drive the curves and term-premia dashboards. Watch on YouTube for full 4K quality.</p>
+
+  <div class="movie-block">
+    <h3>Polish Sovereign Yield Curve &amp; Term Premia — 21-year time-lapse</h3>
+    <p class="sub">2005-01-07 → 2026-04-21 · 5,290 daily frames at 30 fps · 4K</p>
+    <div class="movie-frame">
+      <iframe src="https://www.youtube.com/embed/qgtoqriiFsE" title="Polish Sovereign Yield Curve 21-year time-lapse" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <p><strong>What you see on each frame.</strong> Top-left: LW-NSS-fitted zero-coupon curve with the underlying coupon-bond panel as bubbles sized by outstanding amount and coloured by curve segment. Top-right: Adrian-Crump-Moench and Bauer-Rudebusch-Wu term premia at 1y/2y/5y/10y horizons. Bottom-left: daily fit diagnostics — MAE in bp, number of bonds in the daily fit, NSS β and τ parameters. Bottom-right: forecast family — NSS 1-year forwards, ACM and BRW expected-rate paths, and the NBP Survey of Professional Forecasters implied path.</p>
+    <p><strong>Episodes to watch for:</strong></p>
+    <ul class="ep-list">
+      <li>2008-09 — GFC</li>
+      <li>2013-05 — taper tantrum</li>
+      <li>2015-16 — ECB QE drift</li>
+      <li>2020-03 — COVID dislocation</li>
+      <li>2021-22 — inflation surge</li>
+      <li>2023-26 — normalisation</li>
+    </ul>
+    <a class="yt-link" href="https://youtu.be/qgtoqriiFsE" target="_blank" rel="noopener">YouTube ↗</a>
+    <a class="yt-link" href="https://www.youtube.com/channel/UC-29-qN5mndj7OEKTj8aVQQ" target="_blank" rel="noopener">Subscribe @yieldcartography ↗</a>
+  </div>
+
+  <div class="movie-block">
+    <h3>Polish Sovereign Curve, Term Premia &amp; Liquidity — Last 5 Years</h3>
+    <p class="sub">2021-04 → 2026-04 · ~1,300 daily frames at 30 fps · 4K</p>
+    <div class="movie-frame">
+      <iframe src="https://www.youtube.com/embed/bPG7pdK1gW4" title="Polish Sovereign Curve 5-year time-lapse" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <p>Same four-panel layout as the full 21-year version, zoomed onto the most recent five years. This is the most expensive window in twenty-one years of Polish term-structure data: the fastest steepening in the sample, a clean Greenwood-Vayanos-Vila supply-pressure episode at the long end, the survey-versus-model horizon split visible in real time, and a venue-cap-bound bid-ask spread that hides the actual liquidity stress in 2022. The 10-year term premium is the cleaner stress signal here.</p>
+    <a class="yt-link" href="https://youtu.be/bPG7pdK1gW4" target="_blank" rel="noopener">YouTube ↗</a>
+    <a class="yt-link" href="https://www.youtube.com/channel/UC-29-qN5mndj7OEKTj8aVQQ" target="_blank" rel="noopener">Subscribe @yieldcartography ↗</a>
+  </div>
+
+  <p style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:20px">Both movies render the same daily slides served behind the <a href="/curves/">curves</a> and <a href="/term-premia/">term-premia</a> dashboards. New videos are uploaded as the dataset extends. Subscribe to the YouTube channel for notifications.</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li><li><a href="https://www.youtube.com/channel/UC-29-qN5mndj7OEKTj8aVQQ">YouTube channel</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-11</div>
+</footer>
+
+</body>
+</html>
