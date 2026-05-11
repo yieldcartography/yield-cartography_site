@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /data/yields.json
+
+Sitemap: https://yieldcartography.com/sitemap.xml
