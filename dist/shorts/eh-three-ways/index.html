@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The PEH dies in three different ways — yieldcartography</title>
+<meta name="description" content="Two-page short on cross-market evidence against the pure expectations hypothesis in Polish, US and euro-area sovereign curves.">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+<style>
+  .short-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.6px; }
+  .short-title { font-size: 28px; line-height: 1.18; letter-spacing: -0.4px; margin: 4px 0 6px 0; }
+  .short-sub { font-size: 17px; color: var(--ink-soft); margin: 0 0 28px 0; line-height: 1.45; max-width: 760px; }
+  .key-fig { background: #fff; border: 1px solid var(--rule); padding: 16px 18px; margin: 24px 0; border-radius: 4px; }
+  .key-fig .cap { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.5; font-family: var(--mono); }
+  .key-tab { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; margin: 18px 0; }
+  .key-tab th, .key-tab td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); }
+  .key-tab th { color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; background: #f5f5f5; }
+  .key-tab th.lbl, .key-tab td.lbl { text-align: left; }
+  .practitioner-box { background: var(--accent-tint); border-left: 3px solid var(--accent); padding: 14px 18px; margin: 24px 0; border-radius: 0 4px 4px 0; }
+  .practitioner-box .pl-label { font-family: var(--mono); font-size: 10.5px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 5px; }
+  .practitioner-box .pl-text { font-size: 14px; color: var(--ink); line-height: 1.55; }
+  .source-line { font-family: var(--mono); font-size: 11.5px; color: var(--muted); padding: 10px 0; border-top: 1px solid var(--rule); margin-top: 22px; }
+  .source-line a { color: var(--accent); }
+  .body-text { font-size: 14.5px; line-height: 1.65; color: var(--ink); }
+  .body-text p { margin: 0 0 14px 0; }
+  .comments { margin-top: 36px; padding: 18px 22px; background: #f7f7f7; border: 1px dashed var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/" class="active">shorts</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+  <p class="short-meta">Short 02 · 2026-05-11 · EH tests</p>
+  <h1 class="short-title">The pure expectations hypothesis dies in three different ways in PL, US and EA</h1>
+  <p class="short-sub">Polish curves drift mildly anti-PEH. The US sits roughly consistent with PEH at long horizons. The euro-area AAA panel rejects strongly under asymptotic Newey-West but barely under the wild block bootstrap — the cleanest evidence in our sample for the Bauer-Hamilton (2018) concern about asymptotic inference in overlapping-return regressions.</p>
+
+  <div class="body-text">
+    <p>The pure expectations hypothesis (PEH) of the term structure says that long-maturity yields are the average of expected future short rates plus a constant term premium. The sharpest empirical implementation of this is the Fama-Bliss type-1 (FB1) regression: regress future yield changes on the appropriately scaled forward-spot spread. Under PEH, the population value of the slope coefficient β is exactly one and the intercept is exactly zero.</p>
+
+    <p>Forty years of US evidence has rejected PEH on the FB1 grid, with β estimates that drift toward and even past zero rather than toward one. The Polish question is whether a less-liquid sovereign curve looks more like the US or more like the euro area, the two natural benchmarks. The answer turns out to be different from both: PL drifts mildly <em>anti</em>-PEH (β below zero on most cells), US sits roughly consistent with PEH at long horizons, and EA strongly overshoots β = 1 — but most of the EA rejection vanishes under a wild block bootstrap.</p>
+
+    <p>Across 90 individual (h, n) pair tests on each market, the pattern is clean. The Polish curve is the closest of the three to violating PEH on the "wrong side" — βs that cluster around zero or slightly below — while the US drifts toward β = 1 only at horizons of 36 months and longer. The euro area is where the asymptotic-bootstrap gap really matters: 75 of 90 NW rejections collapse to 4 under the wild bootstrap, an 18-fold reduction.</p>
+  </div>
+
+  <div class="key-fig">
+    <h3 style="font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin:0 0 12px 0">Figure · FB1 β at h=12m, by maturity n, three markets</h3>
+    <svg viewBox="0 0 640 280" width="100%" style="background:#fff">
+      <line x1="60" y1="240" x2="600" y2="240" stroke="#999"/>
+      <line x1="60" y1="40"  x2="60"  y2="240" stroke="#999"/>
+      <!-- y-axis -->
+      <text x="55" y="244" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">−1</text>
+      <text x="55" y="194" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">0</text>
+      <text x="55" y="144" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">1</text>
+      <text x="55" y="94"  text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">2</text>
+      <text x="55" y="50"  text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">3</text>
+      <line x1="60" y1="194" x2="600" y2="194" stroke="#dddddd" stroke-dasharray="2,3"/>
+      <line x1="60" y1="144" x2="600" y2="144" stroke="#888888" stroke-dasharray="3,4"/>
+      <text x="595" y="138" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#888888">PEH: β=1</text>
+      <!-- bars: PL (blue), US (salmon), EA (green) at n = 24, 36, 48, 60 -->
+      <g>
+        <rect x="100" y="208" width="20" height="32" fill="#1f4e79"/>
+        <rect x="122" y="155" width="20" height="89" fill="#c2522d"/>
+        <rect x="144" y="92"  width="20" height="152" fill="#2e7d32"/>
+        <text x="132" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">n=2y</text>
+        <text x="110" y="201" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#1f4e79">−0.84</text>
+        <text x="132" y="148" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#c2522d">0.32</text>
+        <text x="154" y="86"  text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#2e7d32">1.03</text>
+      </g>
+      <g>
+        <rect x="220" y="201" width="20" height="39" fill="#1f4e79"/>
+        <rect x="242" y="139" width="20" height="105" fill="#c2522d"/>
+        <rect x="264" y="58"  width="20" height="186" fill="#2e7d32"/>
+        <text x="252" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">n=3y</text>
+        <text x="230" y="194" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#1f4e79">−0.97</text>
+        <text x="252" y="132" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#c2522d">0.59</text>
+        <text x="274" y="52"  text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#2e7d32">1.29</text>
+      </g>
+      <g>
+        <rect x="340" y="200" width="20" height="44" fill="#1f4e79"/>
+        <rect x="362" y="115" width="20" height="129" fill="#c2522d"/>
+        <rect x="384" y="40"  width="20" height="204" fill="#2e7d32"/>
+        <text x="372" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">n=4y</text>
+        <text x="350" y="193" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#1f4e79">−0.99</text>
+        <text x="372" y="108" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#c2522d">0.83</text>
+        <text x="394" y="34"  text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#2e7d32">1.53</text>
+      </g>
+      <g>
+        <rect x="460" y="194" width="20" height="50" fill="#1f4e79"/>
+        <rect x="482" y="91"  width="20" height="153" fill="#c2522d"/>
+        <text x="492" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">n=5y</text>
+        <text x="470" y="187" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#1f4e79">−0.99</text>
+        <text x="492" y="84"  text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#c2522d">1.06</text>
+        <rect x="504" y="22"  width="20" height="222" fill="#2e7d32"/>
+        <text x="514" y="16"  text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#2e7d32">1.75</text>
+      </g>
+      <!-- Legend -->
+      <rect x="100" y="14" width="14" height="10" fill="#1f4e79"/><text x="118" y="23" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">PL</text>
+      <rect x="160" y="14" width="14" height="10" fill="#c2522d"/><text x="178" y="23" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">US</text>
+      <rect x="220" y="14" width="14" height="10" fill="#2e7d32"/><text x="238" y="23" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">EA</text>
+    </svg>
+    <p class="cap">FB1 slope coefficient β at forecast horizon h = 12 months for bond maturities n ∈ {2y, 3y, 4y, 5y}, three markets, 2005:01 to 2026:04. Dashed grey line is the PEH null β = 1. Dotted line is β = 0. The Polish curve drifts anti-PEH; the US tracks toward but does not exceed PEH; the euro area uniformly overshoots PEH at long maturities — but most of that overshoot is bootstrap-fragile.</p>
+  </div>
+
+  <table class="key-tab">
+    <thead><tr><th class="lbl">Test family</th><th>PL NW</th><th>PL boot</th><th>US NW</th><th>US boot</th><th>EA NW</th><th>EA boot</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">FB1 (yield change)</td><td>0/30</td><td>0/30</td><td>2/30</td><td>0/30</td><td>30/30</td><td>2/30</td></tr>
+      <tr><td class="lbl">FB2 (holding-period)</td><td>0/30</td><td>0/30</td><td>2/30</td><td>0/30</td><td>20/30</td><td>1/30</td></tr>
+      <tr><td class="lbl">CP (Cochrane-Piazzesi)</td><td>0/4</td><td>0/4</td><td>1/4</td><td>0/4</td><td>4/4</td><td>0/4</td></tr>
+      <tr><td class="lbl">Thornton (contrarian)</td><td>0/26</td><td>0/26</td><td>1/26</td><td>0/26</td><td>21/26</td><td>1/26</td></tr>
+      <tr><td class="lbl"><strong>Total rejections of PEH</strong></td><td><strong>0/90</strong></td><td><strong>0/90</strong></td><td><strong>6/90</strong></td><td><strong>0/90</strong></td><td><strong>75/90</strong></td><td><strong>4/90</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="body-text">
+    <p>The cross-market table is the headline. The Polish curve never rejects PEH on either inference method — but that is not because PEH holds; it is because the Polish FB1 βs cluster on the "wrong side" of zero with very wide standard errors. The US rejects PEH on six of 90 cells under NW and on zero cells under bootstrap. The euro area rejects on 75 cells under NW and on four under bootstrap, an 18-fold collapse that is the cleanest example in our sample of the Bauer-Hamilton (2018) concern about asymptotic inference in overlapping-return regressions with persistent regressors.</p>
+
+    <p>The implication for the Polish curve is that one should not over-interpret the absence of rejection. Polish FB1 βs sit in a regime that is at least as far from PEH as the US ones, just on the other side of zero, and the failure to reject is mostly a function of sample size and persistence of the forward-spread regressor.</p>
+  </div>
+
+  <div class="practitioner-box">
+    <div class="pl-label">What this means for practitioners</div>
+    <div class="pl-text">Take "the long-rate equals the expected average short-rate path" with three different grains of salt depending on which curve you are pricing. On Polish bonds, the curve is uninformative about future rates. On US, it is mildly informative at long horizons. On euro-area AAA, asymptotic significance does not survive a careful bootstrap.</div>
+  </div>
+
+  <div class="source-line">
+    Underlying paper: Dec, M. (2026). <em>Closer to New York than to Frankfurt? The Expectations Hypothesis in Poland, the US and the Euro Area</em>. SSRN 6695444. <a href="https://doi.org/10.2139/ssrn.6695444">doi:10.2139/ssrn.6695444</a>. Submitted to Empirical Economics.
+  </div>
+
+  <div class="comments">
+    Comments are powered by Giscus. To activate: enable GitHub Discussions on the repo, then visit <a href="https://giscus.app">giscus.app</a> to generate the configuration block and paste the resulting <code>&lt;script&gt;</code> tag here.
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-11</div>
+</footer>
+
+</body>
+</html>

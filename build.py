@@ -216,7 +216,7 @@ def build():
             'n_snapshots_monthly': int(len(month_ends)),
             'n_isins_in_history':  int(len(all_isins)),
             'build_ts':            dt.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-            'schema_version':      'v6',
+            'schema_version':      'v7',
         },
         'tenor_labels':  TENOR_LABELS,
         'tenor_years':   SNAP_TENORS_FULL,
@@ -350,6 +350,12 @@ def _build_eh():
             'n_m':    [int(c) for c in df.columns[1:]],
             'matrix': df.iloc[:, 1:].values.tolist(),
         }
+
+    # Cross-market FB1 β heatmap (PL / US / EA) on common (h, n) grid — Figure 2 of EH paper
+    out['fb1_xm_heatmap'] = _eh_fb1_xm_heatmap()
+
+    # Macro-spanning Figure 5: median R² by horizon for {fb-only, macro-only, joint}
+    out['macro_r2_by_h'] = _eh_macro_r2_by_h()
 
     # CP — second stage (n_y, b_n, etc.)
     cp_main = _try_read('eh_cp_second_stage.csv')
@@ -488,6 +494,47 @@ def _bond_hist(bond, isins):
             'ttm':   [round(float(v), 4) for v in sub_w['ttm']],
         }
     return out
+
+
+def _eh_fb1_xm_heatmap():
+    """Cross-market FB1 β on a common (h, n) grid for PL, US, EA — Figure 2 of EH paper."""
+    out = {}
+    for tag, fn in (('pl', 'eh_fb1_pl_xm.csv'),
+                    ('us', 'eh_fb1_us_xm.csv'),
+                    ('ea', 'eh_fb1_ea_xm.csv')):
+        df = _try_read(fn)
+        if df is None:
+            return None
+        # Build (h_m × n_m) pivot of beta
+        pv = df.pivot_table(index='h_m', columns='n_m', values='beta', aggfunc='first')
+        out[tag] = {
+            'h_m':    [int(x) for x in pv.index.tolist()],
+            'n_m':    [int(x) for x in pv.columns.tolist()],
+            'matrix': [[None if pd.isna(v) else round(float(v), 3) for v in row]
+                       for row in pv.values.tolist()],
+        }
+    return out
+
+
+def _eh_macro_r2_by_h():
+    """Median R² across (h, n) pairs by horizon for the three nested macro-spanning specs."""
+    df = _try_read('eh_macro_spanning_results.csv')
+    if df is None:
+        return None
+    df = df[df['applicable'] == True].copy()
+    g = df.groupby('h_m').agg(
+        r2_fb=('r2_fb_only', 'median'),
+        r2_macro=('r2_macro_only', 'median'),
+        r2_joint=('r2_joint', 'median'),
+        n_pairs=('n_obs', 'count'),
+    ).reset_index()
+    return {
+        'h_m':       [int(x) for x in g['h_m']],
+        'r2_fb':     [round(float(v), 4) for v in g['r2_fb']],
+        'r2_macro':  [round(float(v), 4) for v in g['r2_macro']],
+        'r2_joint':  [round(float(v), 4) for v in g['r2_joint']],
+        'n_pairs':   [int(x) for x in g['n_pairs']],
+    }
 
 
 def _fit_xcountry_acm(zero_csv):

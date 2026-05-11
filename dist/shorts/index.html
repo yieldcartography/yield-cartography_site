@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shorts — yieldcartography</title>
+<meta name="description" content="Two-page summaries of the four working papers behind the yieldcartography dashboards. Catchy titles, key tables, comments enabled on every short.">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+<style>
+  .shorts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 18px; margin: 28px 0; }
+  .short-card { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 22px 24px; transition: border-color 0.2s, transform 0.2s; display: block; border-bottom: 1px solid var(--rule); }
+  .short-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .short-card .short-num { font-family: var(--mono); font-size: 11px; letter-spacing: 1.2px; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
+  .short-card h3 { font-size: 19px; margin: 0 0 8px 0; color: var(--ink); line-height: 1.25; }
+  .short-card .sub { font-size: 13.5px; color: var(--muted); margin: 0 0 12px 0; line-height: 1.5; }
+  .short-card .meta { font-family: var(--mono); font-size: 11px; color: var(--muted); border-top: 1px dotted var(--rule); padding-top: 10px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/" class="active">shorts</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+  <h1 style="margin:18px 0 6px 0;font-size:26px;letter-spacing:-0.3px">Shorts</h1>
+  <p style="color:var(--muted);margin:0 0 18px 0;font-size:14px;max-width:760px;line-height:1.55">Two-page summaries of the four working papers behind the yieldcartography dashboards. Each short carries a catchy title, ~200 words of setup, one headline figure, one key table, ~200 words of interpretation, and a 50-word "what this means for practitioners" line. Comments are open at the bottom of every short. Cadence: roughly one new short per fortnight.</p>
+
+  <div class="shorts-grid">
+
+    <a class="short-card" href="/shorts/why-naive-nss/">
+      <div class="short-num">Short 01 · 2026-05</div>
+      <h3>Why naive Nelson-Siegel underprices the Polish belly — and what to do about it</h3>
+      <p class="sub">Equal-weight NSS leaves a 1.6 bp / day mean fit MAE on the table over twenty-one years of Polish sovereign data. A weight matrix derived from BondSpot turnover and outstanding amounts cuts that almost in half. Information-matrix derivation included.</p>
+      <div class="meta">Underlying paper · Parsimonious yield curve modeling in less-liquid markets (LW-NSS, FAME|GRAPE WP, 2021; SNDE submission 2026)</div>
+    </a>
+
+    <a class="short-card" href="/shorts/eh-three-ways/">
+      <div class="short-num">Short 02 · 2026-05</div>
+      <h3>The pure expectations hypothesis dies in three different ways in PL, US and EA</h3>
+      <p class="sub">Polish curves drift mildly anti-PEH. The US sits roughly consistent with PEH at long horizons. The euro-area AAA panel rejects strongly under asymptotic Newey-West but barely under the wild block bootstrap — the cleanest evidence for the Bauer-Hamilton (2018) concern in our sample.</p>
+      <div class="meta">Underlying paper · Closer to New York than to Frankfurt? (SSRN 6695444; submitted to Empirical Economics)</div>
+    </a>
+
+    <a class="short-card" href="/shorts/are-surveys-informative/">
+      <div class="short-num">Short 03 · 2026-05</div>
+      <h3>Are NBP forecasters informative? At 1y yes, at 3y and 5y no</h3>
+      <p class="sub">Diebold-Mariano, Clark-West and forecast-encompassing tests on the NBP Survey of Professional Forecasters versus the ACM/BRW expected-rate path. The survey wins at 1y, the model wins at 3y and 5y, and encompassing rejects the survey at long horizons.</p>
+      <div class="meta">Underlying paper · Are Survey-Based Rate Expectations Informative? (SSRN 6644222; submitted to JIMF)</div>
+    </a>
+
+    <a class="short-card" href="/shorts/six-and-one/">
+      <div class="short-num">Short 04 · 2026-05</div>
+      <h3>Six microstructure measures, one composite, and the venue-cap puzzle</h3>
+      <p class="sub">Bid-ask spread, zero-trading-day frequency, Amihud, Roll, Pastor-Stambaugh γ, Corwin-Schultz, and a composite z-index across the BondSpot panel from 2005 to today. Aggregate term premia absorb supply pressure that the venue-capped bid-ask spread cannot.</p>
+      <div class="meta">Underlying paper · Polish sovereign bond liquidity: replication + supply channel (liquidity_paper_v5, 2026)</div>
+    </a>
+
+  </div>
+
+  <p style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:20px">Each short is one self-contained letter-format page. The underlying working papers are linked from the about page with full DOIs and abstracts.</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-11</div>
+</footer>
+
+</body>
+</html>

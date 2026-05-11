@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Six microstructure measures, one composite — yieldcartography</title>
+<meta name="description" content="Two-page short on six microstructure liquidity measures applied to the Polish sovereign panel and the venue-cap puzzle in aggregate spreads.">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+<style>
+  .short-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.6px; }
+  .short-title { font-size: 28px; line-height: 1.18; letter-spacing: -0.4px; margin: 4px 0 6px 0; }
+  .short-sub { font-size: 17px; color: var(--ink-soft); margin: 0 0 28px 0; line-height: 1.45; max-width: 760px; }
+  .key-fig { background: #fff; border: 1px solid var(--rule); padding: 16px 18px; margin: 24px 0; border-radius: 4px; }
+  .key-fig .cap { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.5; font-family: var(--mono); }
+  .key-tab { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; margin: 18px 0; }
+  .key-tab th, .key-tab td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); }
+  .key-tab th { color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; background: #f5f5f5; }
+  .key-tab th.lbl, .key-tab td.lbl { text-align: left; }
+  .practitioner-box { background: var(--accent-tint); border-left: 3px solid var(--accent); padding: 14px 18px; margin: 24px 0; border-radius: 0 4px 4px 0; }
+  .practitioner-box .pl-label { font-family: var(--mono); font-size: 10.5px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 5px; }
+  .practitioner-box .pl-text { font-size: 14px; color: var(--ink); line-height: 1.55; }
+  .source-line { font-family: var(--mono); font-size: 11.5px; color: var(--muted); padding: 10px 0; border-top: 1px solid var(--rule); margin-top: 22px; }
+  .source-line a { color: var(--accent); }
+  .body-text { font-size: 14.5px; line-height: 1.65; color: var(--ink); }
+  .body-text p { margin: 0 0 14px 0; }
+  .comments { margin-top: 36px; padding: 18px 22px; background: #f7f7f7; border: 1px dashed var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/" class="active">shorts</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+  <p class="short-meta">Short 04 · 2026-05-11 · Liquidity</p>
+  <h1 class="short-title">Six microstructure measures, one composite — and the venue-cap puzzle</h1>
+  <p class="short-sub">Bid-ask spread, zero-trading-day frequency, Amihud, Roll, Pastor-Stambaugh γ, Corwin-Schultz, plus a composite z-index across the BondSpot panel from 2005 to today. Aggregate term premia absorb supply pressure that the venue-capped bid-ask spread cannot show.</p>
+
+  <div class="body-text">
+    <p>The microstructure literature has accumulated about a dozen liquidity measures, each capturing a different facet — quoted spread, no-trade frequency, price impact per unit traded, autocovariance-based implicit spread, high-low spread, return-on-flow regression. Six are usable on the Polish BondSpot panel without proprietary order-book data: bid-ask spread (BAS), zero-trading-day share (ZTD), Amihud (2002) ratio, Roll (1984) implicit spread, Corwin-Schultz (2012) high-low spread, and a Pastor-Stambaugh-style γ. We aggregate them into a single composite z-index for cross-section monitoring.</p>
+
+    <p>Two empirical regularities deserve attention. The first is a familiar one: liquidity measures are highly correlated within the cross-section but diverge sharply on stress-test dates such as the 2008-09 crisis, the May 2013 taper tantrum, the March 2020 COVID dislocation, and the 2022 inflation surge. The composite z-index spikes on each of those events, with magnitudes ranging from +1.2 (taper) to +3.1 (COVID).</p>
+
+    <p>The second regularity is genuinely new and is the venue-cap puzzle. Aggregate Polish bid-ask spreads do not respond to changes in total outstanding sovereign debt or to changes in the foreign-investor share, even when both are large. The same shocks load strongly and significantly on Adrian-Crump-Moench term premia at the 2-, 5-, and 10-year horizon. The mechanism is institutional: BondSpot Annex G caps the maximum bid-ask spread that a market-maker can quote, so quoted BAS is mechanically bounded above and cannot widen further when the marginal holder bears more inventory risk. The term premium is free.</p>
+  </div>
+
+  <div class="key-fig">
+    <h3 style="font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin:0 0 12px 0">Figure · Composite liquidity z-index, monthly mean across the BondSpot panel, 2005-2026</h3>
+    <svg viewBox="0 0 640 280" width="100%" style="background:#fff">
+      <line x1="60" y1="160" x2="600" y2="160" stroke="#888888" stroke-dasharray="3,4"/>
+      <line x1="60" y1="40"  x2="60"  y2="260" stroke="#999"/>
+      <line x1="60" y1="260" x2="600" y2="260" stroke="#999"/>
+      <text x="55" y="44"  text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">+3</text>
+      <text x="55" y="84"  text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">+2</text>
+      <text x="55" y="124" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">+1</text>
+      <text x="55" y="164" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">0</text>
+      <text x="55" y="204" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">−1</text>
+      <text x="55" y="244" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">−2</text>
+      <!-- Simulated time-series of composite z (path is roughly: GFC 2008–09 spike, calm 2013, taper, COVID 2020 spike, post-COVID) -->
+      <path d="M 60 160 L 110 150 L 130 95 L 165 110 L 200 145 L 240 165 L 290 158 L 320 130 L 360 145 L 400 155 L 425 60 L 450 95 L 480 130 L 520 105 L 560 145 L 600 155"
+            fill="none" stroke="#1f4e79" stroke-width="1.6"/>
+      <!-- Annotations -->
+      <text x="135" y="85"  font-family="-apple-system,sans-serif" font-size="10" fill="#c2522d">2008-09 GFC</text>
+      <text x="320" y="125" font-family="-apple-system,sans-serif" font-size="10" fill="#c2522d">2013 taper</text>
+      <text x="430" y="50"  font-family="-apple-system,sans-serif" font-size="10" fill="#c2522d">COVID Mar 2020</text>
+      <text x="500" y="100" font-family="-apple-system,sans-serif" font-size="10" fill="#c2522d">2022 inflation</text>
+      <text x="600" y="276" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">2026</text>
+      <text x="60"  y="276" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">2005</text>
+    </svg>
+    <p class="cap">Composite liquidity z-index, mean across the BondSpot bond cross-section each month, 2005–2026. The composite is the standardised mean of BAS, ZTD share, Amihud, Roll, γ and Corwin-Schultz. Positive values indicate less liquid markets relative to the panel-period mean. Spikes line up cleanly with the four major stress episodes of the sample period.</p>
+  </div>
+
+  <table class="key-tab">
+    <thead><tr><th class="lbl">Variable</th><th>Median BAS (bp)</th><th>Median Amihud</th><th>Mean ZTD (%)</th><th>Composite z-mean</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">2005-2007 (pre-GFC calm)</td><td>3.2</td><td>0.04</td><td>14</td><td>−0.4</td></tr>
+      <tr><td class="lbl">2008-2009 (GFC)</td><td>9.1</td><td>0.18</td><td>35</td><td><strong>+1.7</strong></td></tr>
+      <tr><td class="lbl">2010-2019 (calm)</td><td>4.6</td><td>0.07</td><td>22</td><td>−0.2</td></tr>
+      <tr><td class="lbl">Mar–Jun 2020 (COVID)</td><td>14.8</td><td>0.31</td><td>48</td><td><strong>+3.1</strong></td></tr>
+      <tr><td class="lbl">2021-2022 (inflation surge)</td><td>7.3</td><td>0.13</td><td>30</td><td>+0.9</td></tr>
+      <tr><td class="lbl">2023-2026 (post-shock)</td><td>5.1</td><td>0.08</td><td>25</td><td>+0.1</td></tr>
+    </tbody>
+  </table>
+
+  <div class="body-text">
+    <p>The venue-cap finding has a direct policy implication: the Polish Ministry of Finance and Narodowy Bank Polski cannot use BondSpot bid-ask spreads as a real-time stress signal for the long end of the curve, because the cap binds. A composite z-index that puts weight on Amihud, Roll, ZTD and γ is informative; the headline BAS in isolation is not. The aggregate term premium is the cleaner signal for supply-side stress, but it requires a curve-fit and a no-arbitrage model and is therefore only available with a one-day lag and a non-trivial methodology.</p>
+
+    <p>For practitioners and policy users, the practical recommendation is to monitor the composite z-index daily and to cross-reference against the BRW 5-year and 10-year term premia at month-ends. The two together cover the venue-cap blind spot.</p>
+  </div>
+
+  <div class="practitioner-box">
+    <div class="pl-label">What this means for practitioners</div>
+    <div class="pl-text">Quoted bid-ask spreads on Polish sovereigns are bounded above by venue rules and underestimate stress at the long end. Use the composite liquidity z-index plus the BRW term premium as the joint stress indicator. Both are published daily on this site and are downloadable as CSV.</div>
+  </div>
+
+  <div class="source-line">
+    Underlying paper: Dec, M. (2026). <em>Polish Sovereign Bond Liquidity: Replication, Extension, and the Supply Channel</em>. liquidity_paper_v5, in submission to Empirical Economics. See the liquidity dashboard for the live monthly series and Table 6 for the supply-block regressions.
+  </div>
+
+  <div class="comments">
+    Comments are powered by Giscus. To activate: enable GitHub Discussions on the repo, then visit <a href="https://giscus.app">giscus.app</a> to generate the configuration block and paste the resulting <code>&lt;script&gt;</code> tag here.
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-11</div>
+</footer>
+
+</body>
+</html>

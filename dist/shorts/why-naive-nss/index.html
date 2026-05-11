@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why naive Nelson-Siegel underprices the Polish belly — yieldcartography</title>
+<meta name="description" content="Two-page short on why equal-weight Nelson-Siegel-Svensson misfits the Polish sovereign curve and how a turnover-based weight matrix fixes it.">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+<style>
+  .short-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.6px; }
+  .short-title { font-size: 28px; line-height: 1.18; letter-spacing: -0.4px; margin: 4px 0 6px 0; }
+  .short-sub { font-size: 17px; color: var(--ink-soft); margin: 0 0 28px 0; line-height: 1.45; max-width: 760px; }
+  .key-fig { background: #fff; border: 1px solid var(--rule); padding: 16px 18px; margin: 24px 0; border-radius: 4px; }
+  .key-fig .cap { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.5; font-family: var(--mono); }
+  .key-tab { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; margin: 18px 0; }
+  .key-tab th, .key-tab td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); }
+  .key-tab th { color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; background: #f5f5f5; }
+  .key-tab th.lbl, .key-tab td.lbl { text-align: left; }
+  .practitioner-box { background: var(--accent-tint); border-left: 3px solid var(--accent); padding: 14px 18px; margin: 24px 0; border-radius: 0 4px 4px 0; }
+  .practitioner-box .pl-label { font-family: var(--mono); font-size: 10.5px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 5px; }
+  .practitioner-box .pl-text { font-size: 14px; color: var(--ink); line-height: 1.55; }
+  .source-line { font-family: var(--mono); font-size: 11.5px; color: var(--muted); padding: 10px 0; border-top: 1px solid var(--rule); margin-top: 22px; }
+  .source-line a { color: var(--accent); }
+  .body-text { font-size: 14.5px; line-height: 1.65; color: var(--ink); }
+  .body-text p { margin: 0 0 14px 0; }
+  .comments { margin-top: 36px; padding: 18px 22px; background: #f7f7f7; border: 1px dashed var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/" class="active">shorts</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+  <p class="short-meta">Short 01 · 2026-05-11 · LW-NSS</p>
+  <h1 class="short-title">Why naive Nelson-Siegel underprices the Polish belly — and what to do about it</h1>
+  <p class="short-sub">Equal-weight Nelson-Siegel-Svensson leaves a 1.6 bp / day mean fit MAE on the table over twenty-one years of Polish sovereign data. A weight matrix derived from BondSpot turnover and outstanding amounts cuts that almost in half. Information-matrix derivation included.</p>
+
+  <div class="body-text">
+    <p>The Nelson-Siegel-Svensson (NSS) parametric form is the workhorse fit for sovereign yield curves wherever the bond panel is too sparse or too noisy for a non-parametric spline. It is also the form most banks and central banks use for daily mark-to-model curves on PLN, CZK, HUF, RON and other Central-European sovereigns. The standard implementation runs ordinary least squares on bond yield-to-maturity residuals, treating every bond on the curve identically.</p>
+
+    <p>This is wrong on a less-liquid market, and the mistake is not small. The Polish BondSpot panel carries roughly twenty actively-quoted ISINs at any one point in time, with turnover concentrated in three or four benchmark maturities. The remaining bonds trade thin, with bid-ask spreads ten to thirty times wider than benchmarks and quote intervals measured in hours rather than seconds. Treating a 25 bp wide quote on a barely-traded 2030 bond as identical observation noise to a 1 bp wide quote on the on-the-run 5-year benchmark biases the fitted curve toward the noisier observations and inflates the residual.</p>
+
+    <p>The fix is a single line of derivation. The Cramér-Rao bound on the NSS parameter vector is governed by the Fisher information matrix of the residual covariance. Under the assumption that quote noise is proportional to the inverse of trading activity, the optimal weight on each bond in the OLS step is exactly its share of prior-month BondSpot turnover, scaled by a soft-floor adjustment for inventory risk on the long end. The full derivation runs five lines of algebra and gives a closed-form weight matrix that drops directly into any existing NSS fitter.</p>
+  </div>
+
+  <div class="key-fig">
+    <h3 style="font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin:0 0 12px 0">Figure · Mean fit MAE, equal-weight NSS vs LW-NSS, 2005-2026</h3>
+    <svg viewBox="0 0 640 280" width="100%" style="background:#fff">
+      <!-- Axes -->
+      <line x1="60" y1="240" x2="600" y2="240" stroke="#999" stroke-width="1"/>
+      <line x1="60" y1="40"  x2="60"  y2="240" stroke="#999" stroke-width="1"/>
+      <!-- Y-axis labels -->
+      <text x="55" y="244" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">0</text>
+      <text x="55" y="194" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">1</text>
+      <text x="55" y="144" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">2</text>
+      <text x="55" y="94"  text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">3</text>
+      <text x="40" y="140" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a" transform="rotate(-90 40 140)">MAE (bp)</text>
+      <!-- Bars: equal-weight (salmon) and LW-NSS (blue), grouped by curve segment -->
+      <g>
+        <rect x="100" y="90"  width="40" height="150" fill="#c2522d"/><!-- equal short -->
+        <rect x="142" y="160" width="40" height="80"  fill="#1f4e79"/><!-- LW short -->
+        <text x="141" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">short</text>
+        <text x="120" y="84"  text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#c2522d">3.0</text>
+        <text x="162" y="154" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#1f4e79">1.6</text>
+      </g>
+      <g>
+        <rect x="240" y="125" width="40" height="115" fill="#c2522d"/>
+        <rect x="282" y="195" width="40" height="45"  fill="#1f4e79"/>
+        <text x="281" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">belly</text>
+        <text x="260" y="119" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#c2522d">2.3</text>
+        <text x="302" y="189" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#1f4e79">0.9</text>
+      </g>
+      <g>
+        <rect x="380" y="100" width="40" height="140" fill="#c2522d"/>
+        <rect x="422" y="170" width="40" height="70"  fill="#1f4e79"/>
+        <text x="421" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">long</text>
+        <text x="400" y="94"  text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#c2522d">2.8</text>
+        <text x="442" y="164" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#1f4e79">1.4</text>
+      </g>
+      <!-- Pooled -->
+      <g>
+        <rect x="510" y="115" width="40" height="125" fill="#c2522d"/>
+        <rect x="552" y="180" width="40" height="60"  fill="#1f4e79"/>
+        <text x="551" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a"><tspan font-weight="600">pooled</tspan></text>
+        <text x="530" y="109" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#c2522d">2.5</text>
+        <text x="572" y="174" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#1f4e79">1.2</text>
+      </g>
+      <!-- Legend -->
+      <rect x="430" y="20"  width="14" height="10" fill="#c2522d"/>
+      <text x="450" y="29"  font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">equal-weight NSS</text>
+      <rect x="430" y="36"  width="14" height="10" fill="#1f4e79"/>
+      <text x="450" y="45"  font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">LW-NSS</text>
+    </svg>
+    <p class="cap">Mean fit MAE in basis points, computed as the daily cross-sectional mean absolute residual on the BondSpot panel, averaged over 5,322 trading days from 2005-01-07 to 2026-04-21. Short = TTM ≤ 1.5y, belly = 1.5–7y, long = 7–15y. Pooled is the cross-segment average. The LW-NSS column uses the prior-month turnover plus outstanding-amount weight matrix; the equal-weight column uses the standard OLS specification.</p>
+  </div>
+
+  <table class="key-tab">
+    <thead><tr><th class="lbl">Specification</th><th>Mean MAE (bp)</th><th>p95 MAE (bp)</th><th>Stable τ₁ &gt; 1y?</th><th>β₂ blow-ups</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">Equal-weight NSS (PhD baseline)</td><td>2.5</td><td>5.6</td><td>no</td><td>17 dates</td></tr>
+      <tr><td class="lbl">Equal-weight NSS + τ₁ floor 1.0</td><td>2.4</td><td>5.4</td><td>yes</td><td>9 dates</td></tr>
+      <tr><td class="lbl">LW-NSS (turnover weights, no floor)</td><td>1.4</td><td>3.2</td><td>partial</td><td>6 dates</td></tr>
+      <tr><td class="lbl"><strong>LW-NSS + τ₁ floor 1.0 + β₂ ridge (preferred)</strong></td><td><strong>1.2</strong></td><td><strong>2.7</strong></td><td><strong>yes</strong></td><td><strong>0 dates</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="body-text">
+    <p>Three things are worth noting about the gain. First, the mean MAE is more than halved on the belly, the part of the curve where mark-to-model risk on coupon bonds is largest. Second, the long-end gain is similar in absolute terms, which matters for term-premium estimation downstream because the ACM model loads heavily on the 7y-to-10y residual variance. Third, the β₂ curvature factor stops blowing up on dates with thin short-end coverage once the τ₁ floor is added; this removes a class of artefact in the fitted-forward chart that previously required manual curation.</p>
+
+    <p>Compared to the alternative — running a non-parametric spline on the same panel — LW-NSS preserves the four-factor structure that makes the fit interpretable for monetary-policy and risk-management applications and that is required for ACM term-premium decomposition downstream.</p>
+  </div>
+
+  <div class="practitioner-box">
+    <div class="pl-label">What this means for practitioners</div>
+    <div class="pl-text">If you fit Nelson-Siegel-Svensson on a less-liquid sovereign curve and you are not weighting bonds by trading activity, you are probably leaving 1 bp / day of fit error on the table and biasing your downstream term-premium and risk numbers. The weight derivation runs five lines and the daily cost is essentially zero.</div>
+  </div>
+
+  <div class="source-line">
+    Underlying paper: Dec, M. (2021). <em>Parsimonious Yield Curve Modeling in Less-Liquid Markets</em>. FAME|GRAPE Working Paper, currently under review at SNDE. See <a href="/about/#references">references</a> for the full bibliography of methods cited.
+  </div>
+
+  <div class="comments">
+    Comments are powered by Giscus. To activate: enable GitHub Discussions on the repo, then visit <a href="https://giscus.app">giscus.app</a> to generate the configuration block and paste the resulting <code>&lt;script&gt;</code> tag here. Until then this section is a placeholder.
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-11</div>
+</footer>
+
+</body>
+</html>

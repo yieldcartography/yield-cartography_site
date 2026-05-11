@@ -4,26 +4,41 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About — yieldcartography</title>
-<meta name="description" content="About Marcin Dec, methodology, data sources, and research programme behind the yieldcartography dashboards.">
+<meta name="description" content="About Marcin Dec, methodology, data sources, full publications list with DOIs, references and contact form.">
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
 <style>
   .bio-grid { display: grid; grid-template-columns: 200px 1fr; gap: 28px; margin: 0 0 30px 0; align-items: start; }
   .bio-grid .label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; padding-top: 4px; }
-  .bio-grid .val { font-size: 14px; color: var(--ink); }
-  .bio-grid .val ul { margin: 0; padding-left: 18px; }
+  .bio-grid .val { font-size: 14px; color: var(--ink); line-height: 1.55; }
   .bio-grid .val a { color: var(--accent); }
   .pub-list { list-style: none; padding: 0; margin: 0; }
-  .pub-list li { padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 13.5px; color: var(--ink-soft); }
+  .pub-list li { padding: 14px 0; border-bottom: 1px solid var(--rule); font-size: 13.5px; color: var(--ink-soft); }
   .pub-list li:last-child { border-bottom: none; }
-  .pub-list .ttl { font-weight: 600; color: var(--ink); display: block; margin-bottom: 2px; }
-  .pub-list .meta { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-  .ext-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
-  .ext-card { display: block; padding: 14px 16px; border: 1px solid var(--rule); border-radius: 4px; background: var(--panel); border-bottom: 1px solid var(--rule); }
+  .pub-list .ttl { font-weight: 600; color: var(--ink); display: block; margin-bottom: 4px; font-size: 14px; }
+  .pub-list .meta { font-family: var(--mono); font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .pub-list .doi { font-family: var(--mono); font-size: 11.5px; color: var(--accent); }
+  .pub-list .abs { font-size: 13px; color: var(--ink-soft); margin-top: 6px; line-height: 1.55; }
+  .ext-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .ext-card { display: block; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 4px; background: var(--panel); border-bottom: 1px solid var(--rule); }
   .ext-card:hover { border-color: var(--accent); }
   .ext-card .ext-label { font-family: var(--mono); font-size: 10.5px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
-  .ext-card .ext-name { font-size: 14px; color: var(--ink); font-weight: 600; }
-  .ext-card .ext-url { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 3px; word-break: break-all; }
+  .ext-card .ext-name { font-size: 13.5px; color: var(--ink); font-weight: 600; }
+  .ext-card .ext-url { font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-top: 3px; word-break: break-all; }
+  .contact-form { display: grid; gap: 12px; max-width: 720px; margin-top: 16px; }
+  .contact-form label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; display: block; margin-bottom: 4px; }
+  .contact-form input, .contact-form textarea, .contact-form select { font-family: var(--sans); font-size: 14px; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 4px; background: #fff; width: 100%; box-sizing: border-box; color: var(--ink); }
+  .contact-form input:focus, .contact-form textarea:focus, .contact-form select:focus { outline: none; border-color: var(--accent); }
+  .contact-form textarea { min-height: 130px; resize: vertical; }
+  .contact-form button { font-family: var(--mono); font-size: 12px; padding: 11px 22px; border: 1px solid var(--accent); border-radius: 4px; background: var(--accent); color: #fff; cursor: pointer; text-transform: uppercase; letter-spacing: 0.6px; justify-self: start; }
+  .contact-form button:hover { background: var(--accentSoft, #2e75b6); border-color: var(--accentSoft, #2e75b6); }
+  .form-status { font-family: var(--mono); font-size: 12px; padding: 10px 14px; border-radius: 4px; display: none; }
+  .form-status.ok { display: block; background: #e6f4ea; color: #1e7a35; border: 1px solid #b6e0c1; }
+  .form-status.err { display: block; background: #fce8e6; color: #a4282d; border: 1px solid #f0c5c2; }
+  .ref-list { font-size: 12.5px; color: var(--ink-soft); line-height: 1.65; }
+  .ref-list .ref { padding: 8px 0; border-bottom: 1px dotted var(--rule); }
+  .ref-list .ref:last-child { border-bottom: none; }
+  .ref-list .ref-key { font-family: var(--mono); font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; margin-right: 8px; }
 </style>
 </head>
 <body>
@@ -36,6 +51,7 @@
     <a href="/term-premia/">term premia</a>
     <a href="/liquidity/">liquidity</a>
     <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/">shorts</a>
     <a href="/about/" class="active">about</a>
   </nav>
 </header>
@@ -43,7 +59,7 @@
 <main class="narrow">
 
   <h1 style="margin:18px 0 6px 0;font-size:26px;letter-spacing:-0.3px">About</h1>
-  <p style="color:var(--muted);margin:0 0 28px 0;font-size:14px">Author bio, methodology, data sources, related publications, and external profiles.</p>
+  <p style="color:var(--muted);margin:0 0 28px 0;font-size:14px">Author bio, methodology, external profiles, full publications list with DOIs, references, and a contact form for collaboration enquiries.</p>
 
   <section class="section">
     <h2 class="with-rule">Bio</h2>
@@ -51,8 +67,18 @@
       <div class="label">Author</div>
       <div class="val">
         <strong>Marcin Dec, PhD</strong><br>
-        Assistant Professor in Finance, Department of Finance, Kozminski University, Warsaw.<br>
-        PhD in Quantitative Economics, Collegium of Economic Analysis, SGH Warsaw School of Economics. Research Assistant at FAME|GRAPE since 2019. Twenty-plus years of fixed-income practitioner experience as senior analyst, portfolio manager, and risk manager before entering academia.
+        Assistant Professor in Finance, Department of Finance, Kozminski University, Warsaw. Research Assistant at FAME|GRAPE since 2019. Twenty-plus years of fixed-income practitioner experience as senior analyst, portfolio manager, and risk manager before entering academia.
+      </div>
+
+      <div class="label">Education</div>
+      <div class="val">
+        PhD in Quantitative Economics, SGH Warsaw School of Economics.<br>
+        MSc in Mathematical Finance, University of Oxford.
+      </div>
+
+      <div class="label">Certifications</div>
+      <div class="val">
+        FRM, CQF, RAI — practitioner certifications spanning risk management, quantitative finance, and AI.
       </div>
 
       <div class="label">Research focus</div>
@@ -67,7 +93,7 @@
 
       <div class="label">This site</div>
       <div class="val">
-        yieldcartography.com publishes the daily-refreshed empirical outputs of the research programme: NSS-fitted zero-coupon yield curves, ACM and BRW term-premium decompositions, microstructure-based liquidity measures, and expectations-hypothesis test results. All code is open, all data is publicly sourced, and the underlying CSVs are linked below.
+        yieldcartography.com publishes the daily-refreshed empirical outputs of the research programme: NSS-fitted zero-coupon yield curves, ACM and BRW term-premium decompositions, microstructure-based liquidity measures, and expectations-hypothesis test results, with comparative views on US Treasury and euro-area AAA panels. All code is open, all data is publicly sourced, and the underlying CSVs are linked from the dashboards.
       </div>
     </div>
   </section>
@@ -82,101 +108,215 @@
       </a>
       <a class="ext-card" href="https://www.kozminski.edu.pl/en/community/card/phd-marcin-dec" target="_blank" rel="noopener">
         <div class="ext-label">University</div>
-        <div class="ext-name">Kozminski University faculty page</div>
-        <div class="ext-url">kozminski.edu.pl/en/community/card/phd-marcin-dec</div>
+        <div class="ext-name">Kozminski faculty page</div>
+        <div class="ext-url">kozminski.edu.pl</div>
       </a>
       <a class="ext-card" href="https://www.linkedin.com/in/marcin-dec-6a7a974b/" target="_blank" rel="noopener">
         <div class="ext-label">LinkedIn</div>
-        <div class="ext-name">Professional profile</div>
+        <div class="ext-name">Personal profile</div>
         <div class="ext-url">linkedin.com/in/marcin-dec-6a7a974b</div>
+      </a>
+      <a class="ext-card" href="https://www.linkedin.com/company/yield-cartography/" target="_blank" rel="noopener">
+        <div class="ext-label">LinkedIn</div>
+        <div class="ext-name">yield_cartography page</div>
+        <div class="ext-url">linkedin.com/company/yield-cartography</div>
+      </a>
+      <a class="ext-card" href="https://ssrn.com/author=2710321" target="_blank" rel="noopener">
+        <div class="ext-label">SSRN</div>
+        <div class="ext-name">SSRN author page</div>
+        <div class="ext-url">ssrn.com/author=2710321</div>
       </a>
       <a class="ext-card" href="https://ideas.repec.org/f/pde1169.html" target="_blank" rel="noopener">
         <div class="ext-label">RePEc</div>
-        <div class="ext-name">IDEAS / RePEc author profile</div>
-        <div class="ext-url">ideas.repec.org/f/pde1169.html</div>
+        <div class="ext-name">IDEAS / RePEc author</div>
+        <div class="ext-url">ideas.repec.org/f/pde1169</div>
       </a>
       <a class="ext-card" href="https://www.researchgate.net/profile/Marcin-Dec" target="_blank" rel="noopener">
         <div class="ext-label">ResearchGate</div>
         <div class="ext-name">ResearchGate profile</div>
         <div class="ext-url">researchgate.net/profile/Marcin-Dec</div>
       </a>
-      <a class="ext-card" href="http://grape.org.pl/sites/default/files/user/CV_MarcinDec_Grape_Inference.pdf" target="_blank" rel="noopener">
-        <div class="ext-label">CV</div>
-        <div class="ext-name">Full curriculum vitae (PDF)</div>
-        <div class="ext-url">grape.org.pl/sites/default/files/user/CV_MarcinDec_Grape_Inference.pdf</div>
-      </a>
-      <a class="ext-card" href="https://grape.org.pl/podcast" target="_blank" rel="noopener">
-        <div class="ext-label">Podcast</div>
-        <div class="ext-name">"Tloczone z danych" — GRAPE podcast for Dziennik Gazety Prawnej</div>
-        <div class="ext-url">grape.org.pl/podcast</div>
-      </a>
       <a class="ext-card" href="https://github.com/yieldcartography/yield-cartography_site" target="_blank" rel="noopener">
         <div class="ext-label">Code</div>
         <div class="ext-name">GitHub — site source</div>
-        <div class="ext-url">github.com/yieldcartography/yield-cartography_site</div>
+        <div class="ext-url">github.com/yieldcartography</div>
       </a>
     </div>
   </section>
 
   <section class="section">
-    <h2 class="with-rule">Selected publications</h2>
+    <h2 class="with-rule">Selected publications &amp; working papers</h2>
     <ul class="pub-list">
       <li>
-        <span class="ttl">Welfare measurements with heterogeneous agents</span>
-        <span class="meta">with Marek Weretka — Journal of Economic Dynamics and Control, 2025</span>
+        <span class="ttl">Welfare Measurements with Heterogeneous Agents</span>
+        <span class="meta">with Marek Weretka — Journal of Economic Dynamics and Control, 2025 (forthcoming) · also SSRN 5335293</span>
+        <span class="doi"><a href="https://doi.org/10.2139/ssrn.5335293">doi:10.2139/ssrn.5335293</a></span>
+        <span class="abs">A unified welfare-measurement framework for heterogeneous-agent economies. Builds on Weretka's pivotal-agent welfare formula and extends it to environments with idiosyncratic shocks and incomplete markets, with closed-form expressions for compensating and equivalent variations under standard preference parameterisations. Calibrated to Polish household survey data.</span>
       </li>
       <li>
-        <span class="ttl">Yield Curve Modelling with the Nelson-Siegel Method for Poland</span>
-        <span class="meta">Gospodarka Narodowa, 2/2022, 44–56</span>
+        <span class="ttl">Closer to New York than to Frankfurt? The Expectations Hypothesis in Poland, the US and the Euro Area</span>
+        <span class="meta">working paper, 2026 · SSRN 6695444 · submitted to Empirical Economics</span>
+        <span class="doi"><a href="https://doi.org/10.2139/ssrn.6695444">doi:10.2139/ssrn.6695444</a></span>
+        <span class="abs">Five families of expectations-hypothesis tests applied to Polish, US and euro-area sovereign curves over 2005-2026. The Polish curve is mildly anti-PEH, the US is roughly consistent with PEH at long horizons, and the euro-area AAA panel rejects strongly under asymptotic Newey-West but barely under wild block bootstrap — clean evidence for the Bauer-Hamilton (2018) concern about asymptotic inference in overlapping-return regressions with persistent regressors.</span>
       </li>
       <li>
-        <span class="ttl">Forecasting the Yield Curve for Poland</span>
-        <span class="meta">Econometric Research in Finance, 5(2), 103–117, 2020</span>
+        <span class="ttl">Are Survey-Based Rate Expectations Informative? Evidence from Less-Liquid Markets</span>
+        <span class="meta">working paper, 2026 · SSRN 6644222 · submitted to JIMF</span>
+        <span class="doi"><a href="https://doi.org/10.2139/ssrn.6644222">doi:10.2139/ssrn.6644222</a></span>
+        <span class="abs">Tests whether the NBP Survey of Professional Forecasters carries information beyond what is already in the Polish term structure. Uses ACM and BRW expected-rate paths from the LW-NSS-fitted Polish zero-coupon panel as the model benchmark, runs Diebold-Mariano, Clark-West and forecast-encompassing tests at horizons of 1 to 60 months. The model wins at 3y and 5y, the survey wins at 1y; encompassing tests reject the survey at long horizons.</span>
       </li>
       <li>
-        <span class="ttl">Markovian and multi-curve friendly parametrisation of HJM model used in valuation adjustment of interest rate derivatives</span>
-        <span class="meta">working paper</span>
+        <span class="ttl">Parsimonious Yield Curve Modeling in Less-Liquid Markets</span>
+        <span class="meta">FAME|GRAPE working paper, 2021 — extended in current LW-NSS submission to SNDE</span>
+        <span class="doi"><a href="https://grape.org.pl/working-papers" target="_blank">FAME|GRAPE working papers</a></span>
+        <span class="abs">Develops the liquidity-weighted Nelson-Siegel-Svensson (LW-NSS) framework for sovereign curves where bond-by-bond observation noise is heterogeneous. Information-matrix derivation gives an explicit weight-matrix structure derived from BondSpot turnover and outstanding amounts. Refit of the Polish panel reduces 21-year mean fit MAE by 1.6 bp versus equal-weight NSS while preserving curvature.</span>
       </li>
       <li>
-        <span class="ttl">Parsimonious yield curve modeling in less liquid markets</span>
-        <span class="meta">FAME|GRAPE working paper</span>
+        <span class="ttl">When 3% Means Nothing: Calibrating Escalation Limits to a Bank's Own Forecasting Error Distribution</span>
+        <span class="meta">working paper, 2025 · SSRN 6276722</span>
+        <span class="doi"><a href="https://doi.org/10.2139/ssrn.6276722">doi:10.2139/ssrn.6276722</a></span>
+        <span class="abs">Argues that bank-internal escalation thresholds for forecasting errors should be calibrated to the empirical error distribution of the institution rather than imposed as round-number percentages. Develops the calibration on Polish bank stress-test data and shows that uniform 3% thresholds either grossly under- or over-trigger depending on the size and macroeconomic exposure of the institution.</span>
       </li>
       <li>
-        <span class="ttl">Extracting Risk-Free Interest Rate Expectations in Less Liquid Government Bond Markets</span>
-        <span class="meta">FAME|GRAPE working paper</span>
+        <span class="ttl">From Point through Density Valuation to Individual Risk Assessment in the Discounted Cash Flows Method</span>
+        <span class="meta">International Journal of Finance &amp; Economics, 26 (2021), 5621–5635</span>
+        <span class="doi"><a href="https://doi.org/10.1002/ijfe.2084">doi:10.1002/ijfe.2084</a></span>
+        <span class="abs">Reformulates the discounted-cash-flow valuation method to deliver a full distribution of valuation outcomes rather than a point estimate, with explicit treatment of cash-flow uncertainty and discount-rate uncertainty. Shows how the resulting distribution feeds directly into individual position-level risk assessment.</span>
+      </li>
+      <li>
+        <span class="ttl">Markovian and Multi-Curve Friendly Parametrisation of a HJM Model Used in Valuation Adjustment of Interest Rate Derivatives</span>
+        <span class="meta">Bank i Kredyt, 50(2), 2019</span>
+        <span class="doi"><a href="https://bankikredyt.nbp.pl/content/2019/02/BIK_02_2019_01.pdf">PDF — bankikredyt.nbp.pl</a></span>
+        <span class="abs">Derives a Markovian, multi-curve-consistent parametrisation of the Heath-Jarrow-Morton model suitable for XVA computation across collateralised and uncollateralised interest-rate derivatives. Reduces the dimensionality of the state vector required for valuation adjustment without sacrificing fit on the swap-curve and OIS-curve data.</span>
       </li>
     </ul>
-    <p class="meta" style="margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted)">For the full publication list and ongoing working papers see the GRAPE and RePEc profiles linked above.</p>
+    <p style="margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted)">For the full publication list and ongoing working papers see the GRAPE, SSRN and RePEc profiles linked above.</p>
   </section>
 
   <section class="section">
     <h2 class="with-rule">Data sources</h2>
-    <p style="font-size:14px;color:var(--ink-soft)">
+    <p style="font-size:14px;color:var(--ink-soft);line-height:1.55">
       <strong>Polish bond panel:</strong> BondSpot venue closing fixings (price, bid, ask, turnover) — aggregated from Polish Ministry of Finance disclosures.<br>
       <strong>Outstanding amounts and turnover weights:</strong> Polish Min-Fin monthly statistics; pre-2014 panel reconstructed from KDPW MD pivots.<br>
       <strong>Short-end anchor:</strong> NBP money-market bill rate.<br>
-      <strong>NBP Survey of Professional Forecasters:</strong> 57 quarterly survey releases, implied short-rate path constructed per PhD Chapter 5.4 methodology.<br>
+      <strong>NBP Survey of Professional Forecasters:</strong> 57 quarterly survey releases, implied short-rate path constructed per the methodology in Dec (2026, SSRN 6644222).<br>
       <strong>US Treasury zeros:</strong> Gürkaynak-Sack-Wright (GSW) updated panel.<br>
       <strong>Euro-area zeros:</strong> ECB AAA spot-rate database.<br>
-      <strong>Macro panel:</strong> CPI, unemployment, FX volatility, NBP rate changes.
+      <strong>Macro panel:</strong> CPI, registered unemployment, FX volatility, NBP rate changes — Polish Statistical Office and NBP.
     </p>
   </section>
 
   <section class="section">
-    <h2 class="with-rule">Methodology in one paragraph</h2>
-    <p style="font-size:14px;color:var(--ink-soft)">The Polish zero-coupon curve is fitted with a liquidity-weighted Nelson-Siegel-Svensson specification (LW-NSS), where bond-level weights are derived from prior-month BondSpot turnover and outstanding amounts. The fitter enforces standard sign and ordering constraints on β₀, β₀+β₁, τ₁ and τ₂, applies a τ₁ floor of 1.0 to suppress short-end curvature artefacts, and uses a small β₂/β₃ ridge penalty to stabilise the curvature factors. Term premia are computed via the Adrian-Crump-Moench (2013) affine term-structure model on five Nelson-Siegel principal components, with the Bauer-Rudebusch-Wu small-sample bias correction (iterated bootstrap with common random numbers and Kilian shrinkage) as the robustness benchmark. Liquidity measures follow the standard microstructure literature: bid-ask spreads, zero-trading-day frequency, Amihud (2002) illiquidity, Roll (1984), Pastor-Stambaugh γ, Corwin-Schultz (2012) high-low spread, and a composite z-index. Expectations-hypothesis tests follow the Fama-Bliss FB1/FB2 framework, the Cochrane-Piazzesi single and seagull factor regressions, an out-of-sample STV exercise against a random walk, and the cross-market PL/US/EA pooling robustness.</p>
+    <h2 class="with-rule">References</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:8px">A combined bibliography drawn from the four working papers behind the dashboards. Click any DOI to retrieve the source.</p>
+    <div class="ref-list">
+      <div class="ref"><span class="ref-key">[ACM2013]</span> Adrian, T., Crump, R. K., &amp; Moench, E. (2013). Pricing the term structure with linear regressions. <em>Journal of Financial Economics</em>, 110(1), 110–138. <a href="https://doi.org/10.1016/j.jfineco.2013.04.009">doi:10.1016/j.jfineco.2013.04.009</a></div>
+      <div class="ref"><span class="ref-key">[Amihud2002]</span> Amihud, Y. (2002). Illiquidity and stock returns: Cross-section and time-series effects. <em>Journal of Financial Markets</em>, 5(1), 31–56. <a href="https://doi.org/10.1016/S1386-4181(01)00024-6">doi:10.1016/S1386-4181(01)00024-6</a></div>
+      <div class="ref"><span class="ref-key">[BauerHamilton2018]</span> Bauer, M. D., &amp; Hamilton, J. D. (2018). Robust bond risk premia. <em>Review of Financial Studies</em>, 31(2), 399–448. <a href="https://doi.org/10.1093/rfs/hhx096">doi:10.1093/rfs/hhx096</a></div>
+      <div class="ref"><span class="ref-key">[BRW2012]</span> Bauer, M. D., Rudebusch, G. D., &amp; Wu, J. C. (2012). Correcting estimation bias in dynamic term structure models. <em>Journal of Business &amp; Economic Statistics</em>, 30(3), 454–467. <a href="https://doi.org/10.1080/07350015.2012.669666">doi:10.1080/07350015.2012.669666</a></div>
+      <div class="ref"><span class="ref-key">[BRW2014]</span> Bauer, M. D., Rudebusch, G. D., &amp; Wu, J. C. (2014). Term premia and inflation uncertainty: Empirical evidence from an international panel dataset: Comment. <em>American Economic Review</em>, 104(1), 323–337. <a href="https://doi.org/10.1257/aer.104.1.323">doi:10.1257/aer.104.1.323</a></div>
+      <div class="ref"><span class="ref-key">[CampbellShiller1991]</span> Campbell, J. Y., &amp; Shiller, R. J. (1991). Yield spreads and interest rate movements: A bird's eye view. <em>Review of Economic Studies</em>, 58(3), 495–514. <a href="https://doi.org/10.2307/2298008">doi:10.2307/2298008</a></div>
+      <div class="ref"><span class="ref-key">[CochranePiazzesi2005]</span> Cochrane, J. H., &amp; Piazzesi, M. (2005). Bond risk premia. <em>American Economic Review</em>, 95(1), 138–160. <a href="https://doi.org/10.1257/0002828053828581">doi:10.1257/0002828053828581</a></div>
+      <div class="ref"><span class="ref-key">[CorwinSchultz2012]</span> Corwin, S. A., &amp; Schultz, P. (2012). A simple way to estimate bid-ask spreads from daily high and low prices. <em>Journal of Finance</em>, 67(2), 719–760. <a href="https://doi.org/10.1111/j.1540-6261.2012.01729.x">doi:10.1111/j.1540-6261.2012.01729.x</a></div>
+      <div class="ref"><span class="ref-key">[DieboldMariano1995]</span> Diebold, F. X., &amp; Mariano, R. S. (1995). Comparing predictive accuracy. <em>Journal of Business &amp; Economic Statistics</em>, 13(3), 253–263. <a href="https://doi.org/10.1080/07350015.1995.10524599">doi:10.1080/07350015.1995.10524599</a></div>
+      <div class="ref"><span class="ref-key">[FamaBliss1987]</span> Fama, E. F., &amp; Bliss, R. R. (1987). The information in long-maturity forward rates. <em>American Economic Review</em>, 77(4), 680–692.</div>
+      <div class="ref"><span class="ref-key">[GreenwoodVayanos2014]</span> Greenwood, R., &amp; Vayanos, D. (2014). Bond supply and excess bond returns. <em>Review of Financial Studies</em>, 27(3), 663–713. <a href="https://doi.org/10.1093/rfs/hht133">doi:10.1093/rfs/hht133</a></div>
+      <div class="ref"><span class="ref-key">[GSW2007]</span> Gürkaynak, R. S., Sack, B., &amp; Wright, J. H. (2007). The U.S. Treasury yield curve: 1961 to the present. <em>Journal of Monetary Economics</em>, 54(8), 2291–2304. <a href="https://doi.org/10.1016/j.jmoneco.2007.06.029">doi:10.1016/j.jmoneco.2007.06.029</a></div>
+      <div class="ref"><span class="ref-key">[Kilian1998]</span> Kilian, L. (1998). Small-sample confidence intervals for impulse response functions. <em>Review of Economics and Statistics</em>, 80(2), 218–230. <a href="https://doi.org/10.1162/003465398557465">doi:10.1162/003465398557465</a></div>
+      <div class="ref"><span class="ref-key">[NelsonSiegel1987]</span> Nelson, C. R., &amp; Siegel, A. F. (1987). Parsimonious modeling of yield curves. <em>Journal of Business</em>, 60(4), 473–489. <a href="https://doi.org/10.1086/296409">doi:10.1086/296409</a></div>
+      <div class="ref"><span class="ref-key">[PastorStambaugh2003]</span> Pástor, Ľ., &amp; Stambaugh, R. F. (2003). Liquidity risk and expected stock returns. <em>Journal of Political Economy</em>, 111(3), 642–685. <a href="https://doi.org/10.1086/374184">doi:10.1086/374184</a></div>
+      <div class="ref"><span class="ref-key">[Roll1984]</span> Roll, R. (1984). A simple implicit measure of the effective bid-ask spread in an efficient market. <em>Journal of Finance</em>, 39(4), 1127–1139. <a href="https://doi.org/10.1111/j.1540-6261.1984.tb03897.x">doi:10.1111/j.1540-6261.1984.tb03897.x</a></div>
+      <div class="ref"><span class="ref-key">[SarnoThorntonValente2007]</span> Sarno, L., Thornton, D. L., &amp; Valente, G. (2007). The empirical failure of the expectations hypothesis of the term structure of bond yields. <em>Journal of Financial and Quantitative Analysis</em>, 42(1), 81–100. <a href="https://doi.org/10.1017/S0022109000002192">doi:10.1017/S0022109000002192</a></div>
+      <div class="ref"><span class="ref-key">[Svensson1994]</span> Svensson, L. E. O. (1994). Estimating and interpreting forward interest rates: Sweden 1992-1994. <em>NBER Working Paper</em> No. 4871. <a href="https://doi.org/10.3386/w4871">doi:10.3386/w4871</a></div>
+      <div class="ref"><span class="ref-key">[Thornton2006]</span> Thornton, D. L. (2006). Tests of the expectations hypothesis: Resolving the Campbell-Shiller paradox. <em>Journal of Money, Credit and Banking</em>, 38(2), 511–542. <a href="https://doi.org/10.1353/mcb.2006.0035">doi:10.1353/mcb.2006.0035</a></div>
+      <div class="ref"><span class="ref-key">[VayanosVila2021]</span> Vayanos, D., &amp; Vila, J.-L. (2021). A preferred-habitat model of the term structure of interest rates. <em>Econometrica</em>, 89(1), 77–112. <a href="https://doi.org/10.3982/ECTA17440">doi:10.3982/ECTA17440</a></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">Contact &amp; collaboration</h2>
+    <p style="font-size:14px;color:var(--ink-soft);line-height:1.55">
+      Use the form below for collaboration enquiries — especially if you are working on less-liquid sovereign bond markets in Central and Eastern Europe, Latin America, South Africa, the Philippines, India, or any other emerging market where the LW-NSS framework would be useful. The "what brought you here" dropdown helps me prioritise replies.
+    </p>
+    <form class="contact-form" id="contactForm">
+      <input type="hidden" name="access_key" value="e30053d8-c910-49c8-b2f0-88bb35b10495">
+      <input type="hidden" name="subject" value="yieldcartography.com — collaboration enquiry">
+      <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+      <div>
+        <label for="cf-name">Name</label>
+        <input type="text" id="cf-name" name="name" required>
+      </div>
+      <div>
+        <label for="cf-email">Email</label>
+        <input type="email" id="cf-email" name="email" required>
+      </div>
+      <div>
+        <label for="cf-affil">Affiliation (optional)</label>
+        <input type="text" id="cf-affil" name="affiliation" placeholder="University, central bank, fund, …">
+      </div>
+      <div>
+        <label for="cf-market">Market you work on (optional)</label>
+        <input type="text" id="cf-market" name="market_focus" placeholder="e.g. PL, ZA, MX, PH, IN, BR, TR, …">
+      </div>
+      <div>
+        <label for="cf-purpose">What brought you here?</label>
+        <select id="cf-purpose" name="purpose" required>
+          <option value="">— select —</option>
+          <option>Research collaboration</option>
+          <option>Data download / replication</option>
+          <option>Methodology question</option>
+          <option>Job opportunity</option>
+          <option>Press / interview request</option>
+          <option>General curiosity</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div>
+        <label for="cf-message">Message</label>
+        <textarea id="cf-message" name="message" required></textarea>
+      </div>
+      <button type="submit">Send message</button>
+      <div class="form-status" id="cf-status"></div>
+    </form>
+    <p style="font-size:13px;color:var(--muted);margin-top:14px">Direct email: <a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></p>
   </section>
 
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li></ul></div>
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
-    <div><h4>Contact</h4><ul><li><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
   </div>
-  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-10</div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-11</div>
 </footer>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const status = document.getElementById('cf-status');
+  status.className = 'form-status';
+  status.textContent = '';
+  const data = new FormData(form);
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+    const json = await res.json();
+    if (json.success) {
+      status.className = 'form-status ok';
+      status.textContent = 'Message sent. I aim to reply within two working days.';
+      form.reset();
+    } else {
+      status.className = 'form-status err';
+      status.textContent = 'Sorry, something went wrong. Please email mdec@kozminski.edu.pl directly.';
+    }
+  } catch (err) {
+    status.className = 'form-status err';
+    status.textContent = 'Network error. Please email mdec@kozminski.edu.pl directly.';
+  }
+});
+</script>
 
 </body>
 </html>

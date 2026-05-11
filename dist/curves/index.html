@@ -45,6 +45,7 @@
     <a href="/term-premia/">term premia</a>
     <a href="/liquidity/">liquidity</a>
     <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/">shorts</a>
     <a href="/about/">about</a>
   </nav>
 </header>
@@ -128,17 +129,24 @@
     </div>
 
     <div class="panel full">
-      <h3>Time series</h3>
-      <div class="pill-row" id="tsPills">
-        <span class="pill active" data-mode="zero">PL zero rates</span>
+      <h3>Polish curve — time series</h3>
+      <div class="pill-row" id="tsPillsPL">
+        <span class="pill active" data-mode="zero">Zero rates 2y/5y/10y</span>
         <span class="pill" data-mode="beta">NSS betas</span>
         <span class="pill" data-mode="tau">NSS taus</span>
         <span class="pill" data-mode="diag">Fit diagnostics</span>
         <span class="pill" data-mode="pca">PCA factors (level/slope/curvature)</span>
-        <span class="pill" data-mode="xcountry">PL vs US vs EA, 10y</span>
+      </div>
+      <div id="tsPanelPL" class="plot-frame tall"></div>
+    </div>
+
+    <div class="panel full">
+      <h3>Cross-country comparison — time series</h3>
+      <div class="pill-row" id="tsPillsXM">
+        <span class="pill active" data-mode="xcountry">PL vs US vs EA, 10y</span>
         <span class="pill" data-mode="xspread">PL vs US vs EA, 10y-2y spread</span>
       </div>
-      <div id="tsPanel" class="plot-frame tall"></div>
+      <div id="tsPanelXM" class="plot-frame tall"></div>
     </div>
 
   </div>
@@ -151,7 +159,7 @@
   <div class="footer-inner">
     <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
-    <div><h4>Contact</h4><ul><li><a href="mailto:marcinhdec@icloud.com">marcinhdec@icloud.com</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
   </div>
   <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · <span id="buildBadge">data: loading…</span></div>
 </footer>
@@ -198,7 +206,7 @@ let selectedISIN = null;
 
 async function load(){
   // Cache-busted by schema version. Bump build.py schema_version to force a fresh fetch.
-  const r = await fetch('/data/yields.json?v=6', { cache: 'force-cache' });
+  const r = await fetch('/data/yields.json?v=7', { cache: 'force-cache' });
   DATA = await r.json();
   if (!DATA.meta || !DATA.meta.schema_version){
     console.warn('yields.json appears to be an older schema — some panels may render empty');
@@ -232,11 +240,18 @@ function buildSlider(){
   slider.addEventListener('input', e => { curIdx = +e.target.value; selectedISIN = null; draw(); });
 }
 function bindPills(){
-  document.querySelectorAll('#tsPills .pill').forEach(p=>{
+  document.querySelectorAll('#tsPillsPL .pill').forEach(p=>{
     p.addEventListener('click', ()=>{
-      document.querySelectorAll('#tsPills .pill').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('#tsPillsPL .pill').forEach(x=>x.classList.remove('active'));
       p.classList.add('active');
-      drawTimeseries(p.dataset.mode);
+      drawTimeseries('tsPanelPL', p.dataset.mode);
+    });
+  });
+  document.querySelectorAll('#tsPillsXM .pill').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      document.querySelectorAll('#tsPillsXM .pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      drawTimeseries('tsPanelXM', p.dataset.mode);
     });
   });
 }
@@ -263,12 +278,18 @@ function draw(){
   document.getElementById('stat-snap-d').textContent = (curIdx+1) + ' of ' + DATA.snaps.length + ' snapshots';
   document.getElementById('stat-bonds').textContent = s.n_bonds;
   document.getElementById('stat-bonds-d').textContent = 'fit MAE ' + s.mae_bp.toFixed(1) + ' bp';
+  // Default selected ISIN to highest-turnover bond on the current snapshot
+  if (s.bonds && s.bonds.length){
+    const top = [...s.bonds].sort((a,b) => (b.turnover||0) - (a.turnover||0))[0];
+    if (top && DATA.bond_hist[top.isin]) selectedISIN = top.isin;
+  }
   drawSnapCurve(s);
   drawSnapFwd(s);
   drawXcountrySnap(s);
   drawBondTable(s);
   drawBondHist();
-  drawTimeseries(document.querySelector('#tsPills .pill.active').dataset.mode);
+  drawTimeseries('tsPanelPL', document.querySelector('#tsPillsPL .pill.active').dataset.mode);
+  drawTimeseries('tsPanelXM', document.querySelector('#tsPillsXM .pill.active').dataset.mode);
 }
 
 function drawSnapCurve(s){
@@ -377,7 +398,7 @@ function drawBondHist(){
   Plotly.react('bondHist', tr, lay, CFG);
 }
 
-function drawTimeseries(mode){
+function drawTimeseries(divId, mode){
   const ts = DATA.ts; const xc = DATA.xcountry_m; const pca = DATA.pca;
   let traces = [];
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
@@ -431,7 +452,7 @@ function drawTimeseries(mode){
     ];
     lay.yaxis.title = { text:'spread (%)', font:FONT_MONO };
   }
-  Plotly.react('tsPanel', traces, lay, CFG);
+  Plotly.react(divId, traces, lay, CFG);
 }
 </script>
 

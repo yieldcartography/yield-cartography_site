@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Are NBP forecasters informative? — yieldcartography</title>
+<meta name="description" content="Two-page short on whether the NBP Survey of Professional Forecasters carries information beyond the Polish term structure.">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+<style>
+  .short-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.6px; }
+  .short-title { font-size: 28px; line-height: 1.18; letter-spacing: -0.4px; margin: 4px 0 6px 0; }
+  .short-sub { font-size: 17px; color: var(--ink-soft); margin: 0 0 28px 0; line-height: 1.45; max-width: 760px; }
+  .key-fig { background: #fff; border: 1px solid var(--rule); padding: 16px 18px; margin: 24px 0; border-radius: 4px; }
+  .key-fig .cap { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.5; font-family: var(--mono); }
+  .key-tab { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; margin: 18px 0; }
+  .key-tab th, .key-tab td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); }
+  .key-tab th { color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; background: #f5f5f5; }
+  .key-tab th.lbl, .key-tab td.lbl { text-align: left; }
+  .key-tab .win { background: rgba(46,125,50,0.10); color: #2e7d32; font-weight: 600; }
+  .key-tab .lose { background: rgba(194,82,45,0.10); color: #c2522d; font-weight: 600; }
+  .practitioner-box { background: var(--accent-tint); border-left: 3px solid var(--accent); padding: 14px 18px; margin: 24px 0; border-radius: 0 4px 4px 0; }
+  .practitioner-box .pl-label { font-family: var(--mono); font-size: 10.5px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 5px; }
+  .practitioner-box .pl-text { font-size: 14px; color: var(--ink); line-height: 1.55; }
+  .source-line { font-family: var(--mono); font-size: 11.5px; color: var(--muted); padding: 10px 0; border-top: 1px solid var(--rule); margin-top: 22px; }
+  .source-line a { color: var(--accent); }
+  .body-text { font-size: 14.5px; line-height: 1.65; color: var(--ink); }
+  .body-text p { margin: 0 0 14px 0; }
+  .comments { margin-top: 36px; padding: 18px 22px; background: #f7f7f7; border: 1px dashed var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/" class="active">shorts</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+  <p class="short-meta">Short 03 · 2026-05-11 · Term premia / forecasting</p>
+  <h1 class="short-title">Are NBP forecasters informative? At 1y yes, at 3y and 5y no</h1>
+  <p class="short-sub">Diebold-Mariano, Clark-West and forecast-encompassing tests on the NBP Survey of Professional Forecasters versus the ACM/BRW expected-rate path. The survey wins at 1y, the model wins at 3y and 5y, and encompassing rejects the survey at long horizons.</p>
+
+  <div class="body-text">
+    <p>The NBP Survey of Professional Forecasters releases a quarterly implied-rate path with annual readings for the next five years. It is the closest thing the Polish market has to a publicly-available consensus expected-rate forecast. The natural model benchmark is the Adrian-Crump-Moench expected-rate path implied by the Polish term structure, with the Bauer-Rudebusch-Wu small-sample bias correction layered on top.</p>
+
+    <p>The horse race runs three standard forecast-comparison tests at horizons of 12, 24, 36, 48, and 60 months: Diebold-Mariano (mean squared error), Clark-West (an MSE adjustment that nests the surveys-as-better-than-trivial null) and Mincer-Zarnowitz forecast encompassing (does the survey contain information not in the model and vice versa). The realisations are the actual NBP reference rate observed at each horizon, with the sample running from the first survey release in 2010Q1 through to the most recent rate observation.</p>
+
+    <p>The result has a clean horizon structure. At one year ahead, the survey is more accurate than the ACM/BRW model: respondents have access to high-frequency news and policy guidance that the model does not see between calibration dates. At three and five years, the model wins by a wide margin, and forecast-encompassing rejects the survey: the model adds information beyond the survey, the survey does not add information beyond the model. The crossover is around 24 months.</p>
+  </div>
+
+  <div class="key-fig">
+    <h3 style="font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin:0 0 12px 0">Figure · MSE-ratio (model / survey) by horizon — &gt;1 means survey wins</h3>
+    <svg viewBox="0 0 640 280" width="100%" style="background:#fff">
+      <line x1="60" y1="240" x2="600" y2="240" stroke="#999"/>
+      <line x1="60" y1="40"  x2="60"  y2="240" stroke="#999"/>
+      <line x1="60" y1="140" x2="600" y2="140" stroke="#888888" stroke-dasharray="3,4"/>
+      <text x="595" y="134" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#888888">parity (1.0)</text>
+      <text x="55" y="244" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">0</text>
+      <text x="55" y="194" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">0.5</text>
+      <text x="55" y="144" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">1.0</text>
+      <text x="55" y="94"  text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">1.5</text>
+      <text x="55" y="50"  text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">2.0</text>
+      <!-- bars -->
+      <g>
+        <rect x="100" y="80"  width="60" height="160" fill="#c2522d"/><!-- 12m: model worse -->
+        <text x="130" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">h=12m</text>
+        <text x="130" y="74"  text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#c2522d">1.62</text>
+      </g>
+      <g>
+        <rect x="200" y="120" width="60" height="120" fill="#c2522d"/>
+        <text x="230" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">h=24m</text>
+        <text x="230" y="114" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#c2522d">1.21</text>
+      </g>
+      <g>
+        <rect x="300" y="155" width="60" height="85"  fill="#2e7d32"/>
+        <text x="330" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">h=36m</text>
+        <text x="330" y="149" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#2e7d32">0.85</text>
+      </g>
+      <g>
+        <rect x="400" y="170" width="60" height="70"  fill="#2e7d32"/>
+        <text x="430" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">h=48m</text>
+        <text x="430" y="164" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#2e7d32">0.70</text>
+      </g>
+      <g>
+        <rect x="500" y="180" width="60" height="60"  fill="#2e7d32"/>
+        <text x="530" y="262" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">h=60m</text>
+        <text x="530" y="174" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#2e7d32">0.62</text>
+      </g>
+      <!-- legend -->
+      <rect x="430" y="14" width="14" height="10" fill="#c2522d"/>
+      <text x="450" y="23" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">survey beats model</text>
+      <rect x="430" y="30" width="14" height="10" fill="#2e7d32"/>
+      <text x="450" y="39" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">model beats survey</text>
+    </svg>
+    <p class="cap">MSE ratio = MSE(ACM-BRW model) / MSE(NBP SPF), by forecast horizon h, on the realised NBP reference rate. Values above 1.0 mean the survey wins on MSE; below 1.0 mean the model wins. Sample: 2010Q1–2026Q1 quarterly survey releases.</p>
+  </div>
+
+  <table class="key-tab">
+    <thead><tr><th class="lbl">Horizon</th><th>MSE model</th><th>MSE survey</th><th>DM stat</th><th>p (DM)</th><th>CW stat</th><th>p (CW)</th><th>Encomp. survey?</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">12 months</td><td>1.42</td><td>0.88</td><td class="lose">+3.10</td><td>0.002</td><td>+1.85</td><td>0.032</td><td>yes — survey adds info</td></tr>
+      <tr><td class="lbl">24 months</td><td>1.69</td><td>1.40</td><td>+1.21</td><td>0.226</td><td>+0.55</td><td>0.291</td><td>partial</td></tr>
+      <tr><td class="lbl">36 months</td><td>1.55</td><td>1.83</td><td class="win">−2.04</td><td>0.041</td><td>−1.32</td><td>0.094</td><td>no — survey rejected</td></tr>
+      <tr><td class="lbl">48 months</td><td>1.30</td><td>1.85</td><td class="win">−2.85</td><td>0.004</td><td>−2.11</td><td>0.018</td><td>no</td></tr>
+      <tr><td class="lbl">60 months</td><td>1.02</td><td>1.65</td><td class="win">−3.41</td><td>0.001</td><td>−2.78</td><td>0.003</td><td>no</td></tr>
+    </tbody>
+  </table>
+
+  <div class="body-text">
+    <p>Two patterns are worth pulling out. First, the MSE crossover happens around 24 months. Up to one year, the survey wins by a comfortable margin and the news content of monetary-policy guidance dominates. From three years onward, the model wins because it imposes a no-arbitrage structure that pins down expectations consistent with the no-bubble condition on the curve. The survey at five years is essentially flat — respondents anchor on a long-run mean — while the ACM/BRW path moves with the cycle.</p>
+
+    <p>Second, encompassing rejects the survey at 36, 48 and 60 months. This is the strong form of the result: the model contains all the information the survey contains, plus more. At 12 months the result reverses; at 24 months it is mixed. For practitioners using the model curve as the policy expectations benchmark — central bank operating frameworks, swap-curve risk-management — this is the formal justification for ignoring the long end of the survey reading.</p>
+  </div>
+
+  <div class="practitioner-box">
+    <div class="pl-label">What this means for practitioners</div>
+    <div class="pl-text">If you need a one-year-ahead Polish short-rate forecast, use the NBP Survey of Professional Forecasters. If you need a three-to-five-year forecast for term-structure risk or curve-roll computations, use the ACM/BRW expected-rate path off the LW-NSS-fitted curve. Do not use the survey beyond two years.</div>
+  </div>
+
+  <div class="source-line">
+    Underlying paper: Dec, M. (2026). <em>Are Survey-Based Rate Expectations Informative? Evidence from Less-Liquid Markets</em>. SSRN 6644222. <a href="https://doi.org/10.2139/ssrn.6644222">doi:10.2139/ssrn.6644222</a>. Submitted to JIMF.
+  </div>
+
+  <div class="comments">
+    Comments are powered by Giscus. To activate: enable GitHub Discussions on the repo, then visit <a href="https://giscus.app">giscus.app</a> to generate the configuration block and paste the resulting <code>&lt;script&gt;</code> tag here.
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-11</div>
+</footer>
+
+</body>
+</html>
