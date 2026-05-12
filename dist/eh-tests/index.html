@@ -200,30 +200,38 @@ function drawFb1Xm(){
   });
   const absMax = Math.max(Math.abs(zmin), Math.abs(zmax));
   targets.forEach(([divId, p]) => {
-    // Stringify axis labels so Plotly treats them as categorical (avoids last-column
-    // widening when numeric bin boundaries are auto-calculated).
-    const xLab = p.n_m.map(v => String(v));
-    const yLab = p.h_m.map(v => String(v));
+    // Plot against integer indices so every cell has identical width,
+    // then map indices back to month labels with tickvals/ticktext.
+    const xIdx = p.n_m.map((_, j) => j);
+    const yIdx = p.h_m.map((_, i) => i);
+    const xText = p.n_m.map(v => String(v));
+    const yText = p.h_m.map(v => String(v));
     const traces = [{
-      type:'heatmap', z:p.matrix, x:xLab, y:yLab,
+      type:'heatmap', z:p.matrix, x:xIdx, y:yIdx,
       colorscale: [[0, '#1f4e79'], [0.5, '#ffffff'], [1, '#c2522d']],
       zmin: -absMax, zmax: absMax,
       xgap: 1, ygap: 1,
-      hovertemplate:'h=%{y} mo · n=%{x} mo<br>β=%{z:.2f}<extra></extra>',
+      hovertemplate:'h=%{customdata[0]} mo · n=%{customdata[1]} mo<br>β=%{z:.2f}<extra></extra>',
+      customdata: yIdx.map(i => xIdx.map(j => [yText[i], xText[j]])),
       colorbar:{thickness:10, len:0.9, tickfont:FONT_MONO, title:{text:'β', font:FONT_MONO}}
     }];
     const ann = [];
-    yLab.forEach((h, i) => xLab.forEach((n, j) => {
+    yIdx.forEach((yi, i) => xIdx.forEach((xi, j) => {
       const v = p.matrix[i][j];
-      if (v !== null) ann.push({ x:n, y:h, text:v.toFixed(2), showarrow:false,
+      if (v !== null) ann.push({ x:xi, y:yi, text:v.toFixed(2), showarrow:false,
         font:{size:8, color: Math.abs(v) > absMax*0.5 ? '#fff' : '#1a1a1a', family:FONT_MONO.family} });
     }));
     const lay = JSON.parse(JSON.stringify(PLOT_BASE));
     lay.xaxis.title = { text:'n (months)', font:FONT_MONO };
     lay.yaxis.title = { text:'h (months)', font:FONT_MONO };
-    lay.xaxis.type = 'category';
-    lay.yaxis.type = 'category';
-    lay.yaxis.autorange = 'reversed';
+    lay.xaxis.tickmode = 'array';
+    lay.xaxis.tickvals = xIdx;
+    lay.xaxis.ticktext = xText;
+    lay.yaxis.tickmode = 'array';
+    lay.yaxis.tickvals = yIdx;
+    lay.yaxis.ticktext = yText;
+    lay.xaxis.range = [-0.5, xIdx.length - 0.5];
+    lay.yaxis.range = [yIdx.length - 0.5, -0.5];
     lay.annotations = ann;
     Plotly.react(divId, traces, lay, CFG);
   });
