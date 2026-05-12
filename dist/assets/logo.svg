@@ -19,7 +19,11 @@
   <g transform="translate(86,52)">
     <text font-family="'JetBrains Mono', 'Fira Code', 'Source Code Pro', Menlo, Consolas, monospace"
           font-weight="700" font-size="34" letter-spacing="-0.6">
-      <tspan x="0" y="0" fill="#1a1a1a">yield</tspan><tspan x="89" y="0" fill="#c2522d">_</tspan><tspan x="111" y="0" fill="#1f4e79">cartography</tspan>
+      <tspan x="0" y="0" fill="#1a1a1a">yield</tspan><tspan x="111" y="0" fill="#1f4e79">cartography</tspan>
     </text>
+    <!-- Brand separator: thin red bar at the visual mid-height of the wordmark.
+         Replaces the underscore glyph, which sat at the baseline and visually
+         dropped below the centre of the surrounding letters. -->
+    <rect x="92" y="-12" width="15" height="4" rx="0.5" fill="#c2522d"/>
   </g>
 </svg>
