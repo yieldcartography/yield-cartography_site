@@ -206,7 +206,7 @@ let DATA = null;
 let curWin = 'all';
 
 async function load(){
-  const r = await fetch('/data/yields.json?v=7', { cache: 'force-cache' });
+  const r = await fetch('/data/yields.json?v=7');
   DATA = await r.json();
   if (!DATA.meta || !DATA.meta.schema_version){
     console.warn('yields.json appears to be an older schema — some panels may render empty');

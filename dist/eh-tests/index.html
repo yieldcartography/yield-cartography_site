@@ -190,7 +190,7 @@ function downloadCSV(filename, rows, chartLabel){
 let DATA = null;
 
 async function load(){
-  const r = await fetch('/data/yields.json?v=7', { cache: 'force-cache' });
+  const r = await fetch('/data/yields.json?v=7');
   DATA = await r.json();
   showBuildBadge();
   initStats();

@@ -197,7 +197,7 @@ let curHorizon = '10y';
 let curModel = 'brw';
 
 async function load(){
-  const r = await fetch('/data/yields.json?v=7', { cache: 'force-cache' });
+  const r = await fetch('/data/yields.json?v=7');
   DATA = await r.json();
   if (!DATA.meta || DATA.meta.schema_version !== 'v6'){
     console.warn('yields.json schema is older than v6 — TP comparison panels may be empty until you redeploy with the new build.py');
