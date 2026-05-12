@@ -46,6 +46,9 @@
   .stats-table tbody tr.selected { background: var(--accent-tint); }
   .stats-table .pct-bar { display: inline-block; width: 60px; height: 5px; background: #eee; border-radius: 3px; vertical-align: middle; margin-left: 6px; position: relative; }
   .stats-table .pct-bar .fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--accent); border-radius: 3px; }
+  .csv-btn { font-family: var(--mono); font-size: 10.5px; padding: 5px 11px; border: 1px solid var(--accent); border-radius: 4px; background: #fff; color: var(--accent); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 8px; }
+  .csv-btn:hover { background: var(--accent); color: #fff; }
+  .panel-head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 </style>
 </head>
 <body>
@@ -94,7 +97,10 @@
   </div>
 
   <div class="panel" style="margin-bottom:18px">
-    <h3 id="statsTitle">PL term-premium statistics by horizon — BRW</h3>
+    <div class="panel-head-row">
+      <h3 id="statsTitle" style="margin:0">PL term-premium statistics by horizon — BRW</h3>
+      <button class="csv-btn" id="csvStats">CSV</button>
+    </div>
     <p class="note">Cross-sectional summary statistics of the PL term premia at standard horizons (1y, 2y, 3y, 5y, 7y, 10y) over the selected window, with the model picked from the toggle above. The "% rank" column shows where the latest observation sits in the windowed distribution: 0% = at the historical minimum, 100% = at the historical maximum, 50% = at the median. Click any row to load that horizon into the time-series chart below.</p>
     <div style="overflow-x:auto;">
       <table class="stats-table" id="statsTable"></table>
@@ -102,25 +108,37 @@
   </div>
 
   <div class="panel" style="margin-bottom:18px">
-    <h3 id="byHorizonTitle">PL term premia by horizon — ACM versus BRW</h3>
+    <div class="panel-head-row">
+      <h3 id="byHorizonTitle" style="margin:0">PL term premia by horizon — ACM versus BRW</h3>
+      <button class="csv-btn" id="csvTpHorizon">CSV</button>
+    </div>
     <p class="note">Time-series of PL ACM and BRW term premia at the horizon selected above. Both lines are weekly-Friday closes from the LW-NSS curve. The window pills at the top of the page restrict the visible range.</p>
     <div id="tpHorizon" class="plot-frame huge"></div>
   </div>
 
   <div class="panel" style="margin-bottom:18px">
-    <h3>Cross-country term-premia comparison</h3>
+    <div class="panel-head-row">
+      <h3 style="margin:0">Cross-country term-premia comparison</h3>
+      <button class="csv-btn" id="csvXTp">CSV</button>
+    </div>
     <p class="note">Polish (BRW) vs US (ACM) vs euro-area AAA (ACM) term premia at the selected horizon. US and EA term premia are estimated on the GSW Treasury and ECB AAA panels respectively, using the same Adrian-Crump-Moench five-factor specification. Monthly resampling (last observation of month).</p>
     <div id="xcountryTp" class="plot-frame tall"></div>
   </div>
 
   <div class="grid-2">
     <div class="panel">
-      <h3>Correlation heatmap — PL BRW × US ACM</h3>
+      <div class="panel-head-row">
+        <h3 style="margin:0">Correlation heatmap — PL BRW × US ACM</h3>
+        <button class="csv-btn" id="csvCorrUs">CSV</button>
+      </div>
       <p class="note">Pearson correlations between PL BRW term premia and US ACM term premia at all horizon pairs. Off-diagonal cells tell you how Polish term premia at one tenor co-move with US term premia at another tenor.</p>
       <div id="corrPlUs" class="plot-frame square"></div>
     </div>
     <div class="panel">
-      <h3>Correlation heatmap — PL BRW × EA ACM</h3>
+      <div class="panel-head-row">
+        <h3 style="margin:0">Correlation heatmap — PL BRW × EA ACM</h3>
+        <button class="csv-btn" id="csvCorrEa">CSV</button>
+      </div>
       <p class="note">Same construction with euro-area AAA term premia. Higher PL-EA correlations than PL-US would be the prior, given closer business cycle and monetary policy linkages.</p>
       <div id="corrPlEa" class="plot-frame square"></div>
     </div>
@@ -153,6 +171,26 @@ const CFG = { displayModeBar:false, responsive:true };
 
 const HORIZONS = ['1y','2y','3y','5y','7y','10y'];
 
+function csvCitation(chartLabel){
+  const today = new Date().toISOString().slice(0,10);
+  return [
+    '# Source: Marcin Dec, yieldcartography.com',
+    '# Downloaded: ' + today,
+    '# Page: /term-premia/  Chart: ' + chartLabel,
+    '# Citation: Dec, M. (2026). yieldcartography.com [computer-based research artifact]. Retrieved ' + today + '.'
+  ];
+}
+function downloadCSV(filename, rows, chartLabel){
+  const head = chartLabel ? csvCitation(chartLabel) : [];
+  const body = rows.map(r => r.map(v => (v===null||v===undefined)?'':String(v)).join(','));
+  const csv = head.concat(body).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+
 let DATA = null;
 let curWin = 'all';
 let curHorizon = '10y';
@@ -168,7 +206,64 @@ async function load(){
   initStats();
   bindWinPills();
   bindModelPills();
+  bindCsvButtons();
   drawAll();
+}
+
+function bindCsvButtons(){
+  document.getElementById('csvStats').addEventListener('click', ()=>{
+    const ts = DATA.ts; const [dates] = sliceWindow(ts.dates, []);
+    const startIdx = ts.dates.indexOf(dates[0]);
+    const modelLabel = (curModel === 'brw') ? 'BRW' : 'ACM';
+    const rows = [['horizon','model','min_bp','max_bp','mean_bp','std_bp','last_bp','pct_rank']];
+    HORIZONS.forEach(h => {
+      const ser = ts[`tp${h.replace('y','')}_${curModel}_bp`].slice(startIdx);
+      const st = statsForArr(ser);
+      if (st) rows.push([h, modelLabel, st.min.toFixed(2), st.max.toFixed(2), st.mean.toFixed(2), st.sd.toFixed(2), st.last.toFixed(2), st.pct.toFixed(1)]);
+    });
+    downloadCSV('yc_tp_stats_' + curModel + '_' + curWin + '.csv', rows, 'PL term-premium stats by horizon — ' + modelLabel + ' (window: ' + curWin + ')');
+  });
+  document.getElementById('csvTpHorizon').addEventListener('click', ()=>{
+    const ts = DATA.ts;
+    const acmKey = `tp${curHorizon.replace('y','')}_acm_bp`;
+    const brwKey = `tp${curHorizon.replace('y','')}_brw_bp`;
+    const [dates, acm, brw] = sliceWindow(ts.dates, ts[acmKey], ts[brwKey]);
+    const rows = [['date','horizon','acm_bp','brw_bp']];
+    for (let i=0; i<dates.length; i++){
+      rows.push([dates[i], curHorizon,
+        acm[i]!=null ? acm[i].toFixed(2) : '',
+        brw[i]!=null ? brw[i].toFixed(2) : '']);
+    }
+    downloadCSV('yc_pl_tp_' + curHorizon + '_acm_brw.csv', rows, 'PL ACM vs BRW term premium at ' + curHorizon + ' (window: ' + curWin + ')');
+  });
+  document.getElementById('csvXTp').addEventListener('click', ()=>{
+    const xtp = DATA.xcountry_tp_m;
+    if (!xtp){ alert('Cross-country TP not available in this build.'); return; }
+    const h = curHorizon;
+    const [dates, pl, us, ea] = sliceWindow(xtp.dates, xtp[`pl_tp_${h}_bp`], xtp[`us_tp_${h}_bp`], xtp[`ea_tp_${h}_bp`]);
+    const rows = [['date','horizon','pl_brw_bp','us_acm_bp','ea_acm_bp']];
+    for (let i=0; i<dates.length; i++){
+      rows.push([dates[i], h,
+        pl[i]!=null ? pl[i].toFixed(2) : '',
+        us[i]!=null ? us[i].toFixed(2) : '',
+        ea[i]!=null ? ea[i].toFixed(2) : '']);
+    }
+    downloadCSV('yc_xcountry_tp_' + h + '.csv', rows, 'PL BRW vs US ACM vs EA ACM term premia at ' + h + ' (monthly, window: ' + curWin + ')');
+  });
+  document.getElementById('csvCorrUs').addEventListener('click', ()=>{
+    const c = DATA.corr_pl_us;
+    if (!c){ alert('PL × US correlation matrix not available.'); return; }
+    const rows = [ ['pl_horizon'].concat(c.x_labels) ];
+    c.pl_labels.forEach((r, i) => rows.push([r].concat(c.matrix[i].map(v => v.toFixed(4)))));
+    downloadCSV('yc_corr_pl_brw_x_us_acm.csv', rows, 'Pearson correlation matrix — PL BRW × US ACM term premia');
+  });
+  document.getElementById('csvCorrEa').addEventListener('click', ()=>{
+    const c = DATA.corr_pl_ea;
+    if (!c){ alert('PL × EA correlation matrix not available.'); return; }
+    const rows = [ ['pl_horizon'].concat(c.x_labels) ];
+    c.pl_labels.forEach((r, i) => rows.push([r].concat(c.matrix[i].map(v => v.toFixed(4)))));
+    downloadCSV('yc_corr_pl_brw_x_ea_acm.csv', rows, 'Pearson correlation matrix — PL BRW × EA ACM term premia');
+  });
 }
 function showBuildBadge(){
   const m = DATA.meta || {};

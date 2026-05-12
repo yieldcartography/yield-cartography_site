@@ -35,6 +35,9 @@
   .small-note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.3px; margin: 6px 0 0 0; }
   .control-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
   .control-row .label-mono { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .csv-btn { font-family: var(--mono); font-size: 10.5px; padding: 5px 11px; border: 1px solid var(--accent); border-radius: 4px; background: #fff; color: var(--accent); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 8px; }
+  .csv-btn:hover { background: var(--accent); color: #fff; }
+  .panel-head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 </style>
 </head>
 <body>
@@ -75,6 +78,7 @@
       <span class="pill" data-win="2y">Last 2 years</span>
       <span class="pill" data-win="1y">Last 1 year</span>
     </div>
+    <button class="csv-btn" id="csvFullPanel" style="margin-left:auto">CSV — full liquidity panel</button>
   </div>
 
   <div class="grid-2">
@@ -124,7 +128,10 @@
   </div>
 
   <div class="panel" style="margin-top:18px">
-    <h3>Aggregate price of liquidity (debt &amp; macro on BAS, TP)</h3>
+    <div class="panel-head-row">
+      <h3 style="margin:0">Aggregate price of liquidity (debt &amp; macro on BAS, TP)</h3>
+      <button class="csv-btn" id="csvRegTable">CSV — regression table</button>
+    </div>
     <p class="note">Monthly time-series regressions of the outstanding-weighted bid-ask spread (BAS, in bp) and ACM term premia (in bp) on the supply and macro block, 2012:01 to 2025:12, n = 167 months, Newey-West standard errors with 12 lags. TP 10Y BC is the BRW bias-corrected ten-year term premium. Controls beyond the NBP rate (CPI YoY, EUR/PLN log-return, nominal GDP YoY, COVID dummy) are included but suppressed. <strong>Two headline results:</strong> (1) total State Treasury debt is priced into the term premium, not into the quoted spread — venue caps on BAS bind, while TP absorbs supply pressure; (2) the maturity gradient on debt and debt-to-GDP is monotonically increasing, the empirical signature of a preferred-habitat mechanism rather than a uniform additive risk channel.</p>
     <div style="overflow-x:auto;">
       <table class="bond-table" style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11.5px;margin-top:10px">
@@ -175,6 +182,26 @@ const PLOT_BASE = { paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff', font:FONT_B
                     yaxis:{gridcolor:'#eeeeee',zerolinecolor:'#dddddd',tickfont:FONT_MONO,linecolor:'#cccccc'} };
 const CFG = { displayModeBar:false, responsive:true };
 
+function csvCitation(chartLabel){
+  const today = new Date().toISOString().slice(0,10);
+  return [
+    '# Source: Marcin Dec, yieldcartography.com',
+    '# Downloaded: ' + today,
+    '# Page: /liquidity/  Chart: ' + chartLabel,
+    '# Citation: Dec, M. (2026). yieldcartography.com [computer-based research artifact]. Retrieved ' + today + '.'
+  ];
+}
+function downloadCSV(filename, rows, chartLabel){
+  const head = chartLabel ? csvCitation(chartLabel) : [];
+  const body = rows.map(r => r.map(v => (v===null||v===undefined)?'':String(v)).join(','));
+  const csv = head.concat(body).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+
 let DATA = null;
 let curWin = 'all';
 
@@ -187,7 +214,56 @@ async function load(){
   showBuildBadge();
   initStats();
   bindPills();
+  bindCsvButtons();
   drawAll();
+}
+
+function bindCsvButtons(){
+  document.getElementById('csvFullPanel').addEventListener('click', ()=>{
+    const liq = DATA.liquidity;
+    if (!liq){ alert('Liquidity panel not available.'); return; }
+    const cols = [
+      ['date', liq.dates],
+      ['bas_med_bp', liq.bas_bp_med],
+      ['bas_p25_bp', liq.bas_bp_p25],
+      ['bas_p75_bp', liq.bas_bp_p75],
+      ['ztd_share_pct', liq.ztd_pct],
+      ['composite_z', liq.composite_z],
+      ['amihud_med', liq.amihud_med],
+      ['roll_med', liq.roll_med],
+      ['cs_med', liq.cs_med],
+      ['n_bonds', liq.n_bonds]
+    ];
+    const labels = cols.map(c => c[0]);
+    const series = cols.map(c => c[1]);
+    const rows = [labels];
+    const N = liq.dates.length;
+    for (let i=0; i<N; i++){
+      rows.push(series.map((s,j) => {
+        if (!s) return '';
+        const v = s[i];
+        if (v===null || v===undefined) return '';
+        if (j === 0 || j === labels.length - 1) return String(v);
+        return (typeof v === 'number') ? v.toFixed(4) : String(v);
+      }));
+    }
+    downloadCSV('yc_liquidity_full_panel.csv', rows, 'Liquidity panel (monthly): BAS p25/med/p75, ZTD, composite z, Amihud, Roll, Corwin-Schultz, n_bonds');
+  });
+  document.getElementById('csvRegTable').addEventListener('click', ()=>{
+    // Static table — read it from the DOM so any future edits stay in sync.
+    const tbl = document.querySelector('.panel-head-row + p + .bond-table, .panel-head-row ~ div .bond-table');
+    // Fallback: grab the second .bond-table on page (first is the BAS chart legend-style table, but there isn't one here)
+    const all = document.querySelectorAll('table.bond-table');
+    const reg = all[all.length - 1];
+    if (!reg){ alert('Regression table not found.'); return; }
+    const rows = [];
+    reg.querySelectorAll('tr').forEach(tr => {
+      const cells = [];
+      tr.querySelectorAll('th, td').forEach(td => cells.push('"' + td.textContent.trim().replace(/"/g,'""') + '"'));
+      if (cells.length) rows.push(cells);
+    });
+    downloadCSV('yc_liquidity_regression_table.csv', rows, 'Aggregate price of liquidity — regression coefficients (2012:01 to 2025:12, n=167 months, NW with 12 lags)');
+  });
 }
 function showBuildBadge(){
   const m = DATA.meta || {};
