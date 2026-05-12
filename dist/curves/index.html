@@ -437,17 +437,15 @@ function drawFreshness(){
   if (!el) return;
   if (!f){ el.innerHTML = ''; return; }
   const rows = [
-    ['bondspot_fixings',        'BondSpot fixings (price / bid / ask)'],
-    ['bondspot_turnover',       'BondSpot daily turnover (venue)'],
-    ['minfin_turnover_monthly', 'Min-Fin monthly secondary-market turnover'],
-    ['minfin_turnover_xlsx',    'Min-Fin Transakcje_po_seriach xlsx file'],
-    ['minfin_outstanding',      'Min-Fin outstanding amounts'],
-    ['minfin_outstanding_xlsm', 'Min-Fin Obligacje_Hurtowe xlsm file'],
-    ['minfin_coupon_schedules', 'Min-Fin coupon schedules workbook'],
-    ['nbp_reference_rate',      'NBP MPC reference rate'],
-    ['nss_curves',              'LW-NSS fitted zero-coupon curves'],
-    ['acm_term_premia',         'ACM term-premia panel'],
-    ['brw_term_premia',         'BRW bias-corrected term premia'],
+    ['bondspot_fixings',         'BondSpot fixings (price / bid / ask)'],
+    ['bondspot_turnover',        'BondSpot daily turnover (venue)'],
+    ['minfin_turnover',          'Min-Fin monthly turnover (Transakcje_po_seriach)'],
+    ['minfin_obligacje_hurtowe', 'Min-Fin auctions & outstanding (Obligacje_Hurtowe)'],
+    ['minfin_coupon_schedules',  'Min-Fin coupon schedules (kalkulatorodsetek)'],
+    ['nbp_reference_rate',       'NBP MPC reference rate'],
+    ['nss_curves',               'LW-NSS fitted zero-coupon curves'],
+    ['acm_term_premia',          'ACM term-premia panel'],
+    ['brw_term_premia',          'BRW bias-corrected term premia'],
   ];
   let html = '<thead><tr style="background:#f0f0f0">'
     + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:var(--muted)">Series</th>'
@@ -457,7 +455,7 @@ function drawFreshness(){
     + '</tr></thead><tbody>';
   for (const [k, label] of rows){
     const e = f[k]; if (!e) continue;
-    const latest = e.last_obs || e.last_change || e.last_ref_month || e.file_mtime || '';
+    const latest = e.last_obs || e.last_change || e.last_auction || e.last_updated || e.last_ref_month || e.file_mtime || '';
     const valStr = e.value ? ' (' + e.value + ')' : '';
     html += '<tr>'
       + '<td style="padding:6px 8px;border-bottom:1px solid var(--rule);color:var(--ink)">' + label + '</td>'
