@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Liquidity measures — yieldcartography</title>
 <meta name="description" content="Microstructure liquidity measures for the Polish sovereign bond panel: bid-ask spreads, zero-trading-day frequency, Amihud, Roll, Pastor-Stambaugh gamma, Corwin-Schultz, and a composite liquidity index. Monthly aggregates, 2005-2026.">
-<link rel="stylesheet" href="/assets/style.css?v=2">
-<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=2">
+<link rel="stylesheet" href="/assets/style.css?v=4">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=4">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
@@ -40,7 +40,7 @@
 <body>
 
 <header class="site-header">
-  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=2" alt="yieldcartography"></a>
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=4" alt="yieldcartography"></a>
   <nav>
     <a href="/">home</a>
     <a href="/curves/">curves</a>
@@ -124,7 +124,7 @@
   </div>
 
   <div class="panel" style="margin-top:18px">
-    <h3>Table 6 — aggregate price of liquidity (debt &amp; macro on BAS, TP)</h3>
+    <h3>Aggregate price of liquidity (debt &amp; macro on BAS, TP)</h3>
     <p class="note">Monthly time-series regressions of the outstanding-weighted bid-ask spread (BAS, in bp) and ACM term premia (in bp) on the supply and macro block, 2012:01 to 2025:12, n = 167 months, Newey-West standard errors with 12 lags. TP 10Y BC is the BRW bias-corrected ten-year term premium. Controls beyond the NBP rate (CPI YoY, EUR/PLN log-return, nominal GDP YoY, COVID dummy) are included but suppressed. <strong>Two headline results:</strong> (1) total State Treasury debt is priced into the term premium, not into the quoted spread — venue caps on BAS bind, while TP absorbs supply pressure; (2) the maturity gradient on debt and debt-to-GDP is monotonically increasing, the empirical signature of a preferred-habitat mechanism rather than a uniform additive risk channel.</p>
     <div style="overflow-x:auto;">
       <table class="bond-table" style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11.5px;margin-top:10px">
@@ -147,7 +147,7 @@
         </tbody>
       </table>
     </div>
-    <p class="small-note" style="margin-top:10px">Source: Dec (2025), <em>liquidity_paper_v5</em>, Table 6. Significance codes: * <em>p</em> &lt; 0.10, ** <em>p</em> &lt; 0.05, *** <em>p</em> &lt; 0.01.</p>
+    <p class="small-note" style="margin-top:10px">Source: Dec (2026), <em>liquidity_paper</em>, price-of-liquidity regressions. Significance codes: * <em>p</em> &lt; 0.10, ** <em>p</em> &lt; 0.05, *** <em>p</em> &lt; 0.01.</p>
   </div>
 
   <p class="small-note">Methodology: bid-ask spread (BAS) computed from BondSpot best-bid / best-ask fixings; zero-trading-day (ZTD) frequency from BondSpot turnover-volume records; Amihud (2002) illiquidity ratio; Roll (1984) implicit spread; Pastor-Stambaugh γ from daily return-on-flow regressions; Corwin-Schultz (2012) high-low spread estimator; composite z-score = mean of standardised measures. All measures computed at the bond-day level and aggregated to monthly cross-sectional medians (or means for ZTD and composite). See about page for full methodology references.</p>
@@ -157,7 +157,7 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li></ul></div>
-    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
   </div>
   <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · <span id="buildBadge">data: loading…</span></div>

@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Expectations hypothesis tests — yieldcartography</title>
 <meta name="description" content="Expectations hypothesis tests on Polish, US and euro-area sovereign curves: Fama-Bliss type-1 cross-market slope coefficients, Cochrane-Piazzesi factor, macro-spanning regressions, and out-of-sample STV.">
-<link rel="stylesheet" href="/assets/style.css?v=2">
-<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=2">
+<link rel="stylesheet" href="/assets/style.css?v=4">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=4">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
@@ -51,7 +51,7 @@
 <body>
 
 <header class="site-header">
-  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=2" alt="yieldcartography"></a>
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=4" alt="yieldcartography"></a>
   <nav>
     <a href="/">home</a>
     <a href="/curves/">curves</a>
@@ -79,7 +79,7 @@
   </div>
 
   <div class="panel" style="margin-bottom:18px">
-    <h3>Figure 2 — Fama-Bliss type-1 slope coefficients across markets</h3>
+    <h3>Figure 1 — Fama-Bliss type-1 slope coefficients across markets</h3>
     <p class="note">Slope coefficient β from the FB1 regression <span style="font-family:var(--mono)">y_n(t+h) − y_n(t) = α + β · [n/(n−h) · (y_n(t) − y_h(t))] + ε</span> on the (h, n) grid for the three markets, 2005:01 to 2026:04. Negative cells are blue, positive cells are red, zero is white. The Polish panel is uniformly close to zero or mildly negative, the US panel mildly positive at long horizons, the euro-area panel strongly positive at long horizons.</p>
     <div class="heatmap-row">
       <div><h4 style="text-align:center;font-family:var(--mono);font-size:13px;margin:6px 0;color:var(--accent)">PL</h4><div id="fb1Pl" class="plot-frame heatmap"></div></div>
@@ -90,7 +90,7 @@
   </div>
 
   <div class="panel" style="margin-bottom:18px">
-    <h3>Figure 5 — macro-spanning regressions, median R² by horizon</h3>
+    <h3>Figure 2 — macro-spanning regressions, median R² by horizon</h3>
     <p class="note">For each forecasting horizon h, the figure shows the median in-sample R² across the 32 (h, n) pairs for three nested specifications run on Polish data, 2010:01 to 2026:04. The grey bar is the Fama-Bliss type-1 regressor only, the blue bar is the four-element macro vector (CPI YoY, registered unemployment, EUR/PLN exchange-rate volatility, change in NBP reference rate), the green bar is the joint specification.</p>
     <div id="macroR2" class="plot-frame tall"></div>
     <p class="small-note" style="margin-top:14px">Three patterns are visible. (1) The Fama-Bliss regressor alone delivers a median R² below 5% at every horizon — the forward-spot spread carries essentially no predictive content for Polish excess returns over this sample. (2) The macro-only R² rises monotonically from 13% at h=6 months to 84% at h=60 months. (3) The joint specification adds little beyond macro-only at long horizons. The marginal contribution of FB above macro is at most six percentage points (at h=36 months) and below one percentage point at h=60 months.</p>
@@ -131,7 +131,7 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
-    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
   </div>
   <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · <span id="buildBadge">data: loading…</span></div>
@@ -200,22 +200,29 @@ function drawFb1Xm(){
   });
   const absMax = Math.max(Math.abs(zmin), Math.abs(zmax));
   targets.forEach(([divId, p]) => {
+    // Stringify axis labels so Plotly treats them as categorical (avoids last-column
+    // widening when numeric bin boundaries are auto-calculated).
+    const xLab = p.n_m.map(v => String(v));
+    const yLab = p.h_m.map(v => String(v));
     const traces = [{
-      type:'heatmap', z:p.matrix, x:p.n_m, y:p.h_m,
+      type:'heatmap', z:p.matrix, x:xLab, y:yLab,
       colorscale: [[0, '#1f4e79'], [0.5, '#ffffff'], [1, '#c2522d']],
       zmin: -absMax, zmax: absMax,
+      xgap: 1, ygap: 1,
       hovertemplate:'h=%{y} mo · n=%{x} mo<br>β=%{z:.2f}<extra></extra>',
       colorbar:{thickness:10, len:0.9, tickfont:FONT_MONO, title:{text:'β', font:FONT_MONO}}
     }];
     const ann = [];
-    p.h_m.forEach((h, i) => p.n_m.forEach((n, j) => {
+    yLab.forEach((h, i) => xLab.forEach((n, j) => {
       const v = p.matrix[i][j];
       if (v !== null) ann.push({ x:n, y:h, text:v.toFixed(2), showarrow:false,
-        font:{size:10, color: Math.abs(v) > absMax*0.5 ? '#fff' : '#1a1a1a', family:FONT_MONO.family} });
+        font:{size:8, color: Math.abs(v) > absMax*0.5 ? '#fff' : '#1a1a1a', family:FONT_MONO.family} });
     }));
     const lay = JSON.parse(JSON.stringify(PLOT_BASE));
     lay.xaxis.title = { text:'n (months)', font:FONT_MONO };
     lay.yaxis.title = { text:'h (months)', font:FONT_MONO };
+    lay.xaxis.type = 'category';
+    lay.yaxis.type = 'category';
     lay.yaxis.autorange = 'reversed';
     lay.annotations = ann;
     Plotly.react(divId, traces, lay, CFG);

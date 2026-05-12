@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Term premia — yieldcartography</title>
 <meta name="description" content="Adrian-Crump-Moench and Bauer-Rudebusch-Wu term-premium decompositions for the Polish sovereign curve, with cross-country PL/US/EA comparison and correlation heatmaps.">
-<link rel="stylesheet" href="/assets/style.css?v=2">
-<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=2">
+<link rel="stylesheet" href="/assets/style.css?v=4">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=4">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
@@ -51,7 +51,7 @@
 <body>
 
 <header class="site-header">
-  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=2" alt="yieldcartography"></a>
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=4" alt="yieldcartography"></a>
   <nav>
     <a href="/">home</a>
     <a href="/curves/">curves</a>
@@ -86,11 +86,16 @@
       <span class="pill" data-win="2y">Last 2 years</span>
       <span class="pill" data-win="1y">Last 1 year</span>
     </div>
+    <span class="label-mono" style="margin-left:18px">Model:</span>
+    <div class="pill-row" id="modelPills" style="margin:0">
+      <span class="pill active" data-model="brw">BRW (bias-corrected)</span>
+      <span class="pill" data-model="acm">ACM</span>
+    </div>
   </div>
 
   <div class="panel" style="margin-bottom:18px">
-    <h3>PL term-premium statistics by horizon — click a row to drive the chart below</h3>
-    <p class="note">Cross-sectional summary statistics of the PL ACM and BRW term premia at standard horizons (1y, 2y, 3y, 5y, 7y, 10y) over the selected window. The "% rank" column shows where the latest observation sits in the windowed distribution: 0% = at the historical minimum, 100% = at the historical maximum, 50% = at the median. Click any row to load that horizon into the time-series chart below.</p>
+    <h3 id="statsTitle">PL term-premium statistics by horizon — BRW</h3>
+    <p class="note">Cross-sectional summary statistics of the PL term premia at standard horizons (1y, 2y, 3y, 5y, 7y, 10y) over the selected window, with the model picked from the toggle above. The "% rank" column shows where the latest observation sits in the windowed distribution: 0% = at the historical minimum, 100% = at the historical maximum, 50% = at the median. Click any row to load that horizon into the time-series chart below.</p>
     <div style="overflow-x:auto;">
       <table class="stats-table" id="statsTable"></table>
     </div>
@@ -128,7 +133,7 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li></ul></div>
-    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
   </div>
   <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · <span id="buildBadge">data: loading…</span></div>
@@ -151,6 +156,7 @@ const HORIZONS = ['1y','2y','3y','5y','7y','10y'];
 let DATA = null;
 let curWin = 'all';
 let curHorizon = '10y';
+let curModel = 'brw';
 
 async function load(){
   const r = await fetch('/data/yields.json?v=7', { cache: 'force-cache' });
@@ -161,6 +167,7 @@ async function load(){
   showBuildBadge();
   initStats();
   bindWinPills();
+  bindModelPills();
   drawAll();
 }
 function showBuildBadge(){
@@ -190,6 +197,17 @@ function bindWinPills(){
       document.querySelectorAll('#winPills .pill').forEach(x=>x.classList.remove('active'));
       p.classList.add('active');
       curWin = p.dataset.win;
+      drawAll();
+    });
+  });
+}
+
+function bindModelPills(){
+  document.querySelectorAll('#modelPills .pill').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      document.querySelectorAll('#modelPills .pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      curModel = p.dataset.model;
       drawAll();
     });
   });
@@ -236,24 +254,24 @@ function statsForArr(arr){
 function drawStatsTable(){
   const ts = DATA.ts; const [dates] = sliceWindow(ts.dates, []);
   const startIdx = ts.dates.indexOf(dates[0]);
+  const modelLabel = (curModel === 'brw') ? 'BRW' : 'ACM';
+  const titleEl = document.getElementById('statsTitle');
+  if (titleEl) titleEl.textContent = `PL term-premium statistics by horizon — ${modelLabel}`;
   const rows = [];
   HORIZONS.forEach(h => {
-    const acm = ts[`tp${h.replace('y','')}_acm_bp`].slice(startIdx);
-    const brw = ts[`tp${h.replace('y','')}_brw_bp`].slice(startIdx);
-    rows.push({ h, acm: statsForArr(acm), brw: statsForArr(brw) });
+    const ser = ts[`tp${h.replace('y','')}_${curModel}_bp`].slice(startIdx);
+    rows.push({ h, st: statsForArr(ser) });
   });
-  let html = '<thead><tr><th class="lbl">Horizon</th><th>n</th>'
-    + '<th>ACM min</th><th>ACM max</th><th>ACM mean</th><th>ACM std</th><th>ACM last</th><th>ACM % rank</th>'
-    + '<th>BRW min</th><th>BRW max</th><th>BRW mean</th><th>BRW std</th><th>BRW last</th><th>BRW % rank</th></tr></thead><tbody>';
+  let html = '<thead><tr><th class="lbl">Horizon</th>'
+    + `<th>${modelLabel} min</th><th>${modelLabel} max</th><th>${modelLabel} mean</th><th>${modelLabel} std</th><th>${modelLabel} last</th><th>${modelLabel} % rank</th>`
+    + '</tr></thead><tbody>';
   rows.forEach(r => {
-    if (!r.acm || !r.brw){ return; }
+    if (!r.st){ return; }
     const sel = (r.h === curHorizon) ? ' class="selected"' : '';
-    const pctBarA = `${r.acm.pct.toFixed(0)}%<span class="pct-bar"><span class="fill" style="width:${r.acm.pct.toFixed(0)}%"></span></span>`;
-    const pctBarB = `${r.brw.pct.toFixed(0)}%<span class="pct-bar"><span class="fill" style="width:${r.brw.pct.toFixed(0)}%"></span></span>`;
+    const pctBar = `${r.st.pct.toFixed(0)}%<span class="pct-bar"><span class="fill" style="width:${r.st.pct.toFixed(0)}%"></span></span>`;
     html += `<tr data-h="${r.h}"${sel}>`
-      + `<td class="lbl">${r.h}</td><td>${r.acm.n}</td>`
-      + `<td>${r.acm.min.toFixed(0)}</td><td>${r.acm.max.toFixed(0)}</td><td>${r.acm.mean.toFixed(0)}</td><td>${r.acm.sd.toFixed(0)}</td><td><b>${r.acm.last.toFixed(0)}</b></td><td>${pctBarA}</td>`
-      + `<td>${r.brw.min.toFixed(0)}</td><td>${r.brw.max.toFixed(0)}</td><td>${r.brw.mean.toFixed(0)}</td><td>${r.brw.sd.toFixed(0)}</td><td><b>${r.brw.last.toFixed(0)}</b></td><td>${pctBarB}</td>`
+      + `<td class="lbl">${r.h}</td>`
+      + `<td>${r.st.min.toFixed(0)}</td><td>${r.st.max.toFixed(0)}</td><td>${r.st.mean.toFixed(0)}</td><td>${r.st.sd.toFixed(0)}</td><td><b>${r.st.last.toFixed(0)}</b></td><td>${pctBar}</td>`
       + `</tr>`;
   });
   html += '</tbody>';

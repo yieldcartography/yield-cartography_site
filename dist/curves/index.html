@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Yield curves — yieldcartography</title>
 <meta name="description" content="Interactive Polish sovereign zero-coupon yield curve dashboard, 2005-2026, with NSS-fitted parameters, bond bubbles, forwards, NBP forecasters, US/EA comparison, PCA loadings, and CSV downloads.">
-<link rel="stylesheet" href="/assets/style.css?v=2">
-<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=2">
+<link rel="stylesheet" href="/assets/style.css?v=4">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=4">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
@@ -55,7 +55,7 @@
 <body>
 
 <header class="site-header">
-  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=2" alt="yieldcartography"></a>
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=4" alt="yieldcartography"></a>
   <nav>
     <a href="/">home</a>
     <a href="/curves/" class="active">curves</a>
@@ -176,7 +176,7 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li></ul></div>
-    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li><li><a href="https://github.com/yieldcartography/yield-cartography_site">GitHub repository</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
   </div>
   <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · <span id="buildBadge">data: loading…</span></div>
@@ -202,11 +202,18 @@ function nss_y(tau, b0, b1, b2, b3, t1, t2) {
 }
 function curveGrid() { const g=[]; for(let t=0.1;t<=15.0;t+=0.1) g.push(+t.toFixed(2)); return g; }
 function fmtPct(x){ return (x===null||x===undefined)?'—':(+x).toFixed(2)+'%'; }
-function segClass(seg){ if(!seg) return 'seg-short';
+function segClass(seg, ttm){
+  // Prefer TTM-based classification; fall back to segment string parsing.
+  if (typeof ttm === 'number'){
+    if (ttm <= 1.5) return 'seg-short';
+    if (ttm >  7.0) return 'seg-long';
+    return 'seg-belly';
+  }
+  if(!seg) return 'seg-short';
   const m = seg.match(/\(([\d\.]+),\s*([\d\.]+)\]/); if(!m) return 'seg-short';
   const lo = parseFloat(m[1]); const hi = parseFloat(m[2]);
   if (hi <= 1.5) return 'seg-short';
-  if (lo >= 7.0) return 'seg-long';
+  if (lo >= 6.0) return 'seg-long';
   return 'seg-belly';
 }
 function downloadCSV(filename, rows){
@@ -317,7 +324,7 @@ function drawSnapCurve(s){
   traces.push({ x: grid, y: yfit, mode:'lines', line:{color:PALETTE.accent,width:2.6}, name:'NSS', hovertemplate:'%{x:.2f}y · %{y:.2f}%<extra></extra>', showlegend:false });
   if (s.bonds && s.bonds.length){
     const buckets = { short:[], belly:[], long:[] };
-    s.bonds.forEach(b => { const c=segClass(b.segment); const k=c==='seg-belly'?'belly':c==='seg-long'?'long':'short'; buckets[k].push(b); });
+    s.bonds.forEach(b => { const c=segClass(b.segment, b.ttm); const k=c==='seg-belly'?'belly':c==='seg-long'?'long':'short'; buckets[k].push(b); });
     const map = { short:{color:PALETTE.short}, belly:{color:PALETTE.accent}, long:{color:PALETTE.salmon} };
     Object.keys(buckets).forEach(k=>{
       const arr = buckets[k]; if(!arr.length) return;
@@ -391,7 +398,7 @@ function drawBondTable(s){
   sorted.forEach(b => {
     const tr = document.createElement('tr');
     if (b.isin === selectedISIN) tr.classList.add('selected');
-    const segCls = segClass(b.segment);
+    const segCls = segClass(b.segment, b.ttm);
     tr.innerHTML = `<td class="lbl">${b.isin}</td><td class="lbl">${b.name}</td><td>${b.ttm.toFixed(2)}</td><td>${b.ytm.toFixed(2)}</td><td>${(b.out||0).toFixed(1)}</td><td>${(b.turnover||0).toFixed(2)}</td><td class="lbl ${segCls}">${b.segment||'—'}</td>`;
     tr.addEventListener('click', ()=>{ selectedISIN = b.isin; drawSnapCurve(s); drawBondTable(s); drawBondHist(); });
     tbody.appendChild(tr);
