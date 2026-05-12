@@ -127,6 +127,55 @@
 
   </div>
 
+  <h2 class="with-rule" style="margin-top:28px">Secondary-market turnover</h2>
+  <p style="color:var(--muted);margin:0 0 14px 0;font-size:13px">Monthly turnover decomposition by maturity segment, BondSpot venue share of the total, and a per-bond drill-down. Min-Fin total is the universe of secondary-market trades reported by KDPW to the Polish Ministry of Finance; BondSpot is the regulated-venue subset only.</p>
+
+  <div class="control-row">
+    <span class="label-mono">Source:</span>
+    <div class="pill-row" id="tovSourcePills" style="margin:0">
+      <span class="pill active" data-tov="minfin">Min-Fin total</span>
+      <span class="pill" data-tov="bspot">BondSpot venue</span>
+    </div>
+  </div>
+
+  <div class="grid-2">
+
+    <div class="panel">
+      <div class="panel-head-row">
+        <h3 style="margin:0" id="tovSegTitle">Monthly turnover by segment — Min-Fin total</h3>
+        <button class="csv-btn" id="csvTurnoverSeg">CSV</button>
+      </div>
+      <p class="note">Sum of monthly turnover in PLN bn, stacked by maturity segment. Short ≤1.5y, belly 1.5–7y, long &gt;7y. Segments computed at month-start TTM, so bonds migrate between buckets as they age.</p>
+      <div id="tovSegChart" class="plot-frame tall"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head-row">
+        <h3 style="margin:0">BondSpot venue share of total secondary turnover</h3>
+        <button class="csv-btn" id="csvTurnoverShare">CSV</button>
+      </div>
+      <p class="note">BondSpot venue monthly turnover divided by the Min-Fin total for the same month, in percent. Tells you how much of the Polish sovereign secondary-market flow goes through the BondSpot regulated venue versus elsewhere (interbank, broker-dealer networks, foreign venues).</p>
+      <div id="tovShareChart" class="plot-frame tall"></div>
+    </div>
+
+    <div class="panel full">
+      <div class="panel-head-row">
+        <h3 style="margin:0">Per-bond monthly turnover history</h3>
+        <button class="csv-btn" id="csvTurnoverBond">CSV</button>
+      </div>
+      <p class="note">Monthly turnover history for a chosen bond, Min-Fin total versus BondSpot venue side by side. The "Live only" toggle hides bonds that have already matured.</p>
+      <div class="control-row" style="margin-top:6px">
+        <span class="label-mono">Bond:</span>
+        <select id="tovBondSelect" style="font-family:var(--mono);font-size:12px;padding:5px 10px;border:1px solid var(--rule);border-radius:4px;background:#fff;color:var(--ink);min-width:280px"></select>
+        <label style="font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;margin-left:14px">
+          <input type="checkbox" id="tovLiveOnly" checked> Live only
+        </label>
+      </div>
+      <div id="tovBondChart" class="plot-frame tall" style="margin-top:8px"></div>
+    </div>
+
+  </div>
+
   <div class="panel" style="margin-top:18px">
     <div class="panel-head-row">
       <h3 style="margin:0">Aggregate price of liquidity (debt &amp; macro on BAS, TP)</h3>
@@ -249,6 +298,32 @@ function bindCsvButtons(){
     }
     downloadCSV('yc_liquidity_full_panel.csv', rows, 'Liquidity panel (monthly): BAS p25/med/p75, ZTD, composite z, Amihud, Roll, Corwin-Schultz, n_bonds');
   });
+  document.getElementById('csvTurnoverSeg').addEventListener('click', ()=>{
+    const tp = DATA.turnover_panel; if (!tp){ alert('Turnover panel not built.'); return; }
+    const src = curTovSource;
+    const rows = [['month', src + '_short_bn', src + '_belly_bn', src + '_long_bn', src + '_total_bn']];
+    for (let i=0; i<tp.months.length; i++){
+      rows.push([tp.months[i], tp[`${src}_short_bn`][i], tp[`${src}_belly_bn`][i], tp[`${src}_long_bn`][i], tp[`${src}_total_bn`][i]]);
+    }
+    downloadCSV('yc_turnover_segment_' + src + '.csv', rows, 'Monthly turnover by segment (' + (src==='minfin'?'Min-Fin total':'BondSpot venue') + ')');
+  });
+  document.getElementById('csvTurnoverShare').addEventListener('click', ()=>{
+    const tp = DATA.turnover_panel; if (!tp){ alert('Turnover panel not built.'); return; }
+    const rows = [['month','bspot_share_pct','minfin_total_bn','bspot_total_bn']];
+    for (let i=0; i<tp.months.length; i++){
+      rows.push([tp.months[i], tp.bspot_share_pct[i], tp.minfin_total_bn[i], tp.bspot_total_bn[i]]);
+    }
+    downloadCSV('yc_turnover_bspot_share.csv', rows, 'BondSpot venue share of Min-Fin total secondary turnover, monthly');
+  });
+  document.getElementById('csvTurnoverBond').addEventListener('click', ()=>{
+    const tp = DATA.turnover_panel; if (!tp || !curTovBond){ alert('Select a bond first.'); return; }
+    const e = tp.per_bond[curTovBond];
+    const rows = [['month','isin','name','minfin_bn','bspot_bn']];
+    for (let i=0; i<e.months.length; i++){
+      rows.push([e.months[i], curTovBond, e.name, e.minfin_bn[i], e.bspot_bn[i]]);
+    }
+    downloadCSV('yc_turnover_' + curTovBond + '.csv', rows, 'Monthly turnover history for ' + e.name + ' (' + curTovBond + ')');
+  });
   document.getElementById('csvRegTable').addEventListener('click', ()=>{
     // Static table — read it from the DOM so any future edits stay in sync.
     const tbl = document.querySelector('.panel-head-row + p + .bond-table, .panel-head-row ~ div .bond-table');
@@ -282,6 +357,10 @@ function initStats(){
   document.getElementById('stat-cz').textContent = (liq.composite_z[liq.composite_z.length-1] || 0).toFixed(2);
 }
 
+let curTovSource = 'minfin';
+let curTovBond = null;
+let curTovLiveOnly = true;
+
 function bindPills(){
   document.querySelectorAll('#winPills .pill').forEach(p=>{
     p.addEventListener('click', ()=>{
@@ -291,6 +370,90 @@ function bindPills(){
       drawAll();
     });
   });
+  document.querySelectorAll('#tovSourcePills .pill').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      document.querySelectorAll('#tovSourcePills .pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      curTovSource = p.dataset.tov;
+      drawTurnoverSeg();
+    });
+  });
+  const sel = document.getElementById('tovBondSelect');
+  if (sel) sel.addEventListener('change', () => { curTovBond = sel.value; drawTurnoverBond(); });
+  const lo = document.getElementById('tovLiveOnly');
+  if (lo) lo.addEventListener('change', () => { curTovLiveOnly = lo.checked; populateBondSelect(); drawTurnoverBond(); });
+}
+
+function populateBondSelect(){
+  const sel = document.getElementById('tovBondSelect');
+  if (!sel || !DATA.turnover_panel || !DATA.turnover_panel.per_bond) return;
+  const pb = DATA.turnover_panel.per_bond;
+  const isins = Object.keys(pb).filter(k => !curTovLiveOnly || pb[k].live);
+  // Sort live bonds first, then by name
+  isins.sort((a, b) => {
+    const la = pb[a].live ? 0 : 1, lb = pb[b].live ? 0 : 1;
+    if (la !== lb) return la - lb;
+    return (pb[a].name || '').localeCompare(pb[b].name || '');
+  });
+  const prev = sel.value;
+  sel.innerHTML = isins.map(k => {
+    const e = pb[k];
+    const tag = e.live ? '' : '  (matured)';
+    return `<option value="${k}">${e.name || k} · ${k}${tag}</option>`;
+  }).join('');
+  if (isins.includes(prev)) sel.value = prev;
+  else if (isins.length) sel.value = isins[0];
+  curTovBond = sel.value;
+}
+
+function drawTurnoverSeg(){
+  const tp = DATA.turnover_panel;
+  if (!tp){ return; }
+  const src = curTovSource; // 'minfin' or 'bspot'
+  const titleSrc = (src === 'minfin') ? 'Min-Fin total' : 'BondSpot venue';
+  document.getElementById('tovSegTitle').textContent = 'Monthly turnover by segment — ' + titleSrc;
+  const months = tp.months;
+  const short = tp[`${src}_short_bn`];
+  const belly = tp[`${src}_belly_bn`];
+  const longS = tp[`${src}_long_bn`];
+  const traces = [
+    { x:months, y:short, name:'short ≤1.5y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.short,width:0.6}, fillcolor:'rgba(136,136,136,0.55)', hovertemplate:'%{x} · short %{y:.2f} bn<extra></extra>' },
+    { x:months, y:belly, name:'belly 1.5-7y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.accent,width:0.6}, fillcolor:'rgba(31,78,121,0.55)', hovertemplate:'%{x} · belly %{y:.2f} bn<extra></extra>' },
+    { x:months, y:longS, name:'long >7y',    type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.salmon,width:0.6}, fillcolor:'rgba(194,82,45,0.55)', hovertemplate:'%{x} · long %{y:.2f} bn<extra></extra>' },
+  ];
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.yaxis.title = { text:'monthly turnover (PLN bn)', font:FONT_MONO };
+  lay.legend = { orientation:'h', y:1.08, x:0, font:FONT_MONO };
+  Plotly.react('tovSegChart', traces, lay, CFG);
+}
+
+function drawTurnoverShare(){
+  const tp = DATA.turnover_panel;
+  if (!tp){ return; }
+  const traces = [
+    { x:tp.months, y:tp.bspot_share_pct, mode:'lines', line:{color:PALETTE.accent,width:1.8}, name:'BondSpot share (%)', hovertemplate:'%{x} · %{y:.1f}%<extra></extra>' }
+  ];
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.yaxis.title = { text:'BondSpot share of Min-Fin total (%)', font:FONT_MONO };
+  lay.shapes = [{ type:'line', xref:'paper', x0:0, x1:1, y0:0, y1:0, line:{color:'#bbb',width:1,dash:'dot'} }];
+  Plotly.react('tovShareChart', traces, lay, CFG);
+}
+
+function drawTurnoverBond(){
+  const tp = DATA.turnover_panel;
+  if (!tp || !tp.per_bond || !curTovBond){ Plotly.react('tovBondChart', [], PLOT_BASE, CFG); return; }
+  const e = tp.per_bond[curTovBond];
+  if (!e){ Plotly.react('tovBondChart', [], PLOT_BASE, CFG); return; }
+  const traces = [
+    { x:e.months, y:e.minfin_bn, mode:'lines+markers', line:{color:PALETTE.accent,width:1.8}, marker:{size:5,color:PALETTE.accent}, name:'Min-Fin total (bn)', hovertemplate:'%{x} · Min-Fin %{y:.3f} bn<extra></extra>' },
+    { x:e.months, y:e.bspot_bn,  mode:'lines+markers', line:{color:PALETTE.salmon,width:1.5,dash:'dot'}, marker:{size:5,color:PALETTE.salmon,symbol:'square-open'}, name:'BondSpot venue (bn)', hovertemplate:'%{x} · BondSpot %{y:.3f} bn<extra></extra>' },
+  ];
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.yaxis.title = { text:'monthly turnover (PLN bn)', font:FONT_MONO };
+  lay.legend = { orientation:'h', y:1.08, x:0, font:FONT_MONO };
+  lay.title = { text: e.name + ' · ' + e.isin + (e.live ? '' : '  (matured)'),
+                font:{family:FONT_BODY.family, size:12, color:PALETTE.accent}, x:0, xanchor:'left' };
+  Plotly.react('tovBondChart', traces, lay, CFG);
 }
 
 function sliceWindow(dates, ...arrs){
@@ -310,14 +473,21 @@ function sliceWindow(dates, ...arrs){
 
 function drawAll(){
   const liq = DATA.liquidity;
-  if (!liq) return;
-  drawBasChart(liq);
-  drawZtdChart(liq);
-  drawCzChart(liq);
-  drawSimple('amihudChart', liq, 'amihud_med', 'Amihud (median)', PALETTE.accent);
-  drawSimple('rollChart', liq, 'roll_med', 'Roll (median)', PALETTE.salmon);
-  drawSimple('csChart', liq, 'cs_med', 'Corwin-Schultz (median)', PALETTE.green);
-  drawSimple('nbondsChart', liq, 'n_bonds', 'bonds', PALETTE.short);
+  if (liq){
+    drawBasChart(liq);
+    drawZtdChart(liq);
+    drawCzChart(liq);
+    drawSimple('amihudChart', liq, 'amihud_med', 'Amihud (median)', PALETTE.accent);
+    drawSimple('rollChart', liq, 'roll_med', 'Roll (median)', PALETTE.salmon);
+    drawSimple('csChart', liq, 'cs_med', 'Corwin-Schultz (median)', PALETTE.green);
+    drawSimple('nbondsChart', liq, 'n_bonds', 'bonds', PALETTE.short);
+  }
+  if (DATA.turnover_panel){
+    drawTurnoverSeg();
+    drawTurnoverShare();
+    populateBondSelect();
+    drawTurnoverBond();
+  }
 }
 
 function drawBasChart(liq){
