@@ -160,6 +160,15 @@
 
     <div class="panel full">
       <div class="panel-head-row">
+        <h3 style="margin:0">Outstanding stock by segment (PLN bn)</h3>
+        <button class="csv-btn" id="csvOutstanding">CSV</button>
+      </div>
+      <p class="note">Polish State Treasury bond stock outstanding at end of month, stacked by maturity segment using TTM at month-start. Short ≤1.5y, belly 1.5–7y, long &gt;7y. The total reflects the universe in the BondSpot panel (active sovereign bonds with at least one fixing recorded that month). Auctions add to the stock, redemptions remove from it, segment migrations move stock from long → belly → short as bonds age.</p>
+      <div id="outstandingChart" class="plot-frame tall"></div>
+    </div>
+
+    <div class="panel full">
+      <div class="panel-head-row">
         <h3 style="margin:0">Per-bond monthly turnover history</h3>
         <button class="csv-btn" id="csvTurnoverBond">CSV</button>
       </div>
@@ -315,6 +324,16 @@ function bindCsvButtons(){
     }
     downloadCSV('yc_turnover_bspot_share.csv', rows, 'BondSpot venue share of Min-Fin total secondary turnover, monthly');
   });
+  document.getElementById('csvOutstanding').addEventListener('click', ()=>{
+    const tp = DATA.turnover_panel;
+    if (!tp || !tp.outstanding){ alert('Outstanding panel not built.'); return; }
+    const o = tp.outstanding;
+    const rows = [['month','short_bn','belly_bn','long_bn','total_bn']];
+    for (let i=0; i<o.months.length; i++){
+      rows.push([o.months[i], o.short_bn[i], o.belly_bn[i], o.long_bn[i], o.total_bn[i]]);
+    }
+    downloadCSV('yc_outstanding_by_segment.csv', rows, 'Polish T-bond outstanding stock by segment, end-of-month');
+  });
   document.getElementById('csvTurnoverBond').addEventListener('click', ()=>{
     const tp = DATA.turnover_panel; if (!tp || !curTovBond){ alert('Select a bond first.'); return; }
     const e = tp.per_bond[curTovBond];
@@ -412,10 +431,15 @@ function drawTurnoverSeg(){
   const src = curTovSource; // 'minfin' or 'bspot'
   const titleSrc = (src === 'minfin') ? 'Min-Fin total' : 'BondSpot venue';
   document.getElementById('tovSegTitle').textContent = 'Monthly turnover by segment — ' + titleSrc;
-  const months = tp.months;
-  const short = tp[`${src}_short_bn`];
-  const belly = tp[`${src}_belly_bn`];
-  const longS = tp[`${src}_long_bn`];
+  // Trim trailing zero months for the SELECTED source so the chart doesn't
+  // collapse at the right edge for months the source hasn't published yet.
+  const total = tp[`${src}_total_bn`];
+  const last = _lastNonZeroIdx(total);
+  const cut = (last >= 0 && last < total.length - 1) ? last + 1 : total.length;
+  const months = tp.months.slice(0, cut);
+  const short = tp[`${src}_short_bn`].slice(0, cut);
+  const belly = tp[`${src}_belly_bn`].slice(0, cut);
+  const longS = tp[`${src}_long_bn`].slice(0, cut);
   const traces = [
     { x:months, y:short, name:'short ≤1.5y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.short,width:0.6}, fillcolor:'rgba(136,136,136,0.55)', hovertemplate:'%{x} · short %{y:.2f} bn<extra></extra>' },
     { x:months, y:belly, name:'belly 1.5-7y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.accent,width:0.6}, fillcolor:'rgba(31,78,121,0.55)', hovertemplate:'%{x} · belly %{y:.2f} bn<extra></extra>' },
@@ -427,11 +451,41 @@ function drawTurnoverSeg(){
   Plotly.react('tovSegChart', traces, lay, CFG);
 }
 
+function drawOutstanding(){
+  const tp = DATA.turnover_panel;
+  if (!tp || !tp.outstanding) return;
+  const o = tp.outstanding;
+  // Trim trailing zero months (outstanding panel already trims server-side,
+  // but be safe).
+  const last = _lastNonZeroIdx(o.total_bn);
+  const cut = (last >= 0 && last < o.total_bn.length - 1) ? last + 1 : o.total_bn.length;
+  const months = o.months.slice(0, cut);
+  const short = o.short_bn.slice(0, cut);
+  const belly = o.belly_bn.slice(0, cut);
+  const longS = o.long_bn.slice(0, cut);
+  const traces = [
+    { x:months, y:short, name:'short ≤1.5y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.short,width:0.6}, fillcolor:'rgba(136,136,136,0.55)', hovertemplate:'%{x} · short %{y:.1f} bn<extra></extra>' },
+    { x:months, y:belly, name:'belly 1.5-7y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.accent,width:0.6}, fillcolor:'rgba(31,78,121,0.55)', hovertemplate:'%{x} · belly %{y:.1f} bn<extra></extra>' },
+    { x:months, y:longS, name:'long >7y',    type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.salmon,width:0.6}, fillcolor:'rgba(194,82,45,0.55)', hovertemplate:'%{x} · long %{y:.1f} bn<extra></extra>' },
+  ];
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.yaxis.title = { text:'outstanding stock (PLN bn)', font:FONT_MONO };
+  lay.legend = { orientation:'h', y:1.08, x:0, font:FONT_MONO };
+  Plotly.react('outstandingChart', traces, lay, CFG);
+}
+
 function drawTurnoverShare(){
   const tp = DATA.turnover_panel;
   if (!tp){ return; }
+  // Show share only on months where Min-Fin has reported (avoids spurious
+  // 100%+ readings when Min-Fin is 0 and BondSpot is partial).
+  const mfTotal = tp.minfin_total_bn;
+  const last = _lastNonZeroIdx(mfTotal);
+  const cut = (last >= 0 && last < mfTotal.length - 1) ? last + 1 : mfTotal.length;
+  const months = tp.months.slice(0, cut);
+  const share = tp.bspot_share_pct.slice(0, cut);
   const traces = [
-    { x:tp.months, y:tp.bspot_share_pct, mode:'lines', line:{color:PALETTE.accent,width:1.8}, name:'BondSpot share (%)', hovertemplate:'%{x} · %{y:.1f}%<extra></extra>' }
+    { x:months, y:share, mode:'lines', line:{color:PALETTE.accent,width:1.8}, name:'BondSpot share (%)', hovertemplate:'%{x} · %{y:.1f}%<extra></extra>' }
   ];
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:'BondSpot share of Min-Fin total (%)', font:FONT_MONO };
@@ -485,9 +539,18 @@ function drawAll(){
   if (DATA.turnover_panel){
     drawTurnoverSeg();
     drawTurnoverShare();
+    drawOutstanding();
     populateBondSelect();
     drawTurnoverBond();
   }
+}
+
+function _lastNonZeroIdx(arr){
+  for (let i = arr.length - 1; i >= 0; i--){
+    const v = arr[i];
+    if (v !== null && v !== undefined && +v > 0) return i;
+  }
+  return -1;
 }
 
 function drawBasChart(liq){
