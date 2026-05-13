@@ -26,6 +26,8 @@
 <meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
 <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
 <style>
+  .short-link { display: inline-block; padding: 8px 14px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; text-decoration: none; }
+  .short-link:hover { background: var(--accent); color: #fff; border-bottom: 1px solid var(--accent); }
   .plot-frame { width: 100%; height: 360px; }
   .plot-frame.tall { height: 460px; }
   .plot-frame.huge { height: 560px; }
@@ -72,8 +74,9 @@
 
   <h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Polish sovereign zero-coupon yield curve</h1>
   <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">Daily NSS-fitted curves, 2005-2026. Monthly snapshots with the underlying bond panel, 1y forwards, the NBP Survey of Professional Forecasters implied path, and US/euro-area comparison at 12 tenors. Click bonds to see their YTM history. Download the snapshot panel as CSV.</p>
+  <a class="short-link" href="/shorts/why-naive-nss/">Read the short — "Why naive Nelson-Siegel under-prices the Polish belly"</a>
 
-  <div class="stats">
+  <div class="stats" style="margin-top:18px">
     <div class="stat"><div class="label">Sample period</div><div class="value" id="stat-period">—</div><div class="delta">21 years of daily observations</div></div>
     <div class="stat"><div class="label">Daily fits</div><div class="value" id="stat-n">—</div><div class="delta">trading-day NSS estimates</div></div>
     <div class="stat"><div class="label">Snapshot date</div><div class="value" id="stat-snap">—</div><div class="delta" id="stat-snap-d">monthly viewer</div></div>
