@@ -171,10 +171,65 @@
 
   <section class="section">
     <h2 class="with-rule">Latest</h2>
-    <p>Daily snapshots updated through April 2026. Curves dashboard refreshed continuously. Term-premia dashboard refreshed weekly. Liquidity and EH-tests dashboards refreshed monthly. Working papers and publications listed on the about page.</p>
+    <p>Daily snapshots refreshed continuously. Curves and cross-country comparison panels refreshed daily. Term-premia dashboard refreshed weekly. Liquidity and EH-tests dashboards refreshed monthly. Working papers and publications listed on the about page.</p>
+  </section>
+
+  <section class="section" id="freshness">
+    <h2 class="with-rule">Data lineage &amp; freshness</h2>
+    <p style="color:var(--muted);margin:0 0 14px 0;font-size:13px">Most recent observation timestamp and source file for every upstream input feeding this site, refreshed on every build. The Polish-side feeds (BondSpot, Min-Fin, NBP) are scraped daily by the pipeline. The US (FRB GSW) and euro-area (ECB AAA) Svensson-parameter feeds are pulled daily from the Federal Reserve Board and the ECB Data Portal and then re-fitted onto the canonical zero-coupon grid.</p>
+    <div class="panel" style="background:#fafafa">
+      <div style="overflow-x:auto">
+        <table id="freshTable" style="width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11.5px"></table>
+      </div>
+    </div>
   </section>
 
 </main>
+
+<script>
+(async function(){
+  try {
+    const r = await fetch('/data/yields.json', {cache:'no-store'});
+    if (!r.ok) return;
+    const DATA = await r.json();
+    const f = DATA.freshness;
+    const el = document.getElementById('freshTable');
+    if (!el || !f) return;
+    const rows = [
+      ['bondspot_fixings',         'BondSpot fixings (price / bid / ask)'],
+      ['bondspot_turnover',        'BondSpot daily turnover (venue)'],
+      ['minfin_turnover',          'Min-Fin monthly turnover (Transakcje_po_seriach)'],
+      ['minfin_obligacje_hurtowe', 'Min-Fin auctions & outstanding (Obligacje_Hurtowe)'],
+      ['minfin_coupon_schedules',  'Min-Fin coupon schedules (kalkulatorodsetek)'],
+      ['nbp_reference_rate',       'NBP MPC reference rate'],
+      ['fed_gsw_curve',            'FRB GSW US Treasury Svensson curve'],
+      ['ecb_aaa_curve',            'ECB AAA euro-area Svensson curve'],
+      ['nss_curves',               'LW-NSS fitted Polish zero-coupon curves'],
+      ['acm_term_premia',          'ACM term-premia panel'],
+      ['brw_term_premia',          'BRW bias-corrected term premia'],
+    ];
+    let html = '<thead><tr style="background:#f0f0f0">'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Series</th>'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Latest observation</th>'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Source</th>'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Notes</th>'
+      + '</tr></thead><tbody>';
+    for (const [k, label] of rows){
+      const e = f[k]; if (!e) continue;
+      const latest = e.last_obs || e.last_change || e.last_auction || e.last_updated || e.last_ref_month || e.last_file || '';
+      const valStr = e.value ? ' (' + e.value + ')' : '';
+      html += '<tr>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#1a1a1a">' + label + '</td>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#1f4e79;font-weight:600">' + latest + valStr + '</td>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#6a6a6a">' + (e.source||'') + '</td>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#6a6a6a">' + (e.detail||'') + '</td>'
+        + '</tr>';
+    }
+    html += '</tbody>';
+    el.innerHTML = html;
+  } catch(_) { /* silent */ }
+})();
+</script>
 
 <footer class="site-footer">
   <div class="footer-inner">

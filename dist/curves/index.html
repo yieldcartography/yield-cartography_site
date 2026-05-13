@@ -186,13 +186,7 @@
 
   <p class="small-note">Methodology: liquidity-weighted Nelson-Siegel-Svensson (LW-NSS) on BondSpot venue closing fixings. Weights derived from Min-Fin disclosures of outstanding amounts and prior-month turnover. NBP Survey of Professional Forecasters implied path constructed from quarterly survey releases per PhD Chapter 5.4. US zeros from Gürkaynak-Sack-Wright. Euro-area zeros from the ECB AAA spot-rate database. PCA factors from the EH-paper panel. Build date 2026-05-10.</p>
 
-  <div class="panel" style="margin-top:24px; background:#fafafa">
-    <h3 style="margin:0 0 6px 0">Data lineage &amp; freshness</h3>
-    <p class="note" style="margin-bottom:10px">Most recent observation timestamp and source file for every input feeding this page. Useful for verifying which release of each upstream dataset a snapshot was built on.</p>
-    <div style="overflow-x:auto">
-      <table id="freshTable" style="width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11.5px"></table>
-    </div>
-  </div>
+  <p class="small-note" style="margin-top:24px">Source-by-source observation timestamps for every input feeding this page are listed in the <a href="/#freshness">Data lineage &amp; freshness</a> block on the home page.</p>
 
 </main>
 
@@ -428,10 +422,12 @@ function draw(){
   drawBondHist();
   drawTimeseries('tsPanelPL', document.querySelector('#tsPillsPL .pill.active').dataset.mode);
   drawTimeseries('tsPanelXM', document.querySelector('#tsPillsXM .pill.active').dataset.mode);
-  drawFreshness();
 }
 
-function drawFreshness(){
+function _unused_drawFreshness(){
+  // Retained as a no-op for backwards compatibility with older
+  // page snapshots; the live freshness table now lives on the home
+  // page at /#freshness.
   const f = DATA.freshness;
   const el = document.getElementById('freshTable');
   if (!el) return;
