@@ -392,6 +392,10 @@ details.intro,
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
+/* Topmost section now sits directly under the "Read the short" banner,
+   no H2 sectionTitle between them. Kill the dashboard's 14 px top
+   padding so the cards row hugs the banner. */
+.topBlock { padding-top: 0 !important; }
 
 /* --- top-level h2 section titles (TBSP-level / Per-bond) --- */
 h2.sectionTitle {
@@ -649,18 +653,12 @@ main .card:hover { transform: none !important; }
 
 
 <section class="topBlock">
-  <h2 class="sectionTitle">TBSP-level decomposition</h2>
   <div class="cardRow" id="cardRow"></div>
   <div class="chartCard">
-    <div class="panelHeadRow">
-      <div>
-        <div class="chartCardHead"><h3>TBSP as two sub-indices: CarryRoll and CurveMove</h3></div>
-        <div class="chartCardSub">Cumulative log-return contributions on the
-        published TBSP, in percentage points, quarterly grid. Each series
-        is re-anchored to zero at the start of the selected window.</div>
-      </div>
-      <button class="csvBtn" id="csvCards">CSV &mdash; tiles</button>
-    </div>
+    <div class="chartCardHead"><h3>TBSP as two sub-indices: CarryRoll and CurveMove</h3></div>
+    <div class="chartCardSub">Cumulative log-return contributions on the
+    published TBSP, in percentage points, quarterly grid. Each series
+    is re-anchored to zero at the start of the selected window.</div>
     <div class="windowSel" id="subIdxWin">
       <span class="lbl">Window:</span>
       <button data-win="full" class="active">Full sample</button>
@@ -1276,18 +1274,6 @@ function renderTopBlock() {
       btn.classList.add('active');
       drawSubIdxChart(btn.dataset.win);
     });
-  });
-
-  // CSV: tile values (KPI cards row).
-  const csvCardsBtn = document.getElementById('csvCards');
-  if (csvCardsBtn) csvCardsBtn.addEventListener('click', () => {
-    const rows = [['label', 'value', 'sub']].concat(cards.map(c => {
-      const lab = c.lab.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ');
-      const val = c.val.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ').trim();
-      const sub = c.sub.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ');
-      return [lab, val, sub];
-    }));
-    downloadCSV('total_return_tbsp_tiles.csv', rows, 'TBSP-level decomposition tiles');
   });
 
   // CSV: full sub-indices quarterly series (CarryRoll, CurveMove, CnvxRes, TrackGap, r_pub).
