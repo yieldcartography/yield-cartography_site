@@ -328,24 +328,37 @@
   }
 
 </style>
-<style>
-/* === site-style overrides for total-return dashboard ===
-   Appended AFTER the dashboard's own CSS so these rules win.
-   Aligns the wrapped page with the curves / term-premia / liquidity tabs.
+<style id="yc-tr-site-skin-v3">
+/* === yc-site total-return skin v3 (2026-05-26) ===
+   Sentinel: if you see "yc-tr-site-skin-v3" in view-source the new
+   stylesheet is live. Rules use site palette + spacing vocabulary so
+   the wrapped tab matches the curves / term-premia / liquidity look.
 */
 
-/* Unify the dashboard's CSS variables with the site palette. */
+/* --- palette unification: dashboard's vars -> site canonical vars --- */
 :root {
-  --line: #d8d8d8;
-  --tab-active: #1f4e79;
-  --row-hover: #f5f7fb;
-  --row-selected: #e8f0f7;
-  --fg: #1a1a1a;
+  --bg: #fafafa;
+  --panel: #ffffff;
+  --ink: #1a1a1a;
+  --ink-soft: #3a3a3a;
   --muted: #6a6a6a;
+  --rule: #d8d8d8;
+  --accent: #1f4e79;
+  --accent-soft: #2e75b6;
+  --accent-tint: #e8f0f7;
+  --salmon: #c2522d;
+  --green: #2e7d32;
+  --mono: 'JetBrains Mono','Fira Code','Source Code Pro',Menlo,Consolas,monospace;
+  /* Aliases so the dashboard's own rules pick up the site palette */
+  --line: var(--rule);
+  --tab-active: var(--accent);
+  --row-hover: #f5f7fb;
+  --row-selected: var(--accent-tint);
+  --fg: var(--ink);
 }
 
-/* Strip the dashboard's internal 22 px gutters: it now lives inside
-   <main style="padding:32px"> so those would double up. */
+/* --- strip the dashboard's internal 22 px gutters: now living inside
+       <main style="padding:32px">, so those would double up --- */
 .topBlock,
 details.intro,
 .sliderRow,
@@ -358,124 +371,234 @@ details.intro,
   padding-right: 0 !important;
 }
 
-/* Section headings (TBSP-level decomposition / Per-bond explorer). */
+/* --- top-level h2 section titles (TBSP-level / Per-bond) --- */
 h2.sectionTitle {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.3px;
-  margin: 22px 0 14px 0;
-  color: var(--fg);
+  margin: 28px 0 16px 0;
+  color: var(--ink);
 }
-h2.sectionTitle.sectionTitle-pad { margin-top: 32px; }
+h2.sectionTitle.sectionTitle-pad { margin-top: 36px; }
 
-/* TBSP card row mirrors the site .stat block (white panel,
-   accent-soft left bar). Force-disable the site-wide .card hover
-   transform that would otherwise leak onto these small KPIs. */
+/* --- TBSP card row matches site .stats exactly --- */
 .cardRow {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 14px;
-  margin: 14px 0 22px 0;
+  margin: 0 0 24px 0;
 }
 .cardRow .card {
-  background: #ffffff;
-  border: 1px solid var(--line);
-  border-left: 3px solid #2e75b6;
-  border-radius: 0;
-  padding: 12px 14px;
-  transition: none;
+  background: var(--panel) !important;
+  border: 1px solid var(--rule) !important;
+  border-left: 3px solid var(--accent-soft) !important;
+  border-radius: 0 !important;
+  padding: 12px 14px !important;
+  transition: none !important;
+  transform: none !important;
 }
 .cardRow .card:hover {
+  background: var(--panel) !important;
+  border-color: var(--rule) !important;
+  border-left-color: var(--accent-soft) !important;
   transform: none !important;
-  border-color: var(--line);
-  border-left-color: #2e75b6;
 }
-.cardRow .card .lab { font-family: 'JetBrains Mono','Fira Code',Menlo,Consolas,monospace; font-size: 10px; letter-spacing: 0.6px; color: var(--muted); }
-.cardRow .card .val { font-size: 20px; font-weight: 600; color: var(--fg); }
-.cardRow .card .sub { font-size: 11px; color: var(--muted); }
+.cardRow .card .lab {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.cardRow .card .val {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 2px;
+  line-height: 1.2;
+}
+.cardRow .card .sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+  font-weight: 400;
+}
 
-/* Charts wrapped in a site .panel-style card. */
+/* --- chart cards become site .panel boxes --- */
 .chartCard {
-  background: #ffffff;
-  border: 1px solid var(--line);
+  background: var(--panel);
+  border: 1px solid var(--rule);
   border-radius: 4px;
   padding: 16px 18px;
   margin: 0 0 18px 0;
 }
 .chartCardHead h3 {
-  font-family: 'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+  font-family: var(--mono);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  color: var(--tab-active);
+  color: var(--accent);
   margin: 0 0 4px 0;
 }
-.chartCardSub { font-size: 12.5px; color: var(--muted); margin: 0 0 10px 0; line-height: 1.5; }
-
-/* Window pills row: keep dashboard's rounded-full look, just align
-   the label mono font and casing to the rest of the site. */
-.windowSel .lbl {
-  font-family: 'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
-  font-size: 11px;
-  letter-spacing: 0.5px;
+.chartCardSub {
+  font-size: 12.5px;
   color: var(--muted);
+  margin: 0 0 10px 0;
+  line-height: 1.5;
 }
 
-/* "How to read this page" disclosure box. */
+/* --- window/model pills match the term-premia .pill style --- */
+.windowSel {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  margin: 6px 0 12px 0;
+}
+.windowSel .lbl {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  margin-right: 6px;
+}
+.windowSel button {
+  font-family: var(--mono) !important;
+  font-size: 10.5px !important;
+  font-weight: 500 !important;
+  padding: 4px 11px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--rule) !important;
+  background: var(--panel) !important;
+  color: var(--ink-soft) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.windowSel button:hover {
+  background: var(--accent-tint) !important;
+  color: var(--accent) !important;
+  border-color: var(--accent-soft) !important;
+}
+.windowSel button.active {
+  background: var(--accent) !important;
+  color: #ffffff !important;
+  border-color: var(--accent) !important;
+}
+
+/* --- "How to read this page" disclosure box becomes a site panel --- */
 details.intro {
-  background: #ffffff;
-  border: 1px solid var(--line);
-  border-radius: 4px;
+  background: var(--panel) !important;
+  border: 1px solid var(--rule) !important;
+  border-radius: 4px !important;
   padding: 14px 18px !important;
   margin: 0 0 18px 0 !important;
 }
-details.intro > summary { color: var(--tab-active); }
+details.intro > summary {
+  color: var(--accent) !important;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+details.intro h4 { color: var(--accent) !important; }
+details.intro table.glossary td.code { color: var(--accent) !important; }
 
-/* Slider row reads as a site panel. */
+/* --- slider row reads as a site panel --- */
 .sliderRow {
-  background: #ffffff;
-  border: 1px solid var(--line);
-  border-radius: 4px;
+  background: var(--panel) !important;
+  border: 1px solid var(--rule) !important;
+  border-radius: 4px !important;
   padding: 14px 18px !important;
   margin: 0 0 14px 0 !important;
 }
-.sliderRow label, .sliderRow .dateLabel { color: var(--tab-active); }
-.sliderRow input[type=range] { accent-color: var(--tab-active); }
+.sliderRow label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted) !important;
+  font-weight: 500;
+}
+.sliderRow .dateLabel {
+  color: var(--accent) !important;
+  font-family: var(--mono);
+}
+.sliderRow .navBtn {
+  font-family: var(--mono);
+  font-size: 11px;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  border-radius: 3px;
+  padding: 3px 9px;
+  color: var(--ink-soft);
+}
+.sliderRow .navBtn:hover { background: var(--accent-tint); color: var(--accent); border-color: var(--accent-soft); }
+.sliderRow input[type=range] { accent-color: var(--accent); }
 
-/* Tab bar above last-quarter / lifetime tables. */
-.tabs { margin: 18px 0 0 0 !important; border-bottom: 1px solid var(--line); }
-.tab.active { color: var(--tab-active); border-color: var(--line); background: #ffffff; }
+/* --- tab bar above last-quarter / lifetime tables --- */
+.tabs {
+  margin: 18px 0 0 0 !important;
+  border-bottom: 1px solid var(--rule);
+}
+.tab {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted) !important;
+}
+.tab.active {
+  color: var(--accent) !important;
+  border-color: var(--rule) !important;
+  background: var(--panel) !important;
+}
 .tabPane { padding: 14px 0 0 0 !important; }
 
-/* Bond table inside the per-bond explorer. */
+/* --- bond table inside the per-bond explorer --- */
 .tableWrap {
-  border: 1px solid var(--line);
+  border: 1px solid var(--rule);
   border-radius: 4px;
-  background: #ffffff;
+  background: var(--panel);
 }
-table.bonds th { background: #f5f5f5; font-family: 'JetBrains Mono','Fira Code',Menlo,Consolas,monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+table.bonds th {
+  background: #f5f5f5 !important;
+  font-family: var(--mono) !important;
+  font-size: 10.5px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted) !important;
+  font-weight: 500 !important;
+}
 table.bonds tbody tr:hover { background: var(--row-hover); }
-table.bonds tbody tr.selected { background: var(--row-selected); }
+table.bonds tbody tr.selected { background: var(--accent-tint); }
 
-/* Chart panel below the selected bond row. */
+/* --- chart panel below the selected bond row --- */
 .chartHost {
-  background: #ffffff;
-  border: 1px solid var(--line);
+  background: var(--panel);
+  border: 1px solid var(--rule);
   border-radius: 4px;
   margin-top: 14px;
   padding: 14px 18px;
 }
 .chartHost h3 {
-  font-family: 'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+  font-family: var(--mono);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  color: var(--tab-active);
+  color: var(--accent) !important;
   margin: 0 0 4px 0;
 }
 .chartHost .sub { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+
+/* --- guard against the site-wide .card hover transform that targets
+       homepage navigation cards: in our context .card is used for the
+       small TBSP KPI tiles and should NOT lift on hover --- */
+main .card { transform: none !important; }
+main .card:hover { transform: none !important; }
 </style>
 </head>
 <body>
