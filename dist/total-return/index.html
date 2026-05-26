@@ -328,6 +328,155 @@
   }
 
 </style>
+<style>
+/* === site-style overrides for total-return dashboard ===
+   Appended AFTER the dashboard's own CSS so these rules win.
+   Aligns the wrapped page with the curves / term-premia / liquidity tabs.
+*/
+
+/* Unify the dashboard's CSS variables with the site palette. */
+:root {
+  --line: #d8d8d8;
+  --tab-active: #1f4e79;
+  --row-hover: #f5f7fb;
+  --row-selected: #e8f0f7;
+  --fg: #1a1a1a;
+  --muted: #6a6a6a;
+}
+
+/* Strip the dashboard's internal 22 px gutters: it now lives inside
+   <main style="padding:32px"> so those would double up. */
+.topBlock,
+details.intro,
+.sliderRow,
+.tabs,
+.tabPane,
+.sectionTitle-pad {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Section headings (TBSP-level decomposition / Per-bond explorer). */
+h2.sectionTitle {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin: 22px 0 14px 0;
+  color: var(--fg);
+}
+h2.sectionTitle.sectionTitle-pad { margin-top: 32px; }
+
+/* TBSP card row mirrors the site .stat block (white panel,
+   accent-soft left bar). Force-disable the site-wide .card hover
+   transform that would otherwise leak onto these small KPIs. */
+.cardRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  margin: 14px 0 22px 0;
+}
+.cardRow .card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-left: 3px solid #2e75b6;
+  border-radius: 0;
+  padding: 12px 14px;
+  transition: none;
+}
+.cardRow .card:hover {
+  transform: none !important;
+  border-color: var(--line);
+  border-left-color: #2e75b6;
+}
+.cardRow .card .lab { font-family: 'JetBrains Mono','Fira Code',Menlo,Consolas,monospace; font-size: 10px; letter-spacing: 0.6px; color: var(--muted); }
+.cardRow .card .val { font-size: 20px; font-weight: 600; color: var(--fg); }
+.cardRow .card .sub { font-size: 11px; color: var(--muted); }
+
+/* Charts wrapped in a site .panel-style card. */
+.chartCard {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 16px 18px;
+  margin: 0 0 18px 0;
+}
+.chartCardHead h3 {
+  font-family: 'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--tab-active);
+  margin: 0 0 4px 0;
+}
+.chartCardSub { font-size: 12.5px; color: var(--muted); margin: 0 0 10px 0; line-height: 1.5; }
+
+/* Window pills row: keep dashboard's rounded-full look, just align
+   the label mono font and casing to the rest of the site. */
+.windowSel .lbl {
+  font-family: 'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+
+/* "How to read this page" disclosure box. */
+details.intro {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 14px 18px !important;
+  margin: 0 0 18px 0 !important;
+}
+details.intro > summary { color: var(--tab-active); }
+
+/* Slider row reads as a site panel. */
+.sliderRow {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 14px 18px !important;
+  margin: 0 0 14px 0 !important;
+}
+.sliderRow label, .sliderRow .dateLabel { color: var(--tab-active); }
+.sliderRow input[type=range] { accent-color: var(--tab-active); }
+
+/* Tab bar above last-quarter / lifetime tables. */
+.tabs { margin: 18px 0 0 0 !important; border-bottom: 1px solid var(--line); }
+.tab.active { color: var(--tab-active); border-color: var(--line); background: #ffffff; }
+.tabPane { padding: 14px 0 0 0 !important; }
+
+/* Bond table inside the per-bond explorer. */
+.tableWrap {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #ffffff;
+}
+table.bonds th { background: #f5f5f5; font-family: 'JetBrains Mono','Fira Code',Menlo,Consolas,monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+table.bonds tbody tr:hover { background: var(--row-hover); }
+table.bonds tbody tr.selected { background: var(--row-selected); }
+
+/* Chart panel below the selected bond row. */
+.chartHost {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  margin-top: 14px;
+  padding: 14px 18px;
+}
+.chartHost h3 {
+  font-family: 'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--tab-active);
+  margin: 0 0 4px 0;
+}
+.chartHost .sub { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+</style>
 </head>
 <body>
 
