@@ -26,8 +26,6 @@
 <meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
 <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
 <style>
-  .short-link { display: inline-block; padding: 8px 14px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; text-decoration: none; }
-  .short-link:hover { background: var(--accent); color: #fff; border-bottom: 1px solid var(--accent); }
   .plot-frame { width: 100%; height: 360px; }
   .plot-frame.tall { height: 460px; }
   .plot-frame.huge { height: 560px; }
@@ -63,7 +61,6 @@
     <a href="/curves/" class="active">curves</a>
     <a href="/term-premia/">term premia</a>
     <a href="/liquidity/">liquidity</a>
-    <a href="/total-return/">total return</a>
     <a href="/eh-tests/">EH tests</a>
     <a href="/shorts/">shorts</a>
     <a href="/movies/">movies</a>
@@ -75,9 +72,8 @@
 
   <h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Polish sovereign zero-coupon yield curve</h1>
   <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">Daily NSS-fitted curves, 2005-2026. Monthly snapshots with the underlying bond panel, 1y forwards, the NBP Survey of Professional Forecasters implied path, and US/euro-area comparison at 12 tenors. Click bonds to see their YTM history. Download the snapshot panel as CSV.</p>
-  <a class="short-link" href="/shorts/why-naive-nss/">Read the short — "Why naive Nelson-Siegel under-prices the Polish belly"</a>
 
-  <div class="stats" style="margin-top:18px">
+  <div class="stats">
     <div class="stat"><div class="label">Sample period</div><div class="value" id="stat-period">—</div><div class="delta">21 years of daily observations</div></div>
     <div class="stat"><div class="label">Daily fits</div><div class="value" id="stat-n">—</div><div class="delta">trading-day NSS estimates</div></div>
     <div class="stat"><div class="label">Snapshot date</div><div class="value" id="stat-snap">—</div><div class="delta" id="stat-snap-d">monthly viewer</div></div>
@@ -115,10 +111,7 @@
   <div class="grid-2">
 
     <div class="panel">
-      <div class="panel-head-row">
-        <h3 style="margin:0">Forecast family — NSS forwards, ACM &amp; BRW rf, NBP SPF</h3>
-        <button class="csv-btn" id="csvFwd">CSV</button>
-      </div>
+      <h3>Forecast family — NSS forwards, ACM &amp; BRW rf, NBP SPF</h3>
       <p class="note">Four short-rate forecast paths overlaid: NSS 1-year-spaced forwards from the fitted curve, ACM expected average short rate (rf), BRW rf with the Bauer-Rudebusch-Wu bias correction, and the most recent NBP Survey of Professional Forecasters implied path. <span id="spfVintage" style="font-family:var(--mono);color:var(--accent);font-weight:600">SPF vintage: —</span></p>
       <div id="snapFwd" class="plot-frame"></div>
       <div class="legend-inline">
@@ -131,10 +124,7 @@
     </div>
 
     <div class="panel">
-      <div class="panel-head-row">
-        <h3 style="margin:0">Cross-country snapshot — full curve at all tenors</h3>
-        <button class="csv-btn" id="csvXsnap">CSV</button>
-      </div>
+      <h3>Cross-country snapshot — full curve at all tenors</h3>
       <p class="note">PL versus US (GSW Treasury) versus euro-area AAA zero-coupon yields at 3m, 6m, 1y, 2y, 3y, 4y, 5y, 6y, 7y, 8y, 9y, 10y on the snapshot date.</p>
       <div id="xcountrySnap" class="plot-frame"></div>
     </div>
@@ -151,19 +141,13 @@
     </div>
 
     <div class="panel full">
-      <div class="panel-head-row">
-        <h3 style="margin:0">Selected bond — YTM history</h3>
-        <button class="csv-btn" id="csvBondHist">CSV</button>
-      </div>
+      <h3>Selected bond — YTM history</h3>
       <p class="note" id="bondHistNote">Click a bond row above to load its weekly YTM history.</p>
       <div id="bondHist" class="plot-frame"></div>
     </div>
 
     <div class="panel full">
-      <div class="panel-head-row">
-        <h3 style="margin:0">Polish curve — time series</h3>
-        <button class="csv-btn" id="csvTsPl">CSV (full panel)</button>
-      </div>
+      <h3>Polish curve — time series</h3>
       <div class="pill-row" id="tsPillsPL">
         <span class="pill active" data-mode="zero">Zero rates 2y/5y/10y</span>
         <span class="pill" data-mode="beta">NSS betas</span>
@@ -175,10 +159,7 @@
     </div>
 
     <div class="panel full">
-      <div class="panel-head-row">
-        <h3 style="margin:0">Cross-country comparison — time series</h3>
-        <button class="csv-btn" id="csvTsXm">CSV</button>
-      </div>
+      <h3>Cross-country comparison — time series</h3>
       <div class="pill-row" id="tsPillsXM">
         <span class="pill active" data-mode="xcountry">PL vs US vs EA, 10y</span>
         <span class="pill" data-mode="xspread">PL vs US vs EA, 10y-2y spread</span>
@@ -190,13 +171,11 @@
 
   <p class="small-note">Methodology: liquidity-weighted Nelson-Siegel-Svensson (LW-NSS) on BondSpot venue closing fixings. Weights derived from Min-Fin disclosures of outstanding amounts and prior-month turnover. NBP Survey of Professional Forecasters implied path constructed from quarterly survey releases per PhD Chapter 5.4. US zeros from Gürkaynak-Sack-Wright. Euro-area zeros from the ECB AAA spot-rate database. PCA factors from the EH-paper panel. Build date 2026-05-10.</p>
 
-  <p class="small-note" style="margin-top:24px">Source-by-source observation timestamps for every input feeding this page are listed in the <a href="/#freshness">Data lineage &amp; freshness</a> block on the home page.</p>
-
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li></ul></div>
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
   </div>
@@ -237,19 +216,8 @@ function segClass(seg, ttm){
   if (lo >= 6.0) return 'seg-long';
   return 'seg-belly';
 }
-function csvCitation(chartLabel){
-  const today = new Date().toISOString().slice(0,10);
-  return [
-    '# Source: Marcin Dec, yieldcartography.com',
-    '# Downloaded: ' + today,
-    '# Page: /curves/  Chart: ' + chartLabel,
-    '# Citation: Dec, M. (2026). yieldcartography.com [computer-based research artifact]. Retrieved ' + today + '.'
-  ];
-}
-function downloadCSV(filename, rows, chartLabel){
-  const head = chartLabel ? csvCitation(chartLabel) : [];
-  const body = rows.map(r => r.map(v => (v===null||v===undefined)?'':String(v)).join(','));
-  const csv = head.concat(body).join('\n');
+function downloadCSV(filename, rows){
+  const csv = rows.map(r => r.map(v => (v===null||v===undefined)?'':String(v)).join(',')).join('\n');
   const blob = new Blob([csv], {type:'text/csv'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href=url; a.download=filename;
@@ -263,7 +231,7 @@ let selectedISIN = null;
 
 async function load(){
   // Cache-busted by schema version. Bump build.py schema_version to force a fresh fetch.
-  const r = await fetch('/data/yields.json?v=7');
+  const r = await fetch('/data/yields.json?v=7', { cache: 'force-cache' });
   DATA = await r.json();
   if (!DATA.meta || !DATA.meta.schema_version){
     console.warn('yields.json appears to be an older schema — some panels may render empty');
@@ -318,92 +286,13 @@ function bindCsvButtons(){
     const grid = curveGrid();
     const rows = [['maturity_years','nss_zero_pct']];
     grid.forEach(t => rows.push([t, (nss_y(t, s.beta0, s.beta1, s.beta2, s.beta3, s.tau1, s.tau2)*100).toFixed(4)]));
-    downloadCSV('yc_nss_curve_' + s.date + '.csv', rows, 'NSS-fitted zero curve, snapshot ' + s.date);
+    downloadCSV('nss_curve_' + s.date + '.csv', rows);
   });
   document.getElementById('csvBonds').addEventListener('click', ()=>{
     const s = DATA.snaps[curIdx];
     const rows = [['date','isin','series','ttm_years','ytm_pct','outstanding_pln_bn','turnover_prev_month_pln_bn','segment']];
     (s.bonds||[]).forEach(b => rows.push([s.date, b.isin, b.name, b.ttm, b.ytm, b.out, b.turnover, '"'+(b.segment||'')+'"']));
-    downloadCSV('yc_bond_panel_' + s.date + '.csv', rows, 'Bond panel on snapshot date ' + s.date);
-  });
-  document.getElementById('csvFwd').addEventListener('click', ()=>{
-    const s = DATA.snaps[curIdx];
-    const rows = [['horizon_years','nss_forward_pct','acm_rf_pct','brw_rf_bc_pct','nbp_spf_pct']];
-    // NSS forwards: 0.5, 1.5, 2.5, ...; ACM/BRW: integer tenors; SPF: 0.5, 1.5, 2.5, ...
-    const maxLen = Math.max((s.pl_fwds||[]).length, (s.rf_acm||[]).length, (s.rf_brw_bc||[]).length, (s.spf_path||[]).length);
-    for (let i=0; i<maxLen; i++){
-      const horizon = (i+0.5).toFixed(1);
-      rows.push([
-        horizon,
-        s.pl_fwds && s.pl_fwds[i]!=null ? s.pl_fwds[i].toFixed(4) : '',
-        s.rf_acm && s.rf_acm[i]!=null ? s.rf_acm[i].toFixed(4) : '',
-        s.rf_brw_bc && s.rf_brw_bc[i]!=null ? s.rf_brw_bc[i].toFixed(4) : '',
-        s.spf_path && s.spf_path[i]!=null ? s.spf_path[i].toFixed(4) : ''
-      ]);
-    }
-    downloadCSV('yc_forecast_family_' + s.date + '.csv', rows, 'Forecast family (NSS fwds, ACM rf, BRW rf BC, NBP SPF), snapshot ' + s.date + (s.spf_date ? ' (SPF vintage ' + s.spf_date + ')' : ''));
-  });
-  document.getElementById('csvXsnap').addEventListener('click', ()=>{
-    const s = DATA.snaps[curIdx];
-    const tenors = DATA.tenor_years;
-    const rows = [['tenor_years','pl_zero_pct','us_zero_pct','ea_aaa_zero_pct']];
-    tenors.forEach((t,i) => rows.push([t,
-      s.pl_curve && s.pl_curve[i]!=null ? s.pl_curve[i].toFixed(4) : '',
-      s.us_curve && s.us_curve[i]!=null ? s.us_curve[i].toFixed(4) : '',
-      s.ea_curve && s.ea_curve[i]!=null ? s.ea_curve[i].toFixed(4) : '']));
-    downloadCSV('yc_xcountry_snapshot_' + s.date + '.csv', rows, 'PL/US/EA zero-curve snapshot ' + s.date);
-  });
-  document.getElementById('csvBondHist').addEventListener('click', ()=>{
-    if (!selectedISIN || !DATA.bond_hist[selectedISIN]){ alert('Click a bond row above first to load its history.'); return; }
-    const h = DATA.bond_hist[selectedISIN];
-    const rows = [['date','isin','series','ttm_years','ytm_pct']];
-    for (let i=0; i<h.dates.length; i++){
-      rows.push([h.dates[i], selectedISIN, h.name, h.ttm[i]!=null ? h.ttm[i].toFixed(4) : '', h.ytm[i]!=null ? h.ytm[i].toFixed(4) : '']);
-    }
-    downloadCSV('yc_bond_history_' + selectedISIN + '.csv', rows, 'Weekly YTM history of ' + h.name + ' (' + selectedISIN + ')');
-  });
-  document.getElementById('csvTsPl').addEventListener('click', ()=>{
-    const ts = DATA.ts; const pca = DATA.pca;
-    const rows = [['date','y2_pct','y5_pct','y10_pct','beta0_pct','beta1_pct','beta2_pct','beta3_pct','tau1_years','tau2_years','mae_bp','n_bonds','pca_level','pca_slope','pca_curvature']];
-    const pcaIdx = {};
-    if (pca){ pca.dates.forEach((d,i) => { pcaIdx[d] = i; }); }
-    for (let i=0; i<ts.dates.length; i++){
-      const d = ts.dates[i]; const pi = pca ? pcaIdx[d] : undefined;
-      rows.push([
-        d,
-        ts.y2[i]!=null ? ts.y2[i].toFixed(4) : '',
-        ts.y5[i]!=null ? ts.y5[i].toFixed(4) : '',
-        ts.y10[i]!=null ? ts.y10[i].toFixed(4) : '',
-        ts.beta0[i]!=null ? ts.beta0[i].toFixed(4) : '',
-        ts.beta1[i]!=null ? ts.beta1[i].toFixed(4) : '',
-        ts.beta2[i]!=null ? ts.beta2[i].toFixed(4) : '',
-        ts.beta3[i]!=null ? ts.beta3[i].toFixed(4) : '',
-        ts.tau1[i]!=null ? ts.tau1[i].toFixed(4) : '',
-        ts.tau2[i]!=null ? ts.tau2[i].toFixed(4) : '',
-        ts.mae_bp[i]!=null ? ts.mae_bp[i].toFixed(2) : '',
-        ts.n_bonds[i]!=null ? ts.n_bonds[i] : '',
-        pca && pi!=null ? pca.level[pi].toFixed(4) : '',
-        pca && pi!=null ? pca.slope[pi].toFixed(4) : '',
-        pca && pi!=null ? pca.curvature[pi].toFixed(4) : ''
-      ]);
-    }
-    downloadCSV('yc_pl_curve_timeseries.csv', rows, 'Polish curve time series — zeros, NSS params, diagnostics, PCA factors');
-  });
-  document.getElementById('csvTsXm').addEventListener('click', ()=>{
-    const xc = DATA.xcountry_m;
-    if (!xc){ alert('Cross-country time series not available in this build.'); return; }
-    const rows = [['date','pl_10y_pct','us_10y_pct','ea_10y_pct','pl_10y_2y_pct','us_10y_2y_pct','ea_10y_2y_pct']];
-    for (let i=0; i<xc.dates.length; i++){
-      rows.push([xc.dates[i],
-        xc.pl_10y && xc.pl_10y[i]!=null ? xc.pl_10y[i].toFixed(4) : '',
-        xc.us_10y && xc.us_10y[i]!=null ? xc.us_10y[i].toFixed(4) : '',
-        xc.ea_10y && xc.ea_10y[i]!=null ? xc.ea_10y[i].toFixed(4) : '',
-        xc.pl_spread && xc.pl_spread[i]!=null ? xc.pl_spread[i].toFixed(4) : '',
-        xc.us_spread && xc.us_spread[i]!=null ? xc.us_spread[i].toFixed(4) : '',
-        xc.ea_spread && xc.ea_spread[i]!=null ? xc.ea_spread[i].toFixed(4) : ''
-      ]);
-    }
-    downloadCSV('yc_xcountry_10y_timeseries.csv', rows, 'PL/US/EA 10y level and 10y-2y spread time series');
+    downloadCSV('bond_panel_' + s.date + '.csv', rows);
   });
 }
 
@@ -426,46 +315,6 @@ function draw(){
   drawBondHist();
   drawTimeseries('tsPanelPL', document.querySelector('#tsPillsPL .pill.active').dataset.mode);
   drawTimeseries('tsPanelXM', document.querySelector('#tsPillsXM .pill.active').dataset.mode);
-}
-
-function _unused_drawFreshness(){
-  // Retained as a no-op for backwards compatibility with older
-  // page snapshots; the live freshness table now lives on the home
-  // page at /#freshness.
-  const f = DATA.freshness;
-  const el = document.getElementById('freshTable');
-  if (!el) return;
-  if (!f){ el.innerHTML = ''; return; }
-  const rows = [
-    ['bondspot_fixings',         'BondSpot fixings (price / bid / ask)'],
-    ['bondspot_turnover',        'BondSpot daily turnover (venue)'],
-    ['minfin_turnover',          'Min-Fin monthly turnover (Transakcje_po_seriach)'],
-    ['minfin_obligacje_hurtowe', 'Min-Fin auctions & outstanding (Obligacje_Hurtowe)'],
-    ['minfin_coupon_schedules',  'Min-Fin coupon schedules (kalkulatorodsetek)'],
-    ['nbp_reference_rate',       'NBP MPC reference rate'],
-    ['nss_curves',               'LW-NSS fitted zero-coupon curves'],
-    ['acm_term_premia',          'ACM term-premia panel'],
-    ['brw_term_premia',          'BRW bias-corrected term premia'],
-  ];
-  let html = '<thead><tr style="background:#f0f0f0">'
-    + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:var(--muted)">Series</th>'
-    + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:var(--muted)">Latest observation</th>'
-    + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:var(--muted)">Source</th>'
-    + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:var(--muted)">Notes</th>'
-    + '</tr></thead><tbody>';
-  for (const [k, label] of rows){
-    const e = f[k]; if (!e) continue;
-    const latest = e.last_obs || e.last_change || e.last_auction || e.last_updated || e.last_ref_month || e.file_mtime || '';
-    const valStr = e.value ? ' (' + e.value + ')' : '';
-    html += '<tr>'
-      + '<td style="padding:6px 8px;border-bottom:1px solid var(--rule);color:var(--ink)">' + label + '</td>'
-      + '<td style="padding:6px 8px;border-bottom:1px solid var(--rule);color:var(--accent);font-weight:600">' + latest + valStr + '</td>'
-      + '<td style="padding:6px 8px;border-bottom:1px solid var(--rule);color:var(--muted)">' + (e.source||'') + '</td>'
-      + '<td style="padding:6px 8px;border-bottom:1px solid var(--rule);color:var(--muted)">' + (e.detail||'') + '</td>'
-      + '</tr>';
-  }
-  html += '</tbody>';
-  el.innerHTML = html;
 }
 
 function drawSnapCurve(s){

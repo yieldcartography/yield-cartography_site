@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yieldcartography — mapping less-liquid sovereign bond markets</title>
+<meta name="description" content="Interactive yield-curve, term-premium, liquidity, and expectations-hypothesis dashboards for less-liquid sovereign bond markets, with a focus on Polish sovereigns and a comparative international view.">
+<link rel="stylesheet" href="/assets/style.css?v=7">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://yieldcartography.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yieldcartography — mapping less-liquid sovereign bond markets">
+<meta property="og:description" content="Open daily-refreshed yield curves, term premia, microstructure liquidity, and expectations-hypothesis tests for less-liquid sovereign bond markets, anchored on the Polish PLN curve.">
+<meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yieldcartography.com/">
+<meta property="og:site_name" content="yieldcartography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="yieldcartography — mapping less-liquid sovereign bond markets">
+<meta name="twitter:description" content="Open daily-refreshed yield curves, term premia, microstructure liquidity, and expectations-hypothesis tests for less-liquid sovereign bond markets, anchored on the Polish PLN curve.">
+<meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <nav>
+    <a href="/" class="active">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/">shorts</a>
+    <a href="/movies/">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+  <section class="hero">
+    <h1>Mapping <span class="accent">less-liquid</span> sovereign bond markets.</h1>
+    <p class="lede">Interactive yield-curve, term-premium, liquidity, and expectations-hypothesis dashboards built on a 21-year daily panel of Polish sovereigns, with comparative views against US and euro-area benchmarks. Open methodology, publicly available data, frequent refreshes.</p>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">Explore</h2>
+    <div class="cards">
+      <a class="card" href="/curves/">
+        <div class="card-label">Dashboard</div>
+        <h3>Yield curves</h3>
+        <p>Daily NSS-fitted zero-coupon yield curves on the Polish sovereign panel from 2005 to today. Interactive snapshot viewer, bond bubbles, 1y forwards, NBP forecasters, US and euro-area comparison, and PCA loadings.</p>
+      </a>
+      <a class="card" href="/term-premia/">
+        <div class="card-label">Dashboard</div>
+        <h3>Term premia</h3>
+        <p>Adrian-Crump-Moench and Bauer-Rudebusch-Wu decompositions across 1y, 2y, 5y, 10y horizons. Cross-country term-spread comparison and full ACM-vs-BRW correlation heatmap.</p>
+      </a>
+      <a class="card" href="/liquidity/">
+        <div class="card-label">Dashboard</div>
+        <h3>Liquidity measures</h3>
+        <p>Bid-ask spreads, zero-trading-day frequency, Amihud illiquidity, Roll, Corwin-Schultz and a composite index across the BondSpot panel — monthly aggregates from 2005 to today.</p>
+      </a>
+      <a class="card" href="/eh-tests/">
+        <div class="card-label">Dashboard</div>
+        <h3>Expectations hypothesis tests</h3>
+        <p>Fama-Bliss FB1 cross-market β heatmaps for Poland, the US and the euro area, macro-spanning regressions, Cochrane-Piazzesi factor and out-of-sample STV — all from the EH paper.</p>
+      </a>
+      <a class="card" href="/shorts/">
+        <div class="card-label">Reading</div>
+        <h3>Shorts</h3>
+        <p>Two-page summaries of the four working papers behind these dashboards. Each short carries one headline figure, one key table, and a "what this means for practitioners" line. Comments open at the bottom of every short.</p>
+      </a>
+      <a class="card" href="/movies/">
+        <div class="card-label">Watch</div>
+        <h3>Movies</h3>
+        <p>4K daily time-lapses of the Polish sovereign curve, term premia, fit diagnostics and forecast family — full 21-year version plus the last-5-years zoom. Embedded YouTube, full resolution available on the channel.</p>
+      </a>
+      <a class="card" href="/about/">
+        <div class="card-label">Background</div>
+        <h3>About the project</h3>
+        <p>Author bio, methodology, data sources, full publications list with DOIs, and a contact form for collaboration enquiries.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">What this is</h2>
+    <p>This site publishes daily-refreshed sovereign yield-curve estimates, term-premium decompositions, liquidity diagnostics, and expectations-hypothesis test outputs for less-liquid sovereign bond markets. The Polish curve is the running empirical case, with the methodology general enough to extend to other Central and Eastern European sovereigns. The underlying methods follow the published research programme on liquidity-weighted Nelson-Siegel-Svensson curve fitting, Adrian-Crump-Moench affine term-structure modelling, the Bauer-Rudebusch-Wu small-sample bias correction, and the Fama-Bliss / Cochrane-Piazzesi family of expectations-hypothesis tests.</p>
+    <p>Everything is built from publicly-available data: BondSpot venue closing fixings, Polish Ministry of Finance disclosures of outstanding amounts and turnover, NBP monetary-policy rates, the NBP Survey of Professional Forecasters, the GSW US Treasury zero-coupon panel, and the ECB AAA spot-rate database. Code, and the underlying CSVs are linked from the about page.</p>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">Latest</h2>
+    <p>Daily snapshots updated through April 2026. Curves dashboard refreshed continuously. Term-premia dashboard refreshed weekly. Liquidity and EH-tests dashboards refreshed monthly. Working papers and publications listed on the about page.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <h4>Dashboards</h4>
+      <ul>
+        <li><a href="/curves/">Yield curves</a></li>
+        <li><a href="/term-premia/">Term premia</a></li>
+        <li><a href="/liquidity/">Liquidity measures</a></li>
+        <li><a href="/eh-tests/">EH tests</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Project</h4>
+      <ul>
+        <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-inner copyright">
+    yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-10
+  </div>
+</footer>
+
+</body>
+</html>

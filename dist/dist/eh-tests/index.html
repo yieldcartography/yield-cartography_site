@@ -46,9 +46,6 @@
   @media (max-width: 1100px) { .heatmap-row { grid-template-columns: 1fr; } }
   .short-link { display: inline-block; padding: 8px 14px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; }
   .short-link:hover { background: var(--accent); color: #fff; border-bottom: 1px solid var(--accent); }
-  .csv-btn { font-family: var(--mono); font-size: 10.5px; padding: 5px 11px; border: 1px solid var(--accent); border-radius: 4px; background: #fff; color: var(--accent); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 8px; }
-  .csv-btn:hover { background: var(--accent); color: #fff; }
-  .panel-head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 </style>
 </head>
 <body>
@@ -60,7 +57,6 @@
     <a href="/curves/">curves</a>
     <a href="/term-premia/">term premia</a>
     <a href="/liquidity/">liquidity</a>
-    <a href="/total-return/">total return</a>
     <a href="/eh-tests/" class="active">EH tests</a>
     <a href="/shorts/">shorts</a>
     <a href="/movies/">movies</a>
@@ -83,10 +79,7 @@
   </div>
 
   <div class="panel" style="margin-bottom:18px">
-    <div class="panel-head-row">
-      <h3 style="margin:0">Fama-Bliss type-1 slope coefficients across markets</h3>
-      <button class="csv-btn" id="csvFb1Xm">CSV</button>
-    </div>
+    <h3>Figure 1 — Fama-Bliss type-1 slope coefficients across markets</h3>
     <p class="note">Slope coefficient β from the FB1 regression <span style="font-family:var(--mono)">y_n(t+h) − y_n(t) = α + β · [n/(n−h) · (y_n(t) − y_h(t))] + ε</span> on the (h, n) grid for the three markets, 2005:01 to 2026:04. Negative cells are blue, positive cells are red, zero is white. The Polish panel is uniformly close to zero or mildly negative, the US panel mildly positive at long horizons, the euro-area panel strongly positive at long horizons.</p>
     <div class="heatmap-row">
       <div><h4 style="text-align:center;font-family:var(--mono);font-size:13px;margin:6px 0;color:var(--accent)">PL</h4><div id="fb1Pl" class="plot-frame heatmap"></div></div>
@@ -97,10 +90,7 @@
   </div>
 
   <div class="panel" style="margin-bottom:18px">
-    <div class="panel-head-row">
-      <h3 style="margin:0">Macro-spanning regressions, median R² by horizon</h3>
-      <button class="csv-btn" id="csvMacroR2">CSV</button>
-    </div>
+    <h3>Figure 2 — macro-spanning regressions, median R² by horizon</h3>
     <p class="note">For each forecasting horizon h, the figure shows the median in-sample R² across the 32 (h, n) pairs for three nested specifications run on Polish data, 2010:01 to 2026:04. The grey bar is the Fama-Bliss type-1 regressor only, the blue bar is the four-element macro vector (CPI YoY, registered unemployment, EUR/PLN exchange-rate volatility, change in NBP reference rate), the green bar is the joint specification.</p>
     <div id="macroR2" class="plot-frame tall"></div>
     <p class="small-note" style="margin-top:14px">Three patterns are visible. (1) The Fama-Bliss regressor alone delivers a median R² below 5% at every horizon — the forward-spot spread carries essentially no predictive content for Polish excess returns over this sample. (2) The macro-only R² rises monotonically from 13% at h=6 months to 84% at h=60 months. (3) The joint specification adds little beyond macro-only at long horizons. The marginal contribution of FB above macro is at most six percentage points (at h=36 months) and below one percentage point at h=60 months.</p>
@@ -109,29 +99,20 @@
   <div class="grid-2">
 
     <div class="panel">
-      <div class="panel-head-row">
-        <h3 style="margin:0">Cochrane-Piazzesi single-factor regressions</h3>
-        <button class="csv-btn" id="csvCp">CSV</button>
-      </div>
+      <h3>Cochrane-Piazzesi single-factor regressions</h3>
       <p class="note">Second-stage one-year-ahead excess-return regressions on the CP single factor (one-year-ahead forward-rate combination from the first-stage tent). Coefficients should rise monotonically with maturity if a single factor prices the term structure.</p>
       <div id="cpChart" class="plot-frame"></div>
       <table class="eh-table" id="cpTable" style="margin-top:8px"></table>
     </div>
 
     <div class="panel">
-      <div class="panel-head-row">
-        <h3 style="margin:0">Out-of-sample STV — pure-EH path versus random walk</h3>
-        <button class="csv-btn" id="csvOos">CSV</button>
-      </div>
+      <h3>Out-of-sample STV — pure-EH path versus random walk</h3>
       <p class="note">Diebold-Mariano test of the pure-expectations-hypothesis short-rate path against a random-walk benchmark, h months ahead, three markets. Negative DM with low p-value means the EH path beats the random walk; positive DM means the random walk wins.</p>
       <div id="oosChart" class="plot-frame"></div>
     </div>
 
     <div class="panel full">
-      <div class="panel-head-row">
-        <h3 style="margin:0">FB1 — PL detailed table</h3>
-        <button class="csv-btn" id="csvFb1Pl">CSV</button>
-      </div>
+      <h3>FB1 — PL detailed table</h3>
       <p class="note">Top-20 (n, h) cells from the PL FB1 panel sorted by |β − 1|. Highlighted rows are PEH rejections at 5% Newey-West.</p>
       <div style="overflow-x:auto;">
         <table class="eh-table" id="fb1Table">
@@ -149,7 +130,7 @@
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
   </div>
@@ -168,107 +149,14 @@ const PLOT_BASE = { paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff', font:FONT_B
                     yaxis:{gridcolor:'#eeeeee',zerolinecolor:'#dddddd',tickfont:FONT_MONO,linecolor:'#cccccc'} };
 const CFG = { displayModeBar:false, responsive:true };
 
-function csvCitation(chartLabel){
-  const today = new Date().toISOString().slice(0,10);
-  return [
-    '# Source: Marcin Dec, yieldcartography.com',
-    '# Downloaded: ' + today,
-    '# Page: /eh-tests/  Chart: ' + chartLabel,
-    '# Citation: Dec, M. (2026). yieldcartography.com [computer-based research artifact]. Retrieved ' + today + '.'
-  ];
-}
-function downloadCSV(filename, rows, chartLabel){
-  const head = chartLabel ? csvCitation(chartLabel) : [];
-  const body = rows.map(r => r.map(v => (v===null||v===undefined)?'':String(v)).join(','));
-  const csv = head.concat(body).join('\n');
-  const blob = new Blob([csv], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download=filename;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url), 1000);
-}
-
 let DATA = null;
 
 async function load(){
-  const r = await fetch('/data/yields.json?v=7');
+  const r = await fetch('/data/yields.json?v=7', { cache: 'force-cache' });
   DATA = await r.json();
   showBuildBadge();
   initStats();
-  bindCsvButtons();
   drawAll();
-}
-
-function bindCsvButtons(){
-  document.getElementById('csvFb1Xm').addEventListener('click', ()=>{
-    const xm = DATA.eh.fb1_xm_heatmap;
-    if (!xm){ alert('FB1 cross-market matrix not available.'); return; }
-    const rows = [['market','h_months','n_months','beta']];
-    [['PL', xm.pl], ['US', xm.us], ['EA', xm.ea]].forEach(([mkt, p]) => {
-      if (!p) return;
-      p.h_m.forEach((h, i) => p.n_m.forEach((n, j) => {
-        const v = p.matrix[i][j];
-        rows.push([mkt, h, n, (v===null||v===undefined) ? '' : (+v).toFixed(4)]);
-      }));
-    });
-    downloadCSV('yc_fb1_cross_market.csv', rows, 'Fama-Bliss type-1 slope coefficients, PL/US/EA, (h,n) grid');
-  });
-  document.getElementById('csvMacroR2').addEventListener('click', ()=>{
-    const m = DATA.eh.macro_r2_by_h;
-    if (!m){ alert('Macro-spanning R² not available.'); return; }
-    const rows = [['h_months','r2_fb_only','r2_macro_only','r2_joint']];
-    for (let i=0; i<m.h_m.length; i++){
-      rows.push([m.h_m[i],
-        (+m.r2_fb[i]).toFixed(6),
-        (+m.r2_macro[i]).toFixed(6),
-        (+m.r2_joint[i]).toFixed(6)]);
-    }
-    downloadCSV('yc_macro_spanning_r2.csv', rows, 'Macro-spanning regressions, median in-sample R² by horizon, PL, 2010:01 to 2026:04');
-  });
-  document.getElementById('csvCp').addEventListener('click', ()=>{
-    const cp = DATA.eh.cp_second;
-    if (!cp){ alert('CP regressions not available.'); return; }
-    const rows = [['n_years','b_n','se','p_value','r2','n_obs']];
-    for (let i=0; i<cp.n_y.length; i++){
-      rows.push([cp.n_y[i],
-        (+cp.b_n[i]).toFixed(6),
-        (+cp.se[i]).toFixed(6),
-        (+cp.p[i]).toFixed(6),
-        (+cp.r2[i]).toFixed(6),
-        cp.n_obs[i]]);
-    }
-    downloadCSV('yc_cochrane_piazzesi_pl.csv', rows, 'Cochrane-Piazzesi second-stage one-year-ahead excess-return regressions, PL');
-  });
-  document.getElementById('csvOos').addEventListener('click', ()=>{
-    const rows = [['market','h_months','n_months','dm_stat','p_dm']];
-    for (const k of ['oos_pl','oos_us','oos_ea']){
-      const d = DATA.eh[k]; if (!d) continue;
-      const mkt = k.slice(-2).toUpperCase();
-      for (let i=0; i<d.h_m.length; i++){
-        rows.push([mkt, d.h_m[i], d.n_m[i],
-          (+d.dm[i]).toFixed(4),
-          (+d.p_dm[i]).toFixed(4)]);
-      }
-    }
-    downloadCSV('yc_oos_stv_pl_us_ea.csv', rows, 'Out-of-sample STV — Diebold-Mariano statistics vs random walk, PL/US/EA');
-  });
-  document.getElementById('csvFb1Pl').addEventListener('click', ()=>{
-    const fb1 = DATA.eh.fb1;
-    if (!fb1){ alert('FB1 detail not available.'); return; }
-    const rows = [['h_months','n_months','n_obs','alpha','se_alpha','p_alpha_nw','beta','se_beta','p_beta_eq1','r2']];
-    for (let i=0; i<fb1.h_m.length; i++){
-      if (fb1.beta[i] === '' || fb1.beta[i] === null) continue;
-      rows.push([+fb1.h_m[i], +fb1.n_m[i], +fb1.n_obs[i],
-        (+fb1.alpha[i]).toFixed(6),
-        (+fb1.se_alpha[i]).toFixed(6),
-        (+fb1.p_alpha_nw[i]).toFixed(4),
-        (+fb1.beta[i]).toFixed(6),
-        +(fb1.se_beta ? (+fb1.se_beta[i]).toFixed(6) : 0),
-        +(fb1.p_beta_eq1 ? (+fb1.p_beta_eq1[i]).toFixed(4) : 0),
-        +(fb1.r2 ? (+fb1.r2[i]).toFixed(4) : 0)]);
-    }
-    downloadCSV('yc_fb1_pl_detail.csv', rows, 'FB1 PL detail panel — α, β, SEs, p-values, R²');
-  });
 }
 function showBuildBadge(){
   const m = DATA.meta || {};
@@ -312,38 +200,30 @@ function drawFb1Xm(){
   });
   const absMax = Math.max(Math.abs(zmin), Math.abs(zmax));
   targets.forEach(([divId, p]) => {
-    // Plot against integer indices so every cell has identical width,
-    // then map indices back to month labels with tickvals/ticktext.
-    const xIdx = p.n_m.map((_, j) => j);
-    const yIdx = p.h_m.map((_, i) => i);
-    const xText = p.n_m.map(v => String(v));
-    const yText = p.h_m.map(v => String(v));
+    // Stringify axis labels so Plotly treats them as categorical (avoids last-column
+    // widening when numeric bin boundaries are auto-calculated).
+    const xLab = p.n_m.map(v => String(v));
+    const yLab = p.h_m.map(v => String(v));
     const traces = [{
-      type:'heatmap', z:p.matrix, x:xIdx, y:yIdx,
+      type:'heatmap', z:p.matrix, x:xLab, y:yLab,
       colorscale: [[0, '#1f4e79'], [0.5, '#ffffff'], [1, '#c2522d']],
       zmin: -absMax, zmax: absMax,
       xgap: 1, ygap: 1,
-      hovertemplate:'h=%{customdata[0]} mo · n=%{customdata[1]} mo<br>β=%{z:.2f}<extra></extra>',
-      customdata: yIdx.map(i => xIdx.map(j => [yText[i], xText[j]])),
+      hovertemplate:'h=%{y} mo · n=%{x} mo<br>β=%{z:.2f}<extra></extra>',
       colorbar:{thickness:10, len:0.9, tickfont:FONT_MONO, title:{text:'β', font:FONT_MONO}}
     }];
     const ann = [];
-    yIdx.forEach((yi, i) => xIdx.forEach((xi, j) => {
+    yLab.forEach((h, i) => xLab.forEach((n, j) => {
       const v = p.matrix[i][j];
-      if (v !== null) ann.push({ x:xi, y:yi, text:v.toFixed(2), showarrow:false,
+      if (v !== null) ann.push({ x:n, y:h, text:v.toFixed(2), showarrow:false,
         font:{size:8, color: Math.abs(v) > absMax*0.5 ? '#fff' : '#1a1a1a', family:FONT_MONO.family} });
     }));
     const lay = JSON.parse(JSON.stringify(PLOT_BASE));
     lay.xaxis.title = { text:'n (months)', font:FONT_MONO };
     lay.yaxis.title = { text:'h (months)', font:FONT_MONO };
-    lay.xaxis.tickmode = 'array';
-    lay.xaxis.tickvals = xIdx;
-    lay.xaxis.ticktext = xText;
-    lay.yaxis.tickmode = 'array';
-    lay.yaxis.tickvals = yIdx;
-    lay.yaxis.ticktext = yText;
-    lay.xaxis.range = [-0.5, xIdx.length - 0.5];
-    lay.yaxis.range = [yIdx.length - 0.5, -0.5];
+    lay.xaxis.type = 'category';
+    lay.yaxis.type = 'category';
+    lay.yaxis.autorange = 'reversed';
     lay.annotations = ann;
     Plotly.react(divId, traces, lay, CFG);
   });
