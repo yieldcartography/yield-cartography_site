@@ -654,21 +654,6 @@ main .card:hover { transform: none !important; }
 
 <section class="topBlock">
   <div class="cardRow" id="cardRow"></div>
-  <div class="chartCard">
-    <div class="chartCardHead"><h3>TBSP as two sub-indices: CarryRoll and CurveMove</h3></div>
-    <div class="chartCardSub">Cumulative log-return contributions on the
-    published TBSP, in percentage points, quarterly grid. Each series
-    is re-anchored to zero at the start of the selected window.</div>
-    <div class="windowSel" id="subIdxWin">
-      <span class="lbl">Window:</span>
-      <button data-win="full" class="active">Full sample</button>
-      <button data-win="5y">Last 5 years</button>
-      <button data-win="2y">Last 2 years</button>
-      <button data-win="1y">Last 1 year</button>
-      <button class="csvBtn" id="csvSubIdx" style="margin-left:auto">CSV &mdash; chart</button>
-    </div>
-    <div id="tbspSubIdxChart" style="height:360px"></div>
-  </div>
 </section>
 
 <details class="intro">
@@ -712,6 +697,22 @@ main .card:hover { transform: none !important; }
     cumulative stacked time series of component contributions.
   </p>
 </details>
+
+<div class="chartCard">
+  <div class="chartCardHead"><h3>TBSP as two sub-indices: CarryRoll and CurveMove</h3></div>
+  <div class="chartCardSub">Cumulative log-return contributions on the
+  published TBSP, in percentage points, quarterly grid. Each series
+  is re-anchored to zero at the start of the selected window.</div>
+  <div class="windowSel" id="subIdxWin">
+    <span class="lbl">Window:</span>
+    <button data-win="full" class="active">Full sample</button>
+    <button data-win="5y">Last 5 years</button>
+    <button data-win="2y">Last 2 years</button>
+    <button data-win="1y">Last 1 year</button>
+    <button class="csvBtn" id="csvSubIdx" style="margin-left:auto">CSV &mdash; chart</button>
+  </div>
+  <div id="tbspSubIdxChart" style="height:360px"></div>
+</div>
 
 <h2 class="sectionTitle sectionTitle-pad">Per-bond explorer</h2>
 <div class="sliderRow">

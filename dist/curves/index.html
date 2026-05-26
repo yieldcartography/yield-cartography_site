@@ -102,16 +102,6 @@
     <div class="stat"><div class="label">Latest 10y zero</div><div class="value" id="stat-y10">—</div><div class="delta" id="stat-y10-d">on latest date</div></div>
   </div>
 
-  <div class="sliderRow">
-    <label for="dateSlider">Snapshot date</label>
-    <button class="navBtn" id="btnPrev">&laquo;</button>
-    <input type="range" id="dateSlider" min="0" max="0" value="0" step="1">
-    <button class="navBtn" id="btnNext">&raquo;</button>
-    <button class="navBtn" id="btnLatest">Latest</button>
-    <span class="dateLabel" id="selDate">&mdash;</span>
-    <span class="universe" id="snapInfo"></span>
-  </div>
-
   <details class="intro">
     <summary>How to read this page (methodology and glossary)</summary>
     <p>The Polish sovereign zero-coupon curve is fitted to every trading day from 2005 onward using the Nelson-Siegel-Svensson (NSS) functional form, estimated by weighted nonlinear least squares on the BondSpot mid-quote panel of Treasury bonds and OK bills, with the NBP reference rate anchoring the very short end. Weights are derived from a microstructure-aware information matrix (see the LW-NSS short). The viewer below walks monthly snapshots through that twenty-one-year history.</p>
@@ -134,6 +124,16 @@
     <p><b>Cross-country snapshot</b>. PL versus GSW US Treasury versus ECB euro-area AAA zero-coupon yields at twelve standard tenors on the snapshot date, computed from the same NSS family on each panel.</p>
     <p><b>Selected bond YTM history</b>. Weekly YTM closes for the bond clicked above, from the bond's first BondSpot fixing to today.</p>
   </details>
+
+  <div class="sliderRow">
+    <label for="dateSlider">Snapshot date</label>
+    <button class="navBtn" id="btnPrev">&laquo;</button>
+    <input type="range" id="dateSlider" min="0" max="0" value="0" step="1">
+    <button class="navBtn" id="btnNext">&raquo;</button>
+    <button class="navBtn" id="btnLatest">Latest</button>
+    <span class="dateLabel" id="selDate">&mdash;</span>
+    <span class="universe" id="snapInfo"></span>
+  </div>
 
   <!-- Wide hero panel: zero-coupon curve + bond bubbles -->
   <div class="panel" style="margin-bottom:18px">
