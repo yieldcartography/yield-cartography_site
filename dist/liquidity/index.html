@@ -38,6 +38,9 @@
   .csv-btn { font-family: var(--mono); font-size: 10.5px; padding: 5px 11px; border: 1px solid var(--accent); border-radius: 4px; background: #fff; color: var(--accent); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 8px; }
   .csv-btn:hover { background: var(--accent); color: #fff; }
   .panel-head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .arr { display: inline-block; margin-left: 6px; font-size: 12px; line-height: 1; }
+  .arr.up { color: var(--green); }
+  .arr.dn { color: var(--salmon); }
 </style>
 </head>
 <body>
@@ -369,14 +372,56 @@ function showBuildBadge(){
 }
 load();
 
+// Direction arrow + month-over-month delta. Convention used across the site:
+// up arrow (green) means "the metric rose vs the prior observation", down
+// arrow (red) means "the metric fell". Semantic interpretation (better /
+// worse liquidity) is left to the user — see the panel notes below.
+function tileWithArrow(cur, prev, prevDate, decimals, unit, minDelta){
+  const md = (minDelta == null) ? 0 : minDelta;
+  const main = (cur).toFixed(decimals) + unit;
+  if (prev === null || prev === undefined || isNaN(prev)) return main;
+  const d = cur - prev;
+  if (!isFinite(d) || Math.abs(d) < md) return main;
+  const cls  = d > 0 ? 'up' : 'dn';
+  const sym  = d > 0 ? '▲' : '▼';
+  const sign = d > 0 ? '+' : '';
+  return main + ' <span class="arr ' + cls + '" title="change vs ' + prevDate + '">' + sym + ' ' + sign + d.toFixed(decimals) + unit + '</span>';
+}
+
+function lastTwoValid(arr, dates){
+  // Walk back through arr and return [iCur, iPrev] with valid (non-null) values.
+  let iCur = arr.length - 1;
+  while (iCur >= 0 && (arr[iCur] === null || arr[iCur] === undefined || isNaN(arr[iCur]))) iCur--;
+  if (iCur < 0) return [null, null];
+  let iPrev = iCur - 1;
+  while (iPrev >= 0 && (arr[iPrev] === null || arr[iPrev] === undefined || isNaN(arr[iPrev]))) iPrev--;
+  return [iCur, iPrev >= 0 ? iPrev : null];
+}
+
 function initStats(){
   const liq = DATA.liquidity;
   if (!liq){ return; }
   document.getElementById('stat-period').textContent = liq.dates[0] + ' to ' + liq.dates[liq.dates.length-1];
   document.getElementById('stat-n').textContent = liq.dates.length;
-  document.getElementById('stat-bas').textContent = (liq.bas_bp_med[liq.bas_bp_med.length-1] || 0).toFixed(1) + ' bp';
-  document.getElementById('stat-ztd').textContent = (liq.ztd_pct[liq.ztd_pct.length-1] || 0).toFixed(1) + '%';
-  document.getElementById('stat-cz').textContent = (liq.composite_z[liq.composite_z.length-1] || 0).toFixed(2);
+
+  const [iB, ipB] = lastTwoValid(liq.bas_bp_med, liq.dates);
+  if (iB !== null){
+    const prev = ipB !== null ? liq.bas_bp_med[ipB] : null;
+    const pd   = ipB !== null ? liq.dates[ipB] : '';
+    document.getElementById('stat-bas').innerHTML = tileWithArrow(liq.bas_bp_med[iB], prev, pd, 1, ' bp', 0.1);
+  }
+  const [iZ, ipZ] = lastTwoValid(liq.ztd_pct, liq.dates);
+  if (iZ !== null){
+    const prev = ipZ !== null ? liq.ztd_pct[ipZ] : null;
+    const pd   = ipZ !== null ? liq.dates[ipZ] : '';
+    document.getElementById('stat-ztd').innerHTML = tileWithArrow(liq.ztd_pct[iZ], prev, pd, 1, '%', 0.1);
+  }
+  const [iC, ipC] = lastTwoValid(liq.composite_z, liq.dates);
+  if (iC !== null){
+    const prev = ipC !== null ? liq.composite_z[ipC] : null;
+    const pd   = ipC !== null ? liq.dates[ipC] : '';
+    document.getElementById('stat-cz').innerHTML = tileWithArrow(liq.composite_z[iC], prev, pd, 2, '', 0.01);
+  }
 }
 
 let curTovSource = 'minfin';

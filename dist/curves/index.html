@@ -52,6 +52,9 @@
   .csv-btn { font-family: var(--mono); font-size: 10.5px; padding: 5px 11px; border: 1px solid var(--accent); border-radius: 4px; background: #fff; color: var(--accent); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 8px; }
   .csv-btn:hover { background: var(--accent); color: #fff; }
   .panel-head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .arr { display: inline-block; margin-left: 6px; font-size: 12px; line-height: 1; }
+  .arr.up { color: var(--green); }
+  .arr.dn { color: var(--salmon); }
 </style>
 </head>
 <body>
@@ -286,7 +289,22 @@ function initStats(){
   document.getElementById('stat-period').textContent = DATA.meta.first_date.slice(0,7) + ' to ' + DATA.meta.last_date.slice(0,7);
   document.getElementById('stat-n').textContent = DATA.meta.n_dates_total.toLocaleString();
   const ts = DATA.ts; const ny = ts.dates.length-1;
-  document.getElementById('stat-y10').textContent = fmtPct(ts.y10[ny]);
+  // Latest 10y zero with prior-observation delta and direction arrow.
+  // Skips nulls walking back to find the most recent prior valid observation.
+  let yPrev = null; let kPrev = ny - 1;
+  while (kPrev >= 0 && (ts.y10[kPrev] === null || ts.y10[kPrev] === undefined)) kPrev--;
+  if (kPrev >= 0) yPrev = ts.y10[kPrev];
+  let valHtml = fmtPct(ts.y10[ny]);
+  if (yPrev !== null){
+    const dBp = (ts.y10[ny] - yPrev) * 100;
+    if (!isNaN(dBp) && Math.abs(dBp) > 0.05){
+      const cls = dBp > 0 ? 'up' : 'dn';
+      const sym = dBp > 0 ? '▲' : '▼';
+      const sign = dBp > 0 ? '+' : '';
+      valHtml += ' <span class="arr ' + cls + '" title="change vs ' + ts.dates[kPrev] + '">' + sym + ' ' + sign + dBp.toFixed(1) + ' bp</span>';
+    }
+  }
+  document.getElementById('stat-y10').innerHTML = valHtml;
   document.getElementById('stat-y10-d').textContent = ts.dates[ny];
 }
 function buildSlider(){
@@ -489,7 +507,14 @@ function drawSnapCurve(s){
   }
   if (s.nbp != null) traces.push({ x:[0.05], y:[s.nbp], mode:'markers', marker:{symbol:'diamond', size:13, color:PALETTE.green, line:{color:'#fff',width:1}}, hovertemplate:`NBP reference ${s.nbp.toFixed(2)}%<extra></extra>`, showlegend:false });
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
-  lay.xaxis.title = { text:'maturity (years)', font:FONT_MONO }; lay.xaxis.range=[0,15];
+  // x-axis cap: max(12y, longest displayed bond + 1y) so the chart stays
+  // tight to actual data instead of always showing 0-15.
+  let xmax = 12;
+  if (s.bonds && s.bonds.length){
+    const maxTtm = Math.max.apply(null, s.bonds.map(b => b.ttm || 0));
+    xmax = Math.max(12, maxTtm + 1);
+  }
+  lay.xaxis.title = { text:'maturity (years)', font:FONT_MONO }; lay.xaxis.range=[0, xmax];
   lay.yaxis.title = { text:'yield (%)', font:FONT_MONO };
   Plotly.react('snapCurve', traces, lay, CFG);
 }

@@ -273,6 +273,28 @@
   }
   .arr.up { color: var(--pos); }
   .arr.dn { color: var(--neg); }
+  .lastQ {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .csvBtn {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 10.5px;
+    padding: 5px 11px;
+    border: 1px solid var(--tab-active);
+    border-radius: 4px;
+    background: #fff;
+    color: var(--tab-active);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+  }
+  .csvBtn:hover { background: var(--tab-active); color: #fff; }
+  .panelHeadRow { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
   .chartCard {
     border: 1px solid var(--line);
     border-radius: 4px;
@@ -630,11 +652,14 @@ main .card:hover { transform: none !important; }
   <h2 class="sectionTitle">TBSP-level decomposition</h2>
   <div class="cardRow" id="cardRow"></div>
   <div class="chartCard">
-    <div class="chartCardHead">
-      <h3>TBSP as two sub-indices: CarryRoll and CurveMove</h3>
-      <div class="chartCardSub">Cumulative log-return contributions on the
-      published TBSP, in percentage points, quarterly grid. Each series
-      is re-anchored to zero at the start of the selected window.</div>
+    <div class="panelHeadRow">
+      <div>
+        <div class="chartCardHead"><h3>TBSP as two sub-indices: CarryRoll and CurveMove</h3></div>
+        <div class="chartCardSub">Cumulative log-return contributions on the
+        published TBSP, in percentage points, quarterly grid. Each series
+        is re-anchored to zero at the start of the selected window.</div>
+      </div>
+      <button class="csvBtn" id="csvCards">CSV &mdash; tiles</button>
     </div>
     <div class="windowSel" id="subIdxWin">
       <span class="lbl">Window:</span>
@@ -642,6 +667,7 @@ main .card:hover { transform: none !important; }
       <button data-win="5y">Last 5 years</button>
       <button data-win="2y">Last 2 years</button>
       <button data-win="1y">Last 1 year</button>
+      <button class="csvBtn" id="csvSubIdx" style="margin-left:auto">CSV &mdash; chart</button>
     </div>
     <div id="tbspSubIdxChart" style="height:360px"></div>
   </div>
@@ -706,6 +732,10 @@ main .card:hover { transform: none !important; }
 </div>
 
 <div class="tabPane active" id="paneLQ">
+  <div class="panelHeadRow">
+    <div class="chartCardSub">Single calendar quarter ending at the slider date, every bond with a BondSpot fixing.</div>
+    <button class="csvBtn" id="csvTblLQ">CSV &mdash; table</button>
+  </div>
   <div class="tableWrap">
     <table class="bonds" id="tblLQ"></table>
   </div>
@@ -715,6 +745,10 @@ main .card:hover { transform: none !important; }
 </div>
 
 <div class="tabPane" id="paneLT">
+  <div class="panelHeadRow">
+    <div class="chartCardSub">Full calendar-quarter walk from each bond's first quarter to the slider date.</div>
+    <button class="csvBtn" id="csvTblLT">CSV &mdash; table</button>
+  </div>
   <div class="tableWrap">
     <table class="bonds" id="tblLT"></table>
   </div>
@@ -764,6 +798,45 @@ function cls(v) {
   if (v > 0) return 'pos';
   if (v < 0) return 'neg';
   return null;
+}
+
+// ---------- CSV download helpers ----------
+function csvCitation(chartLabel) {
+  const today = new Date().toISOString().slice(0, 10);
+  return [
+    '# Source: Marcin Dec, yieldcartography.com',
+    '# Downloaded: ' + today,
+    '# Page: /total-return/  Chart: ' + chartLabel,
+    '# Citation: Dec, M. (2026). yieldcartography.com [computer-based research artifact]. Retrieved ' + today + '.'
+  ];
+}
+function downloadCSV(filename, rows, chartLabel) {
+  const head = chartLabel ? csvCitation(chartLabel) : [];
+  const body = rows.map(r => r.map(v => {
+    if (v === null || v === undefined) return '';
+    const s = String(v);
+    return /[,"\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }).join(','));
+  const csv  = head.concat(body).join('\n');
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+// Read a rendered <table id="..."> into a list of rows (header + body).
+function tableToCsvRows(tableId) {
+  const t = document.getElementById(tableId);
+  if (!t) return [];
+  const out = [];
+  t.querySelectorAll('thead tr').forEach(tr => {
+    out.push(Array.from(tr.children).map(c => c.textContent.trim()));
+  });
+  t.querySelectorAll('tbody tr').forEach(tr => {
+    out.push(Array.from(tr.children).map(c => c.textContent.trim()));
+  });
+  return out;
 }
 
 // ---------- universe by slider quarter ----------
@@ -1147,6 +1220,17 @@ function renderTopBlock() {
       ? '<span class="arr up">&#9650;</span>'
       : '<span class="arr dn">&#9660;</span>';
   }
+  // Last-quarter contributions of the CarryRoll and CurveMove sub-indices,
+  // surfaced as a signed delta + direction triangle on the corresponding
+  // cumulative tiles.
+  const N         = (T.dates || []).length;
+  const lastCarry = (N > 0 && T.CarryRoll_bp) ? T.CarryRoll_bp[N - 1] : null;
+  const lastCurve = (N > 0 && T.CurveMove_bp) ? T.CurveMove_bp[N - 1] : null;
+  function deltaStr(v) {
+    if (v == null || isNaN(v)) return '';
+    const sign = v >= 0 ? '+' : '';
+    return ' ' + arrow(v) + ' <span class="lastQ">' + sign + fmt0(v) + ' bp last Q</span>';
+  }
   const cards = [
     {
       lab: 'TBSP CAGR (' + s.tbsp_base_date + ' &rarr; ' + s.tbsp_last_date + ')',
@@ -1160,23 +1244,18 @@ function renderTopBlock() {
     },
     {
       lab: 'CarryRoll cumulative (CC + RP + RD)',
-      val: fmt0(s.cum_carry_bp) + ' bp',
-      sub: 'income stream contribution',
+      val: fmt0(s.cum_carry_bp) + ' bp' + deltaStr(lastCarry),
+      sub: 'income stream, last quarter ' + s.last_quarter_te,
     },
     {
       lab: 'CurveMove cumulative (ERC + TPC)',
-      val: fmt0(s.cum_curve_bp) + ' bp',
-      sub: 'curve-move duration P&amp;L',
+      val: fmt0(s.cum_curve_bp) + ' bp' + deltaStr(lastCurve),
+      sub: 'duration P&amp;L, last quarter ' + s.last_quarter_te,
     },
     {
       lab: 'Last quarter r<sub>mm</sub> (TBSP)',
       val: fmt0(s.last_r_pub_bp) + ' bp ' + arrow(s.last_r_pub_bp),
       sub: 'quarter ending ' + s.last_quarter_te,
-    },
-    {
-      lab: 'Latest 10y term premium (BRW)',
-      val: fmt0(s.last_brw_tp_10y_bp) + ' bp',
-      sub: 'ACM-BRW, ' + s.last_brw_tp_10y_date,
     },
   ];
   const row = document.getElementById('cardRow');
@@ -1191,12 +1270,52 @@ function renderTopBlock() {
   // Sub-index cumulative chart with a Full / 5y / 2y / 1y window selector.
   // Each window re-anchors all four series to zero at the start of the slice.
   drawSubIdxChart('full');
-  document.querySelectorAll('#subIdxWin button').forEach(btn => {
+  document.querySelectorAll('#subIdxWin button[data-win]').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#subIdxWin button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#subIdxWin button[data-win]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       drawSubIdxChart(btn.dataset.win);
     });
+  });
+
+  // CSV: tile values (KPI cards row).
+  const csvCardsBtn = document.getElementById('csvCards');
+  if (csvCardsBtn) csvCardsBtn.addEventListener('click', () => {
+    const rows = [['label', 'value', 'sub']].concat(cards.map(c => {
+      const lab = c.lab.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ');
+      const val = c.val.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ').trim();
+      const sub = c.sub.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ');
+      return [lab, val, sub];
+    }));
+    downloadCSV('total_return_tbsp_tiles.csv', rows, 'TBSP-level decomposition tiles');
+  });
+
+  // CSV: full sub-indices quarterly series (CarryRoll, CurveMove, CnvxRes, TrackGap, r_pub).
+  const csvSubIdxBtn = document.getElementById('csvSubIdx');
+  if (csvSubIdxBtn) csvSubIdxBtn.addEventListener('click', () => {
+    const rows = [['date', 'CarryRoll_bp', 'CurveMove_bp', 'CnvxRes_bp', 'TrackGap_bp', 'r_pub_bp',
+                   'cum_CarryRoll_bp', 'cum_CurveMove_bp', 'cum_CnvxRes_bp', 'cum_TrackGap_bp', 'cum_r_pub_bp']];
+    const N = T.dates.length;
+    for (let i = 0; i < N; i++) {
+      rows.push([T.dates[i],
+        T.CarryRoll_bp[i], T.CurveMove_bp[i], T.CnvxRes_bp[i], T.TrackGap_bp[i], T.r_pub_bp[i],
+        T.cum_carry_bp[i], T.cum_curve_bp[i], T.cum_cnvxres_bp[i], T.cum_track_bp[i], T.cum_rpub_bp[i]]);
+    }
+    downloadCSV('total_return_tbsp_sub_indices.csv', rows, 'TBSP CarryRoll / CurveMove quarterly series');
+  });
+}
+
+// ---------- CSV buttons for the per-bond tables ----------
+function bindTableCsvButtons() {
+  const lq = document.getElementById('csvTblLQ');
+  if (lq) lq.addEventListener('click', () => {
+    const rows = tableToCsvRows('tblLQ');
+    if (rows.length) downloadCSV('total_return_last_quarter_table.csv', rows, 'Last-quarter bond table');
+  });
+  const lt = document.getElementById('csvTblLT');
+  if (lt) lt.addEventListener('click', () => {
+    const rows = tableToCsvRows('tblLT');
+    if (rows.length) downloadCSV('total_return_lifetime_table.csv', rows, 'Lifetime bond table');
   });
 }
 
@@ -1426,10 +1545,13 @@ function showLastQuarterDetail(bond, tag) {
     return;
   }
   const head = document.createElement('div');
-  head.innerHTML = '<h3>' + bond.name + ' &mdash; quarter ending ' + q.date_te + '</h3>' +
-    '<div class="sub">Window ' + q.date_t + ' to ' + q.date_te +
-    ' &middot; ISIN ' + bond.isin +
-    ' &middot; maturity ' + (bond.maturity_ym || 'n/a') + '</div>';
+  head.innerHTML = '<div class="panelHeadRow">'
+    + '<h3 style="margin:0">' + bond.name + ' &mdash; quarter ending ' + q.date_te + '</h3>'
+    + '<button class="csvBtn" id="csvLqBond">CSV &mdash; bond data</button>'
+    + '</div>'
+    + '<div class="sub">Window ' + q.date_t + ' to ' + q.date_te
+    + ' &middot; ISIN ' + bond.isin
+    + ' &middot; maturity ' + (bond.maturity_ym || 'n/a') + '</div>';
   host.appendChild(head);
 
   const grid = document.createElement('div');
@@ -1450,6 +1572,22 @@ function showLastQuarterDetail(bond, tag) {
   plotYieldCurves('lqCurveBlock', bond, q.date_t, q.date_te,
                   bond.name + ' yield curves (NSS total and BRW expected-rate path), ' +
                   q.date_t + ' vs ' + q.date_te);
+
+  document.getElementById('csvLqBond').addEventListener('click', () => {
+    const rows = [
+      ['isin', bond.isin],
+      ['name', bond.name],
+      ['quarter_start', q.date_t],
+      ['quarter_end',   q.date_te],
+      ['component_bp', 'value'],
+      ['CC', q.CC_bp], ['RP', q.RP_bp], ['RD', q.RD_bp],
+      ['ERC', q.ERC_bp], ['TPC', q.TPC_bp], ['Cnvx', q.Cnvx_bp], ['Res', q.Res_bp],
+      ['r_mm', q.r_mm_bp], ['half_bas_t', q.half_bas_t_bp], ['half_bas_te', q.half_bas_te_bp],
+      ['r_ab', q.r_mm_bp - bad],
+    ];
+    downloadCSV('tr_lastquarter_' + bond.isin + '_' + q.date_te + '.csv',
+                rows, bond.name + ' last-quarter waterfall');
+  });
 }
 
 function showLifetimeDetail(bond, D) {
@@ -1461,11 +1599,14 @@ function showLifetimeDetail(bond, D) {
     return;
   }
   const head = document.createElement('div');
-  head.innerHTML = '<h3>' + bond.name + ' &mdash; lifetime through ' + s.date_tn + '</h3>' +
-    '<div class="sub">' + s.date_t0 + ' to ' + s.date_tn +
-    ' &middot; ' + s.n_quarters + ' quarters' +
-    ' &middot; ISIN ' + bond.isin +
-    ' &middot; maturity ' + (bond.maturity_ym || 'n/a') + '</div>';
+  head.innerHTML = '<div class="panelHeadRow">'
+    + '<h3 style="margin:0">' + bond.name + ' &mdash; lifetime through ' + s.date_tn + '</h3>'
+    + '<button class="csvBtn" id="csvLtBond">CSV &mdash; bond data</button>'
+    + '</div>'
+    + '<div class="sub">' + s.date_t0 + ' to ' + s.date_tn
+    + ' &middot; ' + s.n_quarters + ' quarters'
+    + ' &middot; ISIN ' + bond.isin
+    + ' &middot; maturity ' + (bond.maturity_ym || 'n/a') + '</div>';
   host.appendChild(head);
 
   const grid = document.createElement('div');
@@ -1485,6 +1626,17 @@ function showLifetimeDetail(bond, D) {
   plotYieldCurves('ltCurveBlock', bond, s.date_t0, s.date_tn,
                   bond.name + ' yield curves at bond inception (' + s.date_t0 +
                   ') vs slider date (' + s.date_tn + ')');
+
+  document.getElementById('csvLtBond').addEventListener('click', () => {
+    const rows = [['date_t', 'date_te', 'CC_bp', 'RP_bp', 'RD_bp', 'ERC_bp', 'TPC_bp',
+                   'Cnvx_bp', 'Res_bp', 'r_mm_bp', 'half_bas_t_bp', 'half_bas_te_bp']];
+    s.quarters.forEach(q => {
+      rows.push([q.date_t, q.date_te, q.CC_bp, q.RP_bp, q.RD_bp, q.ERC_bp, q.TPC_bp,
+                 q.Cnvx_bp, q.Res_bp, q.r_mm_bp, q.half_bas_t_bp, q.half_bas_te_bp]);
+    });
+    downloadCSV('tr_lifetime_' + bond.isin + '_through_' + s.date_tn + '.csv',
+                rows, bond.name + ' lifetime quarterly walk');
+  });
 }
 
 // ---------- slider ----------
@@ -1529,6 +1681,7 @@ document.querySelectorAll('.tab').forEach(t => {
 // ---------- boot ----------
 renderTopBlock();
 rebuildTables();
+bindTableCsvButtons();
 </script>
 
 

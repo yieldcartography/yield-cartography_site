@@ -49,6 +49,9 @@
   .csv-btn { font-family: var(--mono); font-size: 10.5px; padding: 5px 11px; border: 1px solid var(--accent); border-radius: 4px; background: #fff; color: var(--accent); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 8px; }
   .csv-btn:hover { background: var(--accent); color: #fff; }
   .panel-head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .arr { display: inline-block; margin-left: 6px; font-size: 12px; line-height: 1; }
+  .arr.up { color: var(--green); }
+  .arr.dn { color: var(--salmon); }
 </style>
 </head>
 <body>
@@ -275,6 +278,32 @@ function showBuildBadge(){
 }
 load();
 
+// Build "value + arrow" HTML for a bp-denominated tile, given last and prior
+// observations.  The arrow appears only when the absolute change is >= 0.5 bp
+// so daily microstructure noise does not paint a green/red triangle on a flat
+// quote.
+function bpTileHtml(curBp, prevBp, prevDate){
+  const main = (curBp).toFixed(0) + ' bp';
+  if (prevBp === null || prevBp === undefined || isNaN(prevBp)) return main;
+  const d = curBp - prevBp;
+  if (!isFinite(d) || Math.abs(d) < 0.5) return main;
+  const cls  = d > 0 ? 'up' : 'dn';
+  const sym  = d > 0 ? '▲' : '▼';
+  const sign = d > 0 ? '+' : '';
+  return main + ' <span class="arr ' + cls + '" title="change vs ' + prevDate + '">' + sym + ' ' + sign + d.toFixed(0) + ' bp</span>';
+}
+// Same for percentage-denominated tiles (10y nominal).
+function pctTileHtml(curPct, prevPct, prevDate){
+  const main = (curPct).toFixed(2) + '%';
+  if (prevPct === null || prevPct === undefined || isNaN(prevPct)) return main;
+  const dBp = (curPct - prevPct) * 100;
+  if (!isFinite(dBp) || Math.abs(dBp) < 0.5) return main;
+  const cls  = dBp > 0 ? 'up' : 'dn';
+  const sym  = dBp > 0 ? '▲' : '▼';
+  const sign = dBp > 0 ? '+' : '';
+  return main + ' <span class="arr ' + cls + '" title="change vs ' + prevDate + '">' + sym + ' ' + sign + dBp.toFixed(1) + ' bp</span>';
+}
+
 function initStats(){
   document.getElementById('stat-period').textContent = DATA.meta.first_date.slice(0,7) + ' to ' + DATA.meta.last_date.slice(0,7);
   // PL 10y TP: prefer the daily/weekly Polish series so the tile is fresh.
@@ -283,7 +312,11 @@ function initStats(){
     let j = ts.tp10_brw_bp.length - 1;
     while (j >= 0 && (ts.tp10_brw_bp[j] === null || ts.tp10_brw_bp[j] === undefined)) j--;
     if (j >= 0){
-      document.getElementById('stat-tp10-brw').textContent = (ts.tp10_brw_bp[j]).toFixed(0) + ' bp';
+      let jp = j - 1;
+      while (jp >= 0 && (ts.tp10_brw_bp[jp] === null || ts.tp10_brw_bp[jp] === undefined)) jp--;
+      const prev = jp >= 0 ? ts.tp10_brw_bp[jp] : null;
+      const prevDate = jp >= 0 ? ts.dates[jp] : '';
+      document.getElementById('stat-tp10-brw').innerHTML = bpTileHtml(ts.tp10_brw_bp[j], prev, prevDate);
       document.getElementById('stat-tp10-brw-d').textContent = 'as of ' + ts.dates[j];
     }
   }
@@ -293,13 +326,20 @@ function initStats(){
   if (xtp && xtp.dates && xtp.dates.length){
     const i = xtp.dates.length - 1;
     const mo = xtp.dates[i];
-    document.getElementById('stat-tp10-us').textContent  = (xtp.us_tp_10y_bp[i]||0).toFixed(0) + ' bp';
+    const prevMo = i >= 1 ? xtp.dates[i-1] : '';
+    const usPrev = i >= 1 ? xtp.us_tp_10y_bp[i-1] : null;
+    const eaPrev = i >= 1 ? xtp.ea_tp_10y_bp[i-1] : null;
+    document.getElementById('stat-tp10-us').innerHTML = bpTileHtml(xtp.us_tp_10y_bp[i]||0, usPrev, prevMo);
     document.getElementById('stat-tp10-us-d').textContent = 'end of ' + mo + ', monthly';
-    document.getElementById('stat-tp10-ea').textContent  = (xtp.ea_tp_10y_bp[i]||0).toFixed(0) + ' bp';
+    document.getElementById('stat-tp10-ea').innerHTML = bpTileHtml(xtp.ea_tp_10y_bp[i]||0, eaPrev, prevMo);
     document.getElementById('stat-tp10-ea-d').textContent = 'end of ' + mo + ', monthly';
   }
   const i = ts.dates.length-1;
-  document.getElementById('stat-y10').textContent = (ts.y10[i]).toFixed(2) + '%';
+  let ip = i - 1;
+  while (ip >= 0 && (ts.y10[ip] === null || ts.y10[ip] === undefined)) ip--;
+  const y10Prev = ip >= 0 ? ts.y10[ip] : null;
+  const y10PrevDate = ip >= 0 ? ts.dates[ip] : '';
+  document.getElementById('stat-y10').innerHTML = pctTileHtml(ts.y10[i], y10Prev, y10PrevDate);
 }
 
 function bindWinPills(){
