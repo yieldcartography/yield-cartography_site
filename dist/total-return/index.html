@@ -1229,7 +1229,7 @@ function renderTopBlock() {
   function deltaStr(v) {
     if (v == null || isNaN(v)) return '';
     const sign = v >= 0 ? '+' : '';
-    return ' ' + arrow(v) + ' <span class="lastQ">' + sign + fmt0(v) + ' bp last Q</span>';
+    return ' ' + arrow(v) + ' <span class="lastQ">' + sign + fmt0(v) + ' bp</span>';
   }
   const cards = [
     {
@@ -1245,12 +1245,12 @@ function renderTopBlock() {
     {
       lab: 'CarryRoll cumulative (CC + RP + RD)',
       val: fmt0(s.cum_carry_bp) + ' bp' + deltaStr(lastCarry),
-      sub: 'income stream, last quarter ' + s.last_quarter_te,
+      sub: 'income stream, last q. ' + s.last_quarter_te,
     },
     {
       lab: 'CurveMove cumulative (ERC + TPC)',
       val: fmt0(s.cum_curve_bp) + ' bp' + deltaStr(lastCurve),
-      sub: 'duration P&amp;L, last quarter ' + s.last_quarter_te,
+      sub: 'duration P&amp;L, last q. ' + s.last_quarter_te,
     },
     {
       lab: 'Last quarter r<sub>mm</sub> (TBSP)',
