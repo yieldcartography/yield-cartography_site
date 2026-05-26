@@ -55,6 +55,20 @@
   .arr { display: inline-block; margin-left: 6px; font-size: 12px; line-height: 1; }
   .arr.up { color: var(--green); }
   .arr.dn { color: var(--salmon); }
+  .sliderRow { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 0 0 18px 0; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .sliderRow label { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); font-weight: 500; white-space: nowrap; }
+  .sliderRow input[type=range] { flex: 1 1 320px; min-width: 240px; accent-color: var(--accent); }
+  .sliderRow .navBtn { font-family: var(--mono); font-size: 11px; border: 1px solid var(--rule); background: var(--bg); border-radius: 3px; padding: 3px 9px; color: var(--ink-soft); cursor: pointer; }
+  .sliderRow .navBtn:hover { background: var(--accent-tint); color: var(--accent); border-color: var(--accent-soft); }
+  .sliderRow .dateLabel { font-family: var(--mono); font-weight: 600; color: var(--accent); font-size: 13px; min-width: 110px; }
+  .sliderRow .universe { font-family: var(--mono); color: var(--muted); font-size: 11px; }
+  details.intro { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 0 0 18px 0; }
+  details.intro > summary { cursor: pointer; font-family: var(--mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+  details.intro p, details.intro li { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0; }
+  details.intro h4 { margin: 12px 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); font-family: var(--mono); }
+  details.intro table.glossary { border-collapse: collapse; width: 100%; margin: 4px 0 6px 0; }
+  details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
+  details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 110px; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -88,11 +102,38 @@
     <div class="stat"><div class="label">Latest 10y zero</div><div class="value" id="stat-y10">—</div><div class="delta" id="stat-y10-d">on latest date</div></div>
   </div>
 
-  <div class="controls">
-    <label>Snapshot:</label>
+  <div class="sliderRow">
+    <label for="dateSlider">Snapshot date</label>
+    <button class="navBtn" id="btnPrev">&laquo;</button>
     <input type="range" id="dateSlider" min="0" max="0" value="0" step="1">
-    <span class="selected-date" id="selDate">—</span>
+    <button class="navBtn" id="btnNext">&raquo;</button>
+    <button class="navBtn" id="btnLatest">Latest</button>
+    <span class="dateLabel" id="selDate">&mdash;</span>
+    <span class="universe" id="snapInfo"></span>
   </div>
+
+  <details class="intro">
+    <summary>How to read this page (methodology and glossary)</summary>
+    <p>The Polish sovereign zero-coupon curve is fitted to every trading day from 2005 onward using the Nelson-Siegel-Svensson (NSS) functional form, estimated by weighted nonlinear least squares on the BondSpot mid-quote panel of Treasury bonds and OK bills, with the NBP reference rate anchoring the very short end. Weights are derived from a microstructure-aware information matrix (see the LW-NSS short). The viewer below walks monthly snapshots through that twenty-one-year history.</p>
+    <h4>Glossary</h4>
+    <table class="glossary">
+      <tr><td class="code">NSS</td><td>Nelson-Siegel-Svensson zero-coupon yield curve. Six parameters per day: level, slope, two curvature components and two decay parameters.</td></tr>
+      <tr><td class="code">LW-NSS</td><td>Liquidity-weighted NSS. The microstructure-derived weight matrix that down-weights illiquid bonds; default fit on this page.</td></tr>
+      <tr><td class="code">TTM</td><td>Time-to-maturity of a bond in years on the snapshot date.</td></tr>
+      <tr><td class="code">YTM</td><td>Yield-to-maturity computed from the BondSpot mid price under the bond's own coupon schedule.</td></tr>
+      <tr><td class="code">Forward 1y</td><td>One-year-spaced instantaneous forward rate implied by the NSS curve at the snapshot date.</td></tr>
+      <tr><td class="code">ACM rf</td><td>Risk-free expected average short-rate path from the Adrian-Crump-Moench five-factor affine term-structure model.</td></tr>
+      <tr><td class="code">BRW rf</td><td>Same path with the Bauer-Rudebusch-Wu small-sample bias correction applied to the VAR persistence.</td></tr>
+      <tr><td class="code">NBP SPF</td><td>Implied 1y/3y/5y horizon path from the most recent NBP Survey of Professional Forecasters.</td></tr>
+      <tr><td class="code">Segment</td><td>Short (TTM &le; 1.5y), belly (1.5-7y), long (&gt;7y); used for the colour coding of the bond bubbles on the curve.</td></tr>
+      <tr><td class="code">MAE</td><td>Median absolute fit error in basis points across the bond panel on the snapshot date.</td></tr>
+    </table>
+    <h4>What each panel shows at the slider date</h4>
+    <p><b>Zero-coupon curve and bond panel</b>. The NSS fit at the snapshot date (solid line) with the underlying coupon-bond panel rendered as bubbles sized by outstanding amount. The NBP reference rate anchors the very short end. Click any row in the bond table to highlight the bond on the curve and load its weekly YTM history.</p>
+    <p><b>Forecast family</b>. NSS 1y-spaced forwards, the ACM and BRW expected short-rate paths, and the time-shifted NBP SPF implied path, all overlaid on a common horizon axis. The four series let you read off, on any historical date, where the curve was pricing future short rates versus where surveys and the bias-corrected model thought they were going.</p>
+    <p><b>Cross-country snapshot</b>. PL versus GSW US Treasury versus ECB euro-area AAA zero-coupon yields at twelve standard tenors on the snapshot date, computed from the same NSS family on each panel.</p>
+    <p><b>Selected bond YTM history</b>. Weekly YTM closes for the bond clicked above, from the bond's first BondSpot fixing to today.</p>
+  </details>
 
   <!-- Wide hero panel: zero-coupon curve + bond bubbles -->
   <div class="panel" style="margin-bottom:18px">
@@ -308,11 +349,23 @@ function initStats(){
   document.getElementById('stat-y10-d').textContent = ts.dates[ny];
 }
 function buildSlider(){
-  const slider = document.getElementById('dateSlider');
+  const slider  = document.getElementById('dateSlider');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const btnLatest = document.getElementById('btnLatest');
   slider.max = DATA.snaps.length - 1;
   slider.value = DATA.snaps.length - 1;
   curIdx = +slider.value;
-  slider.addEventListener('input', e => { curIdx = +e.target.value; selectedISIN = null; draw(); });
+  function setIdx(i){
+    curIdx = Math.max(0, Math.min(DATA.snaps.length - 1, i));
+    slider.value = curIdx;
+    selectedISIN = null;
+    draw();
+  }
+  slider.addEventListener('input', e => setIdx(+e.target.value));
+  if (btnPrev)   btnPrev.addEventListener('click',   () => setIdx(curIdx - 1));
+  if (btnNext)   btnNext.addEventListener('click',   () => setIdx(curIdx + 1));
+  if (btnLatest) btnLatest.addEventListener('click', () => setIdx(DATA.snaps.length - 1));
 }
 function bindPills(){
   document.querySelectorAll('#tsPillsPL .pill').forEach(p=>{
@@ -428,6 +481,8 @@ function bindCsvButtons(){
 function draw(){
   const s = DATA.snaps[curIdx];
   document.getElementById('selDate').textContent = s.date;
+  const snapInfo = document.getElementById('snapInfo');
+  if (snapInfo) snapInfo.textContent = s.n_bonds + ' bonds in fit, MAE ' + s.mae_bp.toFixed(1) + ' bp (snapshot ' + (curIdx+1) + ' of ' + DATA.snaps.length + ')';
   document.getElementById('stat-snap').textContent = s.date;
   document.getElementById('stat-snap-d').textContent = (curIdx+1) + ' of ' + DATA.snaps.length + ' snapshots';
   document.getElementById('stat-bonds').textContent = s.n_bonds;

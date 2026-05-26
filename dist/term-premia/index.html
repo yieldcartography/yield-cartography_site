@@ -52,6 +52,13 @@
   .arr { display: inline-block; margin-left: 6px; font-size: 12px; line-height: 1; }
   .arr.up { color: var(--green); }
   .arr.dn { color: var(--salmon); }
+  details.intro { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 0 0 18px 0; }
+  details.intro > summary { cursor: pointer; font-family: var(--mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+  details.intro p, details.intro li { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0; }
+  details.intro h4 { margin: 12px 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); font-family: var(--mono); }
+  details.intro table.glossary { border-collapse: collapse; width: 100%; margin: 4px 0 6px 0; }
+  details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
+  details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 110px; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -84,6 +91,26 @@
     <div class="stat"><div class="label">Latest 10y TP (EA ACM)</div><div class="value" id="stat-tp10-ea">—</div><div class="delta" id="stat-tp10-ea-d">cross-country benchmark</div></div>
     <div class="stat"><div class="label">Latest 10y nominal PL</div><div class="value" id="stat-y10">—</div><div class="delta">NSS-fitted</div></div>
   </div>
+
+  <details class="intro">
+    <summary>How to read this page (methodology and glossary)</summary>
+    <p>The term premium at horizon n is the wedge between the nominal n-period yield and the model-implied path of expected short rates. We estimate it on the LW-NSS Polish sovereign zero-coupon panel using Adrian, Crump and Moench (2013), a five-factor affine term-structure model fitted by OLS regression of monthly excess returns on the lagged NSS principal components, with no cross-sectional restrictions imposed. The Bauer-Rudebusch-Wu (2012, 2014) iterated-bootstrap bias correction is applied to the VAR persistence so the implied expectations component is not artificially mean-reverting in small samples. Cross-country panels run the same ACM specification on GSW US Treasuries and ECB euro-area AAA yields.</p>
+    <h4>Glossary</h4>
+    <table class="glossary">
+      <tr><td class="code">TP(n)</td><td>Term premium at the n-year horizon, in basis points. Sample-mean ex-ante TP at 10y is +105 bp on the Polish curve.</td></tr>
+      <tr><td class="code">ACM</td><td>Adrian-Crump-Moench five-factor model. Pricing factors are the first five NSS principal components.</td></tr>
+      <tr><td class="code">BRW</td><td>ACM with the Bauer-Rudebusch-Wu bias correction; iterated bootstrap with common random numbers and Kilian shrinkage on the risky-recursion VAR.</td></tr>
+      <tr><td class="code">rf path</td><td>Expected average short-rate path E<sub>t</sub>[(1/n)&sum;r<sub>t+i</sub>] implied by the affine model.</td></tr>
+      <tr><td class="code">% rank</td><td>Where the latest observation sits in the windowed distribution: 0% = historical minimum, 50% = median, 100% = historical maximum.</td></tr>
+      <tr><td class="code">HAC</td><td>Heteroskedasticity- and autocorrelation-consistent (Newey-West) standard errors used for any t-statistics on this page.</td></tr>
+      <tr><td class="code">PCA</td><td>Principal-components decomposition of the NSS curve cross-section; the first three loadings recover level, slope and curvature.</td></tr>
+    </table>
+    <h4>What each panel shows</h4>
+    <p><b>Statistics by horizon</b>. Cross-sectional summary stats of the PL term premia at 1y, 2y, 3y, 5y, 7y and 10y over the selected window, under the toggled model. Click any row to load that horizon into the time-series chart immediately below.</p>
+    <p><b>Term premia by horizon</b>. Time series of PL ACM and PL BRW at the selected horizon, weekly Friday closes from the LW-NSS curve.</p>
+    <p><b>Cross-country comparison</b>. PL (BRW) versus US (ACM) versus euro-area AAA (ACM) at the selected horizon, all fitted on the same five-factor specification. US and EA panels are monthly (last observation of month); PL is weekly. Tiles above use the freshest observation on each panel.</p>
+    <p><b>Correlation heatmaps</b>. Pearson correlations of PL BRW term premia with US ACM and EA ACM at all horizon pairs; off-diagonal cells tell you how Polish term premia at one tenor co-move with foreign term premia at another tenor.</p>
+  </details>
 
   <div class="control-row">
     <span class="label-mono">Window:</span>

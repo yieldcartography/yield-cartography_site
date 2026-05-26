@@ -41,6 +41,13 @@
   .arr { display: inline-block; margin-left: 6px; font-size: 12px; line-height: 1; }
   .arr.up { color: var(--green); }
   .arr.dn { color: var(--salmon); }
+  details.intro { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 0 0 18px 0; }
+  details.intro > summary { cursor: pointer; font-family: var(--mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+  details.intro p, details.intro li { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0; }
+  details.intro h4 { margin: 12px 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); font-family: var(--mono); }
+  details.intro table.glossary { border-collapse: collapse; width: 100%; margin: 4px 0 6px 0; }
+  details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
+  details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 110px; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -73,6 +80,28 @@
     <div class="stat"><div class="label">Latest ZTD share</div><div class="value" id="stat-ztd">—</div><div class="delta">% of bond-days with no trading</div></div>
     <div class="stat"><div class="label">Latest composite z</div><div class="value" id="stat-cz">—</div><div class="delta">positive = less liquid</div></div>
   </div>
+
+  <details class="intro">
+    <summary>How to read this page (methodology and glossary)</summary>
+    <p>Microstructure liquidity measures computed at the bond-day level on the BondSpot mid- and quote panel and aggregated to monthly cross-sections from January 2005 onward. Each measure is computed under the original author's definition and then aligned on a common monthly grid so they can be combined into a single composite z-score. The composite is the equal-weight mean of within-measure z-scores (after sign-flipping the measures where lower = less liquid), so a positive composite reads as "less liquid than the sample mean".</p>
+    <h4>Glossary</h4>
+    <table class="glossary">
+      <tr><td class="code">BAS</td><td>Bid-ask spread, basis points of yield, from BondSpot best bid and best ask fixings; cross-sectional median per month.</td></tr>
+      <tr><td class="code">ZTD</td><td>Zero-trading-day share, percent of bond-days in the month with no recorded BondSpot trade.</td></tr>
+      <tr><td class="code">Amihud</td><td>Price-impact measure of Amihud (2002): absolute return divided by traded volume; sign-flipped so up = less liquid.</td></tr>
+      <tr><td class="code">Roll</td><td>Roll (1984) effective spread from the autocovariance of price changes.</td></tr>
+      <tr><td class="code">PS &gamma;</td><td>Pastor-Stambaugh (2003) gamma: regression-based reversal coefficient on lagged signed volume; more negative = less liquid (sign-flipped here so up = less liquid).</td></tr>
+      <tr><td class="code">CS</td><td>Corwin-Schultz (2012) high-low spread estimator; basis points of yield.</td></tr>
+      <tr><td class="code">Composite z</td><td>Equal-weight mean of within-measure standardised scores. Positive = less liquid than sample mean; zero = at the sample mean.</td></tr>
+      <tr><td class="code">Turnover</td><td>Monthly secondary-market turnover per ISIN in PLNbn; sourced from KDPW (T+0 lag) and the Min-Fin monthly bulletin (up to 2-month lag), with forward-fill on non-zero observations per ISIN.</td></tr>
+    </table>
+    <h4>What each panel shows</h4>
+    <p><b>Bid-ask spread</b>. Cross-sectional median (line) plus 25th-75th percentile band each month, in basis points of yield.</p>
+    <p><b>Zero-trading-day share</b>. Mean across the bond panel each month of the per-bond fraction of trading days with no BondSpot trade.</p>
+    <p><b>Composite z-index</b>. The combined liquidity stress index; rising values signal market-wide deterioration.</p>
+    <p><b>Per-bond turnover</b>. The bond-level monthly turnover panel split by source (KDPW vs Min-Fin) with the publication-lag filling logic visible.</p>
+    <p>Interpretation note: an upward arrow on the BAS, ZTD or composite-z tile means the measure rose vs the prior monthly observation, which on these particular measures means liquidity worsened. The tile colours follow the universal up = green / down = red convention; the panel notes explain the metric-specific direction of "good".</p>
+  </details>
 
   <div class="control-row">
     <span class="label-mono">Window:</span>

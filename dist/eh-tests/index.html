@@ -49,6 +49,13 @@
   .csv-btn { font-family: var(--mono); font-size: 10.5px; padding: 5px 11px; border: 1px solid var(--accent); border-radius: 4px; background: #fff; color: var(--accent); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 8px; }
   .csv-btn:hover { background: var(--accent); color: #fff; }
   .panel-head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  details.intro { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 0 0 18px 0; }
+  details.intro > summary { cursor: pointer; font-family: var(--mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+  details.intro p, details.intro li { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0; }
+  details.intro h4 { margin: 12px 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); font-family: var(--mono); }
+  details.intro table.glossary { border-collapse: collapse; width: 100%; margin: 4px 0 6px 0; }
+  details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
+  details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 110px; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -81,6 +88,27 @@
     <div class="stat"><div class="label">EA NW rejections (FB1)</div><div class="value" id="stat-ea-rej">—</div><div class="delta">asymptotic NW, FB1</div></div>
     <div class="stat"><div class="label">EA bootstrap rejections</div><div class="value" id="stat-ea-rej-boot">—</div><div class="delta">wild block bootstrap, FB1</div></div>
   </div>
+
+  <details class="intro">
+    <summary>How to read this page (methodology and glossary)</summary>
+    <p>The pure expectations hypothesis (PEH) says that long yields are unbiased averages of expected future short rates, so any term premium is zero in expectation. Three classical regression batteries test this on a common monthly panel: the Fama-Bliss type-1 cross-sectional slope, the Campbell-Shiller log-yield-spread slope, and the Cochrane-Piazzesi forward-rate single-factor projection. We run each one on PL, US and EA on the same nine forecast horizons by ten maturities grid so the cross-market comparison is on identical footing. Inference is reported under both asymptotic Newey-West HAC and a wild block bootstrap (Bauer-Hamilton 2018) so the reader can see how much each rejection rests on the asymptotic approximation.</p>
+    <h4>Glossary</h4>
+    <table class="glossary">
+      <tr><td class="code">PEH</td><td>Pure expectations hypothesis: long yields equal averages of expected short rates plus a constant, so the term premium is zero in expectation.</td></tr>
+      <tr><td class="code">FB1</td><td>Fama-Bliss type-1 regression. Slope &beta; from y<sub>n</sub>(t+h) &minus; y<sub>n</sub>(t) = &alpha; + &beta; &middot; [n/(n&minus;h) &middot; (y<sub>n</sub>(t) &minus; y<sub>h</sub>(t))] + &epsilon;. Under PEH, &beta; = 1.</td></tr>
+      <tr><td class="code">CS</td><td>Campbell-Shiller log-yield-spread regression. Tests the same restriction in spread-of-yields space.</td></tr>
+      <tr><td class="code">CP</td><td>Cochrane-Piazzesi single-factor projection of excess returns on a linear combination of forward rates.</td></tr>
+      <tr><td class="code">NW HAC</td><td>Newey-West heteroskedasticity- and autocorrelation-consistent standard errors. Asymptotic but biased downward in small samples with persistent regressors.</td></tr>
+      <tr><td class="code">Bootstrap</td><td>Wild block bootstrap of the regression residuals; block length tuned via Politis-White. Less anti-conservative under near-unit-root regressors.</td></tr>
+      <tr><td class="code">MCS</td><td>Model confidence set (Hansen-Lunde-Nason). Used in the systems comparison to identify the set of forecasting systems statistically indistinguishable from the best.</td></tr>
+      <tr><td class="code">Reject</td><td>A cell is marked "reject" when both the NW HAC t-test and the bootstrap p-value reject H<sub>0</sub>: &beta; = 1 at 5 percent.</td></tr>
+    </table>
+    <h4>What each panel shows</h4>
+    <p><b>FB1 cross-market heatmaps</b>. Slope coefficient &beta; on the (h, n) grid for the three markets. Negative cells in blue, positive in red, zero white. PL is uniformly close to zero or mildly negative, US mildly positive at long horizons, EA strongly positive across the long-end grid.</p>
+    <p><b>CS / CP companion plots</b>. Same construction in the spread-of-yields and the forward-curve specifications.</p>
+    <p><b>Rejection tables</b>. Per-market count of cells rejecting PEH at 5 percent under NW HAC and under the wild block bootstrap. The gap between the two columns is the asymptotic-vs-finite-sample wedge.</p>
+    <p>The headline asymmetry: EA looks like a strong PEH rejection under asymptotic NW but only marginal under bootstrap (Bauer-Hamilton concern), PL drifts mildly anti-PEH on both, US sits roughly consistent with PEH at long horizons.</p>
+  </details>
 
   <div class="panel" style="margin-bottom:18px">
     <div class="panel-head-row">
