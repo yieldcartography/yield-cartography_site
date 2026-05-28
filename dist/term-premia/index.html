@@ -361,12 +361,15 @@ function initStats(){
     document.getElementById('stat-tp10-ea').innerHTML = bpTileHtml(xtp.ea_tp_10y_bp[i]||0, eaPrev, prevMo);
     document.getElementById('stat-tp10-ea-d').textContent = 'end of ' + mo + ', monthly';
   }
-  const i = ts.dates.length-1;
-  let ip = i - 1;
-  while (ip >= 0 && (ts.y10[ip] === null || ts.y10[ip] === undefined)) ip--;
-  const y10Prev = ip >= 0 ? ts.y10[ip] : null;
-  const y10PrevDate = ip >= 0 ? ts.dates[ip] : '';
-  document.getElementById('stat-y10').innerHTML = pctTileHtml(ts.y10[i], y10Prev, y10PrevDate);
+  // 10y nominal tile: prefer the daily companion series so the delta is true
+  // day-over-day; fall back to the weekly ts if the build is pre-ts_daily.
+  const y10series = (DATA.ts_daily && DATA.ts_daily.dates && DATA.ts_daily.y10) ? DATA.ts_daily : ts;
+  const yi = y10series.dates.length - 1;
+  let yip = yi - 1;
+  while (yip >= 0 && (y10series.y10[yip] === null || y10series.y10[yip] === undefined)) yip--;
+  const y10Prev = yip >= 0 ? y10series.y10[yip] : null;
+  const y10PrevDate = yip >= 0 ? y10series.dates[yip] : '';
+  document.getElementById('stat-y10').innerHTML = pctTileHtml(y10series.y10[yi], y10Prev, y10PrevDate);
 }
 
 function bindWinPills(){

@@ -329,24 +329,28 @@ load();
 function initStats(){
   document.getElementById('stat-period').textContent = DATA.meta.first_date.slice(0,7) + ' to ' + DATA.meta.last_date.slice(0,7);
   document.getElementById('stat-n').textContent = DATA.meta.n_dates_total.toLocaleString();
-  const ts = DATA.ts; const ny = ts.dates.length-1;
-  // Latest 10y zero with prior-observation delta and direction arrow.
-  // Skips nulls walking back to find the most recent prior valid observation.
+  // Latest 10y zero: prefer the daily companion series so the delta is genuine
+  // day-over-day, not week-over-week. Fall back to the weekly `ts` series if
+  // the yields.json predates the ts_daily addition.
+  const series = (DATA.ts_daily && DATA.ts_daily.dates && DATA.ts_daily.y10) ? DATA.ts_daily : DATA.ts;
+  const isDaily = !!(DATA.ts_daily && DATA.ts_daily.dates);
+  const ny = series.dates.length - 1;
   let yPrev = null; let kPrev = ny - 1;
-  while (kPrev >= 0 && (ts.y10[kPrev] === null || ts.y10[kPrev] === undefined)) kPrev--;
-  if (kPrev >= 0) yPrev = ts.y10[kPrev];
-  let valHtml = fmtPct(ts.y10[ny]);
+  while (kPrev >= 0 && (series.y10[kPrev] === null || series.y10[kPrev] === undefined)) kPrev--;
+  if (kPrev >= 0) yPrev = series.y10[kPrev];
+  let valHtml = fmtPct(series.y10[ny]);
   if (yPrev !== null){
-    const dBp = (ts.y10[ny] - yPrev) * 100;
+    const dBp = (series.y10[ny] - yPrev) * 100;
     if (!isNaN(dBp) && Math.abs(dBp) > 0.05){
-      const cls = dBp > 0 ? 'up' : 'dn';
-      const sym = dBp > 0 ? '▲' : '▼';
+      const cls  = dBp > 0 ? 'up' : 'dn';
+      const sym  = dBp > 0 ? '▲' : '▼';
       const sign = dBp > 0 ? '+' : '';
-      valHtml += ' <span class="arr ' + cls + '" title="change vs ' + ts.dates[kPrev] + '">' + sym + ' ' + sign + dBp.toFixed(1) + ' bp</span>';
+      const tip  = (isDaily ? 'day-over-day ' : 'week-over-week ') + 'change vs ' + series.dates[kPrev];
+      valHtml += ' <span class="arr ' + cls + '" title="' + tip + '">' + sym + ' ' + sign + dBp.toFixed(1) + ' bp</span>';
     }
   }
   document.getElementById('stat-y10').innerHTML = valHtml;
-  document.getElementById('stat-y10-d').textContent = ts.dates[ny];
+  document.getElementById('stat-y10-d').textContent = series.dates[ny] + (isDaily ? '' : ' (weekly)');
 }
 function buildSlider(){
   const slider  = document.getElementById('dateSlider');
