@@ -163,7 +163,7 @@
         <h3 style="margin:0">Forecast family — NSS forwards, ACM &amp; BRW rf, NBP SPF</h3>
         <button class="csv-btn" id="csvFwd">CSV</button>
       </div>
-      <p class="note">Four short-rate forecast paths overlaid: NSS 1-year-spaced forwards from the fitted curve, ACM expected average short rate (rf), BRW rf with the Bauer-Rudebusch-Wu bias correction, and the most recent NBP Survey of Professional Forecasters implied path. <span id="spfVintage" style="font-family:var(--mono);color:var(--accent);font-weight:600">SPF vintage: —</span></p>
+      <p class="note">Four short-rate forecast paths overlaid: NSS 1-year-spaced forwards from the fitted curve, ACM expected average short rate (rf), BRW rf with the Bauer-Rudebusch-Wu bias correction, and the most recent NBP Survey of Professional Forecasters implied path. <span id="snapDateFwd" style="font-family:var(--mono);color:var(--accent);font-weight:600">Snapshot: —</span> · <span id="spfVintage" style="font-family:var(--mono);color:var(--accent);font-weight:600">SPF vintage: —</span></p>
       <div id="snapFwd" class="plot-frame"></div>
       <div class="legend-inline">
         <span><span class="swatch" style="background:var(--accent);"></span>NSS 1y forwards</span>
@@ -179,7 +179,7 @@
         <h3 style="margin:0">Cross-country snapshot — full curve at all tenors</h3>
         <button class="csv-btn" id="csvXsnap">CSV</button>
       </div>
-      <p class="note">PL versus US (GSW Treasury) versus euro-area AAA zero-coupon yields at 3m, 6m, 1y, 2y, 3y, 4y, 5y, 6y, 7y, 8y, 9y, 10y on the snapshot date.</p>
+      <p class="note">PL versus US (GSW Treasury) versus euro-area AAA zero-coupon yields at 3m, 6m, 1y, 2y, 3y, 4y, 5y, 6y, 7y, 8y, 9y, 10y on the snapshot date. <span id="snapDateXc" style="font-family:var(--mono);color:var(--accent);font-weight:600">Snapshot: —</span></p>
       <div id="xcountrySnap" class="plot-frame"></div>
     </div>
 
@@ -596,7 +596,9 @@ function drawSnapFwd(s){
   }
   if (s.nbp != null) traces.push({ x:[0.0], y:[s.nbp], mode:'markers', marker:{symbol:'diamond', size:11, color:PALETTE.green, line:{color:'#fff',width:1}}, hovertemplate:`NBP reference ${s.nbp.toFixed(2)}%<extra></extra>`, showlegend:false });
 
-  // SPF vintage label
+  // Snapshot-date and SPF-vintage labels (both update with the slider)
+  const snapDateFwdEl = document.getElementById('snapDateFwd');
+  if (snapDateFwdEl){ snapDateFwdEl.textContent = `Snapshot: ${s.date}`; }
   const vintageEl = document.getElementById('spfVintage');
   if (vintageEl){
     if (s.spf_date){ vintageEl.textContent = `SPF vintage: ${s.spf_date}`; }
@@ -611,6 +613,8 @@ function drawSnapFwd(s){
 }
 
 function drawXcountrySnap(s){
+  const snapDateXcEl = document.getElementById('snapDateXc');
+  if (snapDateXcEl){ snapDateXcEl.textContent = `Snapshot: ${s.date}`; }
   const tenors = DATA.tenor_years;
   const traces = [];
   traces.push({ x:tenors, y:s.pl_curve, mode:'lines+markers', name:'PL', line:{color:PALETTE.accent,width:2.2}, marker:{size:6,color:PALETTE.accent} });
