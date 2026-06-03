@@ -181,6 +181,11 @@
       </div>
       <p class="note">PL versus US (GSW Treasury) versus euro-area AAA zero-coupon yields at 3m, 6m, 1y, 2y, 3y, 4y, 5y, 6y, 7y, 8y, 9y, 10y on the snapshot date. <span id="snapDateXc" style="font-family:var(--mono);color:var(--accent);font-weight:600">Snapshot: —</span></p>
       <div id="xcountrySnap" class="plot-frame"></div>
+      <div class="legend-inline">
+        <span><span class="swatch" style="background:var(--accent);"></span>PL</span>
+        <span><span class="swatch" style="background:var(--salmon);"></span>US (GSW Treasury)</span>
+        <span><span class="swatch" style="background:var(--green);"></span>EA AAA (ECB)</span>
+      </div>
     </div>
 
     <div class="panel full">
@@ -619,15 +624,24 @@ function drawXcountrySnap(s){
   if (snapDateXcEl){ snapDateXcEl.textContent = `Snapshot: ${s.date}`; }
   const tenors = DATA.tenor_years;
   const traces = [];
-  traces.push({ x:tenors, y:s.pl_curve, mode:'lines+markers', name:'PL', line:{color:PALETTE.accent,width:2.2}, marker:{size:6,color:PALETTE.accent} });
-  if (s.us_curve) traces.push({ x:tenors, y:s.us_curve, mode:'lines+markers', name:'US', line:{color:PALETTE.salmon,width:2.0}, marker:{size:6,color:PALETTE.salmon} });
-  if (s.ea_curve) traces.push({ x:tenors, y:s.ea_curve, mode:'lines+markers', name:'EA AAA', line:{color:PALETTE.green,width:2.0}, marker:{size:6,color:PALETTE.green} });
+  traces.push({ x:tenors, y:s.pl_curve, mode:'lines+markers', name:'PL',
+                line:{color:PALETTE.accent,width:2.2,shape:'spline',smoothing:0.6},
+                marker:{size:8,color:'#fff',line:{color:PALETTE.accent,width:1.8}},
+                hovertemplate:'PL %{x}y · %{y:.2f}%<extra></extra>' });
+  if (s.us_curve) traces.push({ x:tenors, y:s.us_curve, mode:'lines+markers', name:'US',
+                line:{color:PALETTE.salmon,width:2.0,shape:'spline',smoothing:0.6},
+                marker:{size:8,color:'#fff',line:{color:PALETTE.salmon,width:1.8}},
+                hovertemplate:'US %{x}y · %{y:.2f}%<extra></extra>' });
+  if (s.ea_curve) traces.push({ x:tenors, y:s.ea_curve, mode:'lines+markers', name:'EA AAA',
+                line:{color:PALETTE.green,width:2.0,shape:'spline',smoothing:0.6},
+                marker:{size:8,color:'#fff',line:{color:PALETTE.green,width:1.8}},
+                hovertemplate:'EA AAA %{x}y · %{y:.2f}%<extra></extra>' });
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.xaxis.title = { text:'tenor (years)', font:FONT_MONO };
   lay.xaxis.tickvals = [0.25, 1, 2, 3, 5, 7, 10];
   lay.xaxis.ticktext = ['3m','1y','2y','3y','5y','7y','10y'];
   lay.yaxis.title = { text:'yield (%)', font:FONT_MONO };
-  lay.legend = { orientation:'h', y:1.12, x:0, font:FONT_MONO };
+  lay.showlegend = false;
   Plotly.react('xcountrySnap', traces, lay, CFG);
 }
 
