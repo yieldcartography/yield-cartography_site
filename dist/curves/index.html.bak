@@ -232,7 +232,7 @@
 
   </div>
 
-  <p class="small-note">Methodology: liquidity-weighted Nelson-Siegel-Svensson (LW-NSS) on BondSpot venue closing fixings. Weights derived from Min-Fin disclosures of outstanding amounts and prior-month turnover. NBP Survey of Professional Forecasters implied path constructed from quarterly survey releases per PhD Chapter 5.4. US zeros from Gürkaynak-Sack-Wright. Euro-area zeros from the ECB AAA spot-rate database. PCA factors from the EH-paper panel. Build date <span id="buildDateFoot">—</span>.</p>
+  <p class="small-note">Methodology: liquidity-weighted Nelson-Siegel-Svensson (LW-NSS) on BondSpot venue closing fixings. Weights derived from Min-Fin disclosures of outstanding amounts and prior-month turnover. NBP Survey of Professional Forecasters implied path constructed from quarterly survey releases per PhD Chapter 5.4. US zeros from Gürkaynak-Sack-Wright. Euro-area zeros from the ECB AAA spot-rate database. PCA factors from the EH-paper panel. Build date 2026-05-10.</p>
 
   <p class="small-note" style="margin-top:24px">Source-by-source observation timestamps for every input feeding this page are listed in the <a href="/#freshness">Data lineage &amp; freshness</a> block on the home page.</p>
 
@@ -323,8 +323,6 @@ function showBuildBadge(){
   const m = DATA.meta || {};
   const el = document.getElementById('buildBadge');
   if (el) el.textContent = `data: ${m.build_ts || '?'} · schema ${m.schema_version || 'unknown'}`;
-  const fb = document.getElementById('buildDateFoot');
-  if (fb && m.build_ts) fb.textContent = m.build_ts.slice(0,10);
 }
 load();
 
