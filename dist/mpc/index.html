@@ -95,6 +95,19 @@
     .cloud-row { grid-template-columns: 1fr; }
     .cloud-side { flex-direction: row; flex-wrap: wrap; }
   }
+
+  /* Lexical clusters */
+  .cluster-strip { display: flex; gap: 1px; margin: 6px 0 14px; height: 22px; }
+  .cluster-strip .cell { flex: 1 1 0; min-width: 2px; transition: transform 0.1s; }
+  .cluster-strip .cell:hover { transform: scaleY(1.4); cursor: default; }
+  .cluster-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 10px; }
+  .cluster-card { background: var(--bg); border: 1px solid var(--rule); border-left-width: 4px; border-radius: 4px; padding: 12px 14px; }
+  .cluster-card .ch-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .cluster-card .ch-name { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.5px; }
+  .cluster-card .ch-n    { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .cluster-card .ch-range { font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-bottom: 6px; }
+  .cluster-card canvas { width: 100%; height: 130px; background: #ffffff; border: 1px solid var(--rule); border-radius: 3px; }
+  .cluster-card .ch-headline { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -263,15 +276,32 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- COSINE SIMILARITY HEATMAP                                             -->
+  <!-- LEXICAL CLUSTERS — natural eras of MPC vocabulary                     -->
   <!-- ===================================================================== -->
   <div class="panel">
-    <div class="panel-head-row">
-      <h3 style="margin:0">Pairwise meeting similarity</h3>
-      <button class="csv-btn" id="csvCosine">CSV</button>
+    <h3 style="margin:0 0 6px 0">Lexical eras — Ward clustering on the pairwise-similarity matrix</h3>
+    <p class="note">Hierarchical Ward clustering on the cosine-distance matrix, cut at K clusters. Each meeting is assigned to one cluster. The strip below shows every meeting in chronological order, coloured by its cluster. The cards below the strip show the distinctive vocabulary of each cluster as a mini word cloud — these are the natural lexical eras the MPC's vocabulary fell into. Use the K-pill to vary the number of clusters; the underlying pairwise-similarity heatmap is available as a reveal at the bottom of this panel.</p>
+    <div class="pill-row" id="kPills">
+      <span class="pill-label">Clusters:</span>
+      <span class="pill" data-k="4">K = 4</span>
+      <span class="pill active" data-k="5">K = 5</span>
+      <span class="pill" data-k="6">K = 6</span>
+      <span class="pill" data-k="7">K = 7</span>
     </div>
-    <p class="note">TF-IDF cosine similarity between every pair of (monthly-sampled) meetings. Bright off-diagonal blocks mark periods where the MPC's vocabulary clustered around a single set of themes — GFC, deep cuts, COVID, 2022 inflation, the 2024-2026 pause.</p>
-    <div id="cosinePlot" class="plot-frame square"></div>
+    <div id="clusterStrip" class="cluster-strip"></div>
+    <div id="clusterCards" class="cluster-cards"></div>
+
+    <details class="intro" style="margin-top:18px">
+      <summary>Pairwise similarity heatmap (212 × 212)</summary>
+      <p class="note">TF-IDF cosine similarity between every pair of meetings. <b>Chronological</b> orders rows and columns by meeting date — bright diagonal bands show within-era similarity. <b>Clustered (Ward)</b> reorders by Ward leaf order so the K cluster blocks line up as crisp diagonal squares.</p>
+      <div class="pill-row" id="cosineOrder">
+        <span class="pill-label">Order:</span>
+        <span class="pill active" data-order="chrono">Chronological</span>
+        <span class="pill" data-order="clustered">Clustered (Ward)</span>
+        <button class="csv-btn" id="csvCosine" style="margin-left:auto">CSV</button>
+      </div>
+      <div id="cosinePlot" class="plot-frame square"></div>
+    </details>
   </div>
 
   <p class="small-note" style="margin-top:24px">Source-by-source observation timestamps for every input feeding this page are listed in the <a href="/#freshness">Data lineage &amp; freshness</a> block on the home page.</p>
@@ -353,9 +383,129 @@ async function load() {
   initWordCloud();
   drawTimeline();
   initTermTracker();
-  drawCosine();
+  drawClusters();
   bindCsvButtons();
   bindWindowSelectors();
+  bindCosineOrderPills();
+  bindKPills();
+  bindCosineLazyLoad();
+}
+
+// Lazy-render the cosine heatmap when the details reveal opens, so
+// Plotly does not lay it out at 0x0 inside a closed <details>.
+let _cosineInited = false;
+function bindCosineLazyLoad() {
+  const det = document.querySelector('.panel details.intro');
+  if (!det) return;
+  det.addEventListener('toggle', () => {
+    if (det.open) {
+      requestAnimationFrame(() => {
+        if (!_cosineInited) { drawCosine(); _cosineInited = true; }
+        else { try { Plotly.Plots.resize('cosinePlot'); } catch (e) {} }
+      });
+    }
+  });
+}
+
+// --------------------------------------------------------- lexical clusters
+const CLUSTER_COLORS = ['#4a6a8a', '#8a5a4a', '#5a7a5a', '#6a5a7a', '#8a7a4a', '#5a8a7a', '#7a5a5a'];
+let CURRENT_K = 5;
+
+function _currentClustering() {
+  return DATA.clusters.by_k[String(CURRENT_K)];
+}
+
+function drawClusters() {
+  const cl = DATA.clusters;
+  if (!cl || !cl.by_k) return;
+  CURRENT_K = cl.default_k || 5;
+  // Highlight default in the K-pill row
+  const row = document.getElementById('kPills');
+  row.querySelectorAll('.pill').forEach(p => {
+    p.classList.toggle('active', parseInt(p.dataset.k) === CURRENT_K);
+  });
+  renderClustersForK();
+}
+
+function renderClustersForK() {
+  const cur = _currentClustering();
+  if (!cur) return;
+
+  // Cluster strip: 212 cells colored by meeting cluster id
+  const strip = document.getElementById('clusterStrip');
+  strip.innerHTML = DATA.meetings.map((m, i) => {
+    const lab = cur.labels[i];
+    const color = CLUSTER_COLORS[(lab - 1) % CLUSTER_COLORS.length];
+    return `<div class="cell" style="background:${color}" title="${m.date} · cluster ${lab}"></div>`;
+  }).join('');
+
+  // Cluster cards
+  const cards = document.getElementById('clusterCards');
+  cards.innerHTML = cur.clusters.map(c => {
+    const color = CLUSTER_COLORS[(c.id - 1) % CLUSTER_COLORS.length];
+    return `
+      <div class="cluster-card" style="border-left-color:${color}">
+        <div class="ch-head">
+          <div class="ch-name">Cluster ${c.id}</div>
+          <div class="ch-n">${c.n_members} meetings</div>
+        </div>
+        <div class="ch-range">${c.first_date}  →  ${c.last_date}</div>
+        <canvas id="clusterCloud_${c.id}"></canvas>
+        <div class="ch-headline">headline: "${c.headline}"</div>
+      </div>`;
+  }).join('');
+  requestAnimationFrame(() => {
+    cur.clusters.forEach(c => renderClusterCloud(c));
+  });
+}
+
+function bindKPills() {
+  const row = document.getElementById('kPills');
+  if (!row) return;
+  row.querySelectorAll('.pill').forEach(p => {
+    p.addEventListener('click', () => {
+      row.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+      CURRENT_K = parseInt(p.dataset.k);
+      renderClustersForK();
+      if (_cosineInited && COSINE_ORDER === 'clustered') drawCosine();
+    });
+  });
+}
+
+function renderClusterCloud(cluster) {
+  const canvas = document.getElementById(`clusterCloud_${cluster.id}`);
+  if (!canvas) return;
+  const cssW = canvas.clientWidth, cssH = canvas.clientHeight;
+  canvas.width = cssW; canvas.height = cssH;
+  const max = cluster.top_terms[0] ? cluster.top_terms[0][1] : 1;
+  const list = cluster.top_terms.slice(0, 25).map(([t, w]) => [t, Math.max(9, 30 * Math.sqrt(w / max))]);
+  const color = CLUSTER_COLORS[(cluster.id - 1) % CLUSTER_COLORS.length];
+  // Three-shade palette derived from the cluster color: full, mid, light
+  const colorList = [color, PALETTE.soft, PALETTE.muted, color];
+  WordCloud(canvas, {
+    list, gridSize: 4, weightFactor: 1,
+    fontFamily: "'JetBrains Mono','Fira Code',Menlo,Consolas,monospace",
+    color: () => colorList[Math.floor(Math.random() * colorList.length)],
+    backgroundColor: '#ffffff', rotateRatio: 0.10, rotationSteps: 2,
+    shrinkToFit: true, drawOutOfBound: false, minSize: 7,
+    origin: [cssW / 2, cssH / 2],
+  });
+}
+
+// --------------------------------------------------------- cosine order toggle
+let COSINE_ORDER = 'chrono';
+function bindCosineOrderPills() {
+  const row = document.getElementById('cosineOrder');
+  if (!row) return;
+  row.querySelectorAll('.pill').forEach(p => {
+    p.addEventListener('click', () => {
+      row.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+      COSINE_ORDER = p.dataset.order;
+      drawCosine();
+    });
+  });
 }
 
 // -------------------------------------------------------- hero tiles
@@ -691,28 +841,61 @@ function renderTracker(terms) {
 
 // --------------------------------------------------------- cosine heatmap
 function drawCosine() {
-  const dates = DATA.cosine.dates;
-  const z = DATA.cosine.matrix;
-  const tickIdx = [], tickText = [];
-  let prevYear = null;
-  for (let i = 0; i < dates.length; i++) {
-    const yr = dates[i].slice(0, 4);
-    if (yr !== prevYear) { tickIdx.push(i); tickText.push(yr); prevYear = yr; }
+  const origDates = DATA.cosine.dates;
+  const origZ = DATA.cosine.matrix;
+  const n = origDates.length;
+
+  let order;
+  if (COSINE_ORDER === 'clustered' && DATA.clusters && DATA.clusters.leaf_order) {
+    order = DATA.clusters.leaf_order;
+  } else {
+    order = origDates.map((_, i) => i);
   }
+  const dates = order.map(i => origDates[i]);
+  const z = order.map(i => order.map(j => origZ[i][j]));
+
+  // Tick handling depends on order. Chronological → tick at first meeting
+  // of each year. Clustered → tick at the first meeting of each cluster,
+  // labelled by cluster id.
+  const tickIdx = [], tickText = [];
+  const curLabels = (DATA.clusters && DATA.clusters.by_k)
+    ? DATA.clusters.by_k[String(CURRENT_K)].labels : null;
+  if (COSINE_ORDER === 'clustered' && curLabels) {
+    let prevLab = null;
+    for (let i = 0; i < n; i++) {
+      const lab = curLabels[order[i]];
+      if (lab !== prevLab) { tickIdx.push(i); tickText.push(`C${lab}`); prevLab = lab; }
+    }
+  } else {
+    let prevYear = null;
+    for (let i = 0; i < n; i++) {
+      const yr = dates[i].slice(0, 4);
+      if (yr !== prevYear) { tickIdx.push(i); tickText.push(yr); prevYear = yr; }
+    }
+  }
+
   const colorscale = [
     [0.00, '#f7fbff'], [0.20, '#c6dbef'], [0.40, '#6baed6'],
     [0.60, '#2171b5'], [0.80, '#08306b'], [0.95, '#c2522d'], [1.00, '#7f1d1d'],
   ];
   const off = [];
-  for (let i = 0; i < z.length; i++) for (let j = 0; j < z.length; j++) if (i !== j) off.push(z[i][j]);
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) if (i !== j) off.push(z[i][j]);
   off.sort((a, b) => a - b);
   const p05 = off[Math.floor(off.length * 0.05)];
   const p95 = off[Math.floor(off.length * 0.95)];
+
+  // customdata layer carries the cluster id so hover stays informative
+  // even under the clustered ordering.
+  const custom = order.map(i => order.map(j => curLabels ? [curLabels[i], curLabels[j]] : [0, 0]));
+
   const traces = [{
     z: z, x: dates, y: dates, type: 'heatmap',
+    customdata: custom,
     colorscale, zmin: Math.max(0.05, p05), zmax: Math.min(0.45, p95 * 1.5),
     colorbar: { title: 'cosine', titleside: 'right', titlefont: FONT_MONO, tickfont: FONT_MONO, thickness: 12, len: 0.7 },
-    hovertemplate: '%{y} ↔ %{x}<br>similarity: %{z:.3f}<extra></extra>',
+    hovertemplate: curLabels
+      ? '%{y} (C%{customdata[0]}) ↔ %{x} (C%{customdata[1]})<br>similarity: %{z:.3f}<extra></extra>'
+      : '%{y} ↔ %{x}<br>similarity: %{z:.3f}<extra></extra>',
   }];
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.margin = { l: 70, r: 30, t: 20, b: 60 };
