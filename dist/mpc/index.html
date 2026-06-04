@@ -27,6 +27,14 @@
 <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
 <style>
+  .panel { margin: 0 0 22px 0; }
+  details.intro { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 0 0 22px 0; }
+  details.intro > summary { cursor: pointer; font-family: var(--mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+  details.intro p, details.intro li { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0; }
+  details.intro h4 { margin: 12px 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); font-family: var(--mono); }
+  details.intro table.glossary { border-collapse: collapse; width: 100%; margin: 4px 0 6px 0; }
+  details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
+  details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 110px; white-space: nowrap; }
   .plot-frame { width: 100%; height: 380px; }
   .plot-frame.tall { height: 460px; }
   .plot-frame.square { height: 540px; }
@@ -494,7 +502,16 @@ function drawTone() {
 function drawTopics() {
   const dates = DATA.topics.dates;
   const series = DATA.topics.series;
-  const colors = { inflation: PALETTE.salmon, growth: PALETTE.accent, labour: PALETTE.green, fiscal: '#7c43bd', energy: '#ff8c00', fx: '#0288d1', geopolit: '#b71c1c', global: PALETTE.muted };
+  const colors = {
+    inflation: '#8a5a4a',
+    growth:    '#4a6a8a',
+    labour:    '#5a7a5a',
+    fiscal:    '#7a6a8a',
+    energy:    '#8a7a4a',
+    fx:        '#5a7a8a',
+    geopolit:  '#8a4a4a',
+    global:    '#7a7a7a',
+  };
   const labels = { inflation: 'Inflation', growth: 'Growth', labour: 'Labour / wages', fiscal: 'Fiscal / public finances', energy: 'Energy', fx: 'FX / zloty', geopolit: 'Geopolitics', global: 'Global / external' };
   const keys = Object.keys(series);
   const traces = keys.map((k, i) => {
