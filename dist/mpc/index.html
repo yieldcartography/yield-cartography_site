@@ -175,7 +175,7 @@
     <h4>What each panel shows</h4>
     <p><b>Hawkish-vs-dovish net tone with rate path</b>. The lexicon score per meeting (light line) and as a 3-meeting moving average (heavy line). Background regime bands derived from the NBP rate path. The navy staircase on the right axis is the reference rate itself; triangles mark each policy action, labelled in bp for moves of 50 bp or more.</p>
     <p><b>Eight macro topics</b>. Per-1,000-word counts at each meeting for inflation, growth, labour, fiscal, energy, FX, geopolitics, and global, plotted as a 4×2 grid of small multiples so the relative magnitudes are directly comparable.</p>
-    <p><b>The year in MPC language</b>. TF-IDF-ranked unigrams and bigrams that were distinctive to each year. Drag the slider, press play for the full sweep through the corpus.</p>
+    <p><b>Lexical evolution time-lapse</b>. The video at the top of the page sweeps through every MPC minute at one frame per meeting, with the trailing-six-meeting TF-IDF cloud at the top and the per-meeting net-tone strip below. Same vocabulary the page scores, animated rather than sliced by year.</p>
     <p><b>One word per year</b>. The single most distinctive TF-IDF term for each year, colored by the dominant monetary-policy regime in that year.</p>
     <p><b>Term tracker</b>. Type one or more words, comma-separated. Each gets its own line. Lookup is exhaustive — terms not pre-indexed are counted live from the meeting text, so any word that appears even once will plot.</p>
     <p><b>Pairwise meeting similarity</b>. TF-IDF cosine similarity between every pair of (monthly-sampled) meetings. Bright off-diagonal blocks mark periods where the MPC's vocabulary clustered around a single set of themes — GFC, deep cuts, COVID, 2022 inflation, the 2024-2026 pause.</p>
@@ -220,27 +220,15 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- HERO: year-slider word cloud                                          -->
+  <!-- HERO: lexical-evolution time-lapse                                    -->
   <!-- ===================================================================== -->
   <div class="panel">
-    <h3 style="margin:0 0 6px 0">The year in MPC language</h3>
-    <p class="note">TF-IDF-ranked unigrams and bigrams that were distinctive to each year. Drag the slider, press play for the full sweep. <span id="cloudCaption" style="font-family:var(--mono);color:var(--accent);font-weight:600">—</span></p>
-
-    <div class="cloud-row">
-      <canvas id="cloud"></canvas>
-      <div class="cloud-side">
-        <div class="year-pill" id="yearPill">—<span class="sub" id="meetingCount">— meetings</span></div>
-        <div class="slider-wrap">
-          <input type="range" id="yearSlider" min="0" max="0" step="1" value="0">
-          <div class="ends"><span id="yearMin">—</span><span id="yearMax">—</span></div>
-        </div>
-        <button class="play-btn" id="playBtn">▶ Play full sweep</button>
-        <div class="top10">
-          <h4>Top 10 distinctive terms</h4>
-          <ol id="topList"></ol>
-        </div>
-      </div>
+    <h3 style="margin:0 0 6px 0">Lexical evolution time-lapse — trailing 6-meeting word cloud with hawkish-dovish tone</h3>
+    <p class="note">A 1m46s video sweeping through every NBP MPC minute from April 2007 to today. Each frame aggregates TF-IDF over the trailing six meetings, with the per-meeting net-tone strip below and a playhead line that moves with the frame. Interactive per-cluster word clouds and the full pairwise similarity matrix remain in the panels further down this page.</p>
+    <div style="position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:4px;overflow:hidden;margin-top:8px">
+      <iframe src="https://www.youtube.com/embed/wN67Qlh9Cd4" title="Lexical evolution of NBP MPC minutes 2007-2026" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"></iframe>
     </div>
+    <p style="font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:8px">Open on <a href="https://youtu.be/wN67Qlh9Cd4" target="_blank" rel="noopener" style="color:var(--accent)">YouTube ↗</a> for full quality, or browse the <a href="/movies/" style="color:var(--accent)">movies</a> tab for the curve and term-premia time-lapses.</p>
   </div>
 
 
@@ -372,7 +360,6 @@ async function load() {
   drawTiles();
   drawTone();
   drawTopics();
-  initWordCloud();
   initTermTracker();
   drawClusters();
   bindCsvButtons();
