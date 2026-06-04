@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MPC minutes — yieldcartography</title>
+<meta name="description" content="Text-mining of NBP MPC decision-making meeting minutes since April 2007. Hawkish-dovish lexicon, eight macro topics, TF-IDF year-by-year evolution, and pairwise meeting similarity heatmap.">
+<link rel="stylesheet" href="/assets/style.css?v=7">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://yieldcartography.com/mpc/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MPC minutes — yieldcartography">
+<meta property="og:description" content="Text-mining of NBP MPC decision-making meeting minutes since April 2007. Hawkish-dovish tone, macro topics, TF-IDF word clouds, pairwise similarity heatmap.">
+<meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yieldcartography.com/mpc/">
+<meta property="og:site_name" content="yieldcartography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MPC minutes — yieldcartography">
+<meta name="twitter:description" content="Text-mining of NBP MPC decision-making meeting minutes since April 2007.">
+<meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
+<style>
+  .plot-frame { width: 100%; height: 380px; }
+  .plot-frame.tall { height: 460px; }
+  .plot-frame.square { height: 540px; }
+  .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 12px 0; align-items: center; }
+  .pill-row .pill-label { font-family: var(--mono); font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px; }
+  .pill { font-family: var(--mono); font-size: 10.5px; padding: 4px 11px; border: 1px solid var(--rule); border-radius: 12px; background: var(--bg); color: var(--ink-soft); cursor: pointer; user-select: none; letter-spacing: 0.4px; text-transform: uppercase; }
+  .pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .pill:hover:not(.active) { border-color: var(--accent-soft); color: var(--accent); }
+  .panel-head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  .csv-btn { font-family: var(--mono); font-size: 10.5px; padding: 5px 11px; border: 1px solid var(--accent); border-radius: 4px; background: #fff; color: var(--accent); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+  .csv-btn:hover { background: var(--accent); color: #fff; }
+  .small-note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.3px; margin: 6px 0 0 0; }
+
+  /* MPC-specific: tile left-border colors for hawk/dove/regime signalling */
+  .stat.hawk          { border-left: 4px solid var(--salmon); padding-left: 12px; }
+  .stat.dove          { border-left: 4px solid var(--green);  padding-left: 12px; }
+  .stat.neutral       { border-left: 4px solid #9e9e9e;       padding-left: 12px; }
+  .stat.accommodation { border-left: 4px solid var(--green);  padding-left: 12px; }
+  .stat.tightening    { border-left: 4px solid var(--salmon); padding-left: 12px; }
+  .stat.up            { border-left: 4px solid var(--salmon); padding-left: 12px; }
+  .stat.down          { border-left: 4px solid var(--green);  padding-left: 12px; }
+  .stat .value .arr { display:inline-block; margin-left:4px; font-size:13px; vertical-align:2px; }
+  .stat .value .arr.up { color: var(--salmon); }
+  .stat .value .arr.dn { color: var(--green); }
+
+  /* Hero word cloud */
+  .cloud-row { display: grid; grid-template-columns: 1fr 260px; gap: 22px; align-items: stretch; }
+  #cloud { width: 100%; height: 460px; background: var(--bg); border: 1px solid var(--rule); border-radius: 4px; }
+  .cloud-side { display: flex; flex-direction: column; gap: 12px; }
+  .year-pill { font-family: var(--mono); font-size: 44px; font-weight: 700; color: var(--accent); line-height: 1; text-align: center; padding: 14px 0; background: var(--bg); border: 1px solid var(--rule); border-radius: 4px; }
+  .year-pill .sub { display: block; font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 4px; }
+  .slider-wrap { padding: 4px 4px; }
+  .slider-wrap input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .slider-wrap .ends { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .cloud-side .top10 { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); background: var(--bg); border: 1px solid var(--rule); border-radius: 4px; padding: 10px 12px; }
+  .cloud-side .top10 h4 { margin: 0 0 6px; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); }
+  .cloud-side .top10 ol { margin: 0; padding-left: 18px; }
+  .cloud-side .top10 ol li { margin-bottom: 2px; }
+  .play-btn { font-family: var(--mono); font-size: 11px; padding: 7px 12px; background: var(--accent); color: #fff; border: none; border-radius: 4px; cursor: pointer; letter-spacing: 0.5px; text-transform: uppercase; }
+  .play-btn:hover { background: var(--salmon); }
+
+  /* Distinctive-term timeline */
+  .timeline { display: grid; gap: 4px; margin-top: 8px; }
+  .timeline .cell { background: var(--bg); border: 1px solid var(--rule); border-radius: 3px; padding: 8px 6px; text-align: center; min-height: 62px; display: flex; flex-direction: column; justify-content: center; }
+  .timeline .cell.tightening    { background: rgba(194, 82, 45, 0.12); border-color: rgba(194, 82, 45, 0.40); }
+  .timeline .cell.accommodation { background: rgba(46, 125, 50, 0.12); border-color: rgba(46, 125, 50, 0.40); }
+  .timeline .cell .yr   { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .timeline .cell .term { font-family: var(--mono); font-size: 12px; color: var(--ink); font-weight: 600; margin-top: 4px; line-height: 1.15; word-break: break-word; }
+
+  /* Term tracker */
+  .tracker-row { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+  .tracker-row input { flex: 1; min-width: 280px; font-family: var(--mono); font-size: 13px; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 4px; background: #fff; color: var(--ink); }
+  .tracker-row .suggest { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .tracker-row .suggest .chip { display: inline-block; padding: 3px 7px; margin: 2px 3px 2px 0; background: var(--bg); border: 1px solid var(--rule); border-radius: 3px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.4px; }
+  .tracker-row .suggest .chip:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  @media (max-width: 900px) {
+    .cloud-row { grid-template-columns: 1fr; }
+    .cloud-side { flex-direction: row; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/mpc/" class="active">MPC</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/total-return/">total return</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/">shorts</a>
+    <a href="/movies/">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main>
+
+  <h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Polish MPC minutes — lexical evolution</h1>
+  <p style="color:var(--muted);margin:0 0 12px 0;font-size:13px">NBP MPC decision-making meeting minutes since April 2007. The tab reads each published minute, scores its language on a hawkish-dovish lexicon and eight macro topics, ranks each year's distinctive vocabulary via TF-IDF, and maps how Polish monetary-policy language shifted from cycle to cycle. <b id="nMeetingsIntro">—</b> meetings indexed; the most recent meeting in the corpus is <b id="latestDateIntro">—</b>.</p>
+
+  <div class="stats" style="margin-top:18px">
+    <div class="stat" id="tileTone">
+      <div class="label">Latest meeting tone</div>
+      <div class="value">—</div>
+      <div class="delta">—</div>
+    </div>
+    <div class="stat" id="tileToneMA">
+      <div class="label">Tone, 3-meeting MA</div>
+      <div class="value">—</div>
+      <div class="delta">—</div>
+    </div>
+    <div class="stat" id="tileMove">
+      <div class="label">Last NBP move</div>
+      <div class="value">—</div>
+      <div class="delta">—</div>
+    </div>
+    <div class="stat" id="tileTrend">
+      <div class="label">Trending term</div>
+      <div class="value">—</div>
+      <div class="delta">—</div>
+    </div>
+    <div class="stat" id="tileRegime">
+      <div class="label">Policy regime</div>
+      <div class="value">—</div>
+      <div class="delta">—</div>
+    </div>
+  </div>
+
+  <details class="intro">
+    <summary>How to read this page (methodology and glossary)</summary>
+    <p>This page reads the published English-language minutes of every NBP MPC decision-making meeting from April 2007 onward. The text is scored on four layers: a hand-curated <b>hawkish-vs-dovish lexicon</b> tuned for Polish central-bank language, a <b>TF-IDF model</b> over unigrams plus bigrams with sklearn's English stopword list extended by roughly 130 central-bank ceremonial words ("noted", "underlined", "members", month names, etc.), a fixed list of <b>eight macro topics</b> tracked by direct keyword count, and pairwise <b>cosine similarity</b> across the meeting corpus.</p>
+    <h4>The five tiles above</h4>
+    <table class="glossary">
+      <tr><td class="code">Latest meeting tone</td><td>Net tone = (hawkish − dovish) / (hawkish + dovish) in the custom MPC lexicon, scored on the most recent published minute. Colored left border: salmon hawk-tilted, green dove-tilted, grey neutral.</td></tr>
+      <tr><td class="code">Tone, 3m MA</td><td>Same metric averaged over the last three meetings. Smooths out single-meeting noise.</td></tr>
+      <tr><td class="code">Last NBP move</td><td>Most recent reference-rate change in basis points, with the resulting rate level.</td></tr>
+      <tr><td class="code">Trending term</td><td>The TF-IDF term that surged most in the last four meetings versus the prior baseline.</td></tr>
+      <tr><td class="code">Policy regime</td><td>Mechanical classification of the trailing-6-month rate change: ≥ +25 bp = tightening (salmon), ≤ −25 bp = accommodation (green), otherwise neutral.</td></tr>
+    </table>
+    <h4>What each panel shows</h4>
+    <p><b>Hawkish-vs-dovish net tone with rate path</b>. The lexicon score per meeting (light line) and as a 3-meeting moving average (heavy line). Background regime bands derived from the NBP rate path. The navy staircase on the right axis is the reference rate itself; triangles mark each policy action, labelled in bp for moves of 50 bp or more.</p>
+    <p><b>Eight macro topics</b>. Per-1,000-word counts at each meeting for inflation, growth, labour, fiscal, energy, FX, geopolitics, and global, plotted as a 4×2 grid of small multiples so the relative magnitudes are directly comparable.</p>
+    <p><b>The year in MPC language</b>. TF-IDF-ranked unigrams and bigrams that were distinctive to each year. Drag the slider, press play for the full sweep through the corpus.</p>
+    <p><b>One word per year</b>. The single most distinctive TF-IDF term for each year, colored by the dominant monetary-policy regime in that year.</p>
+    <p><b>Term tracker</b>. Type one or more words, comma-separated. Each gets its own line. Lookup is exhaustive — terms not pre-indexed are counted live from the meeting text, so any word that appears even once will plot.</p>
+    <p><b>Pairwise meeting similarity</b>. TF-IDF cosine similarity between every pair of (monthly-sampled) meetings. Bright off-diagonal blocks mark periods where the MPC's vocabulary clustered around a single set of themes — GFC, deep cuts, COVID, 2022 inflation, the 2024-2026 pause.</p>
+  </details>
+
+  <!-- ===================================================================== -->
+  <!-- NET TONE + REGIME BANDS + RATE PATH                                   -->
+  <!-- ===================================================================== -->
+  <div class="panel">
+    <div class="panel-head-row">
+      <h3 style="margin:0">Hawkish-vs-dovish net tone, with monetary-policy regime bands and NBP rate path</h3>
+      <button class="csv-btn" id="csvTone">CSV</button>
+    </div>
+    <p class="note">Net tone = (hawkish − dovish) / (hawkish + dovish) in a custom MPC lexicon, per meeting (light line) and as 3-meeting moving average (heavy line). Background bands derive mechanically from the 6-month change in the NBP reference rate. The navy staircase on the right axis is the NBP reference rate; triangles mark each policy action, labelled in bp for moves of 50 bp or more.</p>
+    <div class="pill-row" id="toneWin">
+      <span class="pill-label">Window:</span>
+      <span class="pill active" data-win="full">Full sample</span>
+      <span class="pill" data-win="5y">Last 5 years</span>
+      <span class="pill" data-win="2y">Last 2 years</span>
+      <span class="pill" data-win="1y">Last 1 year</span>
+    </div>
+    <div id="tonePlot" class="plot-frame tall"></div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- TOPIC SMALL-MULTIPLES (4 x 2 GRID)                                    -->
+  <!-- ===================================================================== -->
+  <div class="panel">
+    <div class="panel-head-row">
+      <h3 style="margin:0">Eight macro topics, frequency over time</h3>
+      <button class="csv-btn" id="csvTopics">CSV</button>
+    </div>
+    <p class="note">Per-1,000-word counts at each meeting for eight pre-defined themes, plotted as a 4×2 grid of small multiples so the relative magnitudes are directly comparable.</p>
+    <div class="pill-row" id="topicsWin">
+      <span class="pill-label">Window:</span>
+      <span class="pill active" data-win="full">Full sample</span>
+      <span class="pill" data-win="5y">Last 5 years</span>
+      <span class="pill" data-win="2y">Last 2 years</span>
+      <span class="pill" data-win="1y">Last 1 year</span>
+    </div>
+    <div id="topicsPlot" class="plot-frame square"></div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- HERO: year-slider word cloud                                          -->
+  <!-- ===================================================================== -->
+  <div class="panel">
+    <h3 style="margin:0 0 6px 0">The year in MPC language</h3>
+    <p class="note">TF-IDF-ranked unigrams and bigrams that were distinctive to each year. Drag the slider, press play for the full sweep. <span id="cloudCaption" style="font-family:var(--mono);color:var(--accent);font-weight:600">—</span></p>
+
+    <div class="cloud-row">
+      <canvas id="cloud"></canvas>
+      <div class="cloud-side">
+        <div class="year-pill" id="yearPill">—<span class="sub" id="meetingCount">— meetings</span></div>
+        <div class="slider-wrap">
+          <input type="range" id="yearSlider" min="0" max="0" step="1" value="0">
+          <div class="ends"><span id="yearMin">—</span><span id="yearMax">—</span></div>
+        </div>
+        <button class="play-btn" id="playBtn">▶ Play full sweep</button>
+        <div class="top10">
+          <h4>Top 10 distinctive terms</h4>
+          <ol id="topList"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- DISTINCTIVE-TERM TIMELINE                                             -->
+  <!-- ===================================================================== -->
+  <div class="panel">
+    <h3 style="margin:0 0 6px 0">One word per year</h3>
+    <p class="note">The single most distinctive TF-IDF term for each year. Cell color reflects the dominant monetary-policy regime in that year (salmon tightening, green accommodation, grey neutral).</p>
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- TERM TRACKER                                                          -->
+  <!-- ===================================================================== -->
+  <div class="panel">
+    <div class="panel-head-row">
+      <h3 style="margin:0">Track any word or bigram</h3>
+      <button class="csv-btn" id="csvTracker">CSV</button>
+    </div>
+    <p class="note">Type one or more words, comma-separated. Each gets its own line. Lookup is exhaustive across the corpus — terms not pre-indexed are counted live from the meeting text, so any word that appears even once will work.</p>
+    <div class="tracker-row">
+      <input type="text" id="termInput" placeholder="try: inflation, ukraine, pandemic, neutral, energy prices, exchange rate" autocomplete="off">
+      <span class="suggest" id="trackerSuggest"></span>
+    </div>
+    <div class="pill-row" id="trackerWin">
+      <span class="pill-label">Window:</span>
+      <span class="pill active" data-win="full">Full sample</span>
+      <span class="pill" data-win="5y">Last 5 years</span>
+      <span class="pill" data-win="2y">Last 2 years</span>
+      <span class="pill" data-win="1y">Last 1 year</span>
+    </div>
+    <div id="trackerPlot" class="plot-frame"></div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- COSINE SIMILARITY HEATMAP                                             -->
+  <!-- ===================================================================== -->
+  <div class="panel">
+    <div class="panel-head-row">
+      <h3 style="margin:0">Pairwise meeting similarity</h3>
+      <button class="csv-btn" id="csvCosine">CSV</button>
+    </div>
+    <p class="note">TF-IDF cosine similarity between every pair of (monthly-sampled) meetings. Bright off-diagonal blocks mark periods where the MPC's vocabulary clustered around a single set of themes — GFC, deep cuts, COVID, 2022 inflation, the 2024-2026 pause.</p>
+    <div id="cosinePlot" class="plot-frame square"></div>
+  </div>
+
+  <p class="small-note" style="margin-top:24px">Source-by-source observation timestamps for every input feeding this page are listed in the <a href="/#freshness">Data lineage &amp; freshness</a> block on the home page.</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright">yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · <span id="buildBadge">data: loading…</span></div>
+</footer>
+
+<script>
+const PALETTE = {
+  ink: '#1a1a1a', soft: '#3a3a3a', muted: '#6a6a6a', rule: '#d8d8d8',
+  accent: '#1f4e79', salmon: '#c2522d', green: '#2e7d32', neutral: '#9e9e9e',
+};
+const FONT_BODY = { family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif", size: 11, color: PALETTE.soft };
+const FONT_MONO = { family: "'JetBrains Mono','Fira Code',Menlo,Consolas,monospace", size: 10, color: PALETTE.muted };
+const PLOT_BASE = {
+  paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff', font: FONT_BODY,
+  margin: { l: 50, r: 18, t: 14, b: 38 }, hovermode: 'closest',
+  xaxis: { gridcolor: '#eeeeee', zerolinecolor: '#dddddd', tickfont: FONT_MONO, linecolor: '#cccccc' },
+  yaxis: { gridcolor: '#eeeeee', zerolinecolor: '#dddddd', tickfont: FONT_MONO, linecolor: '#cccccc' },
+};
+const CFG = { displayModeBar: false, responsive: true };
+
+let DATA = null;
+
+// Window selector state
+const WIN_STATE = { tone: 'full', topics: 'full', tracker: 'full' };
+function rangeFor(win) {
+  const last = DATA.meta.last_date;
+  if (win === 'full') return [DATA.meta.first_date, last];
+  const y = parseInt(win);
+  const d = new Date(last);
+  d.setFullYear(d.getFullYear() - y);
+  return [d.toISOString().slice(0, 10), last];
+}
+function applyToneWindow()    { Plotly.relayout('tonePlot',    { 'xaxis.range': rangeFor(WIN_STATE.tone) }); }
+function applyTrackerWindow() { Plotly.relayout('trackerPlot', { 'xaxis.range': rangeFor(WIN_STATE.tracker) }); }
+function applyTopicsWindow() {
+  const r = rangeFor(WIN_STATE.topics);
+  const upd = {};
+  for (let i = 1; i <= 8; i++) upd[i === 1 ? 'xaxis.range' : `xaxis${i}.range`] = r;
+  Plotly.relayout('topicsPlot', upd);
+}
+function bindWindowSelectors() {
+  const wire = (rowId, stateKey, applyFn) => {
+    const row = document.getElementById(rowId);
+    if (!row) return;
+    row.querySelectorAll('.pill').forEach(p => {
+      p.addEventListener('click', () => {
+        row.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+        p.classList.add('active');
+        WIN_STATE[stateKey] = p.dataset.win;
+        applyFn();
+      });
+    });
+  };
+  wire('toneWin',    'tone',    applyToneWindow);
+  wire('topicsWin',  'topics',  applyTopicsWindow);
+  wire('trackerWin', 'tracker', applyTrackerWindow);
+}
+
+async function load() {
+  const r = await fetch('/data/mpc_data.json?v=' + Date.now());
+  DATA = await r.json();
+  document.getElementById('buildBadge').textContent = `data: ${DATA.meta.build_ts} · ${DATA.meta.n_meetings} meetings`;
+  document.getElementById('nMeetingsIntro').textContent = DATA.meta.n_meetings;
+  document.getElementById('latestDateIntro').textContent = DATA.meta.last_date;
+
+  drawTiles();
+  drawTone();
+  drawTopics();
+  initWordCloud();
+  drawTimeline();
+  initTermTracker();
+  drawCosine();
+  bindCsvButtons();
+  bindWindowSelectors();
+}
+
+// -------------------------------------------------------- hero tiles
+function classifyTone(v) {
+  if (v === null || v === undefined) return 'neutral';
+  if (v >  0.10) return 'hawk';
+  if (v < -0.10) return 'dove';
+  return 'neutral';
+}
+function drawTiles() {
+  const t = DATA.tiles;
+  const tt = document.getElementById('tileTone');
+  tt.className = `stat ${t.tone.class}`;
+  const v = t.tone.value;
+  const cls_lbl = t.tone.class === 'hawk' ? 'hawkish' : t.tone.class === 'dove' ? 'dovish' : 'neutral';
+  tt.querySelector('.value').innerHTML = v === null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2);
+  tt.querySelector('.delta').textContent = `${cls_lbl} · ${t.tone.date} · hawk ${t.tone.hawk?.toFixed(1)} / dove ${t.tone.dove?.toFixed(1)} per 1k`;
+
+  const meetings = DATA.meetings.filter(m => m.net_tone !== null);
+  const last3 = meetings.slice(-3).map(m => m.net_tone);
+  const ma = last3.length ? last3.reduce((a, b) => a + b, 0) / last3.length : null;
+  const maCls = classifyTone(ma);
+  const ttma = document.getElementById('tileToneMA');
+  ttma.className = `stat ${maCls}`;
+  ttma.querySelector('.value').innerHTML = ma === null ? '—' : (ma >= 0 ? '+' : '') + ma.toFixed(2);
+  const maLbl = maCls === 'hawk' ? 'hawkish' : maCls === 'dove' ? 'dovish' : 'neutral';
+  ttma.querySelector('.delta').textContent = ma === null ? '—' :
+    `${maLbl} · avg of ${last3.length} meetings to ${meetings[meetings.length-1].date}`;
+
+  const tm = document.getElementById('tileMove');
+  const move = t.last_move;
+  const up = move.delta_bp > 0;
+  tm.className = `stat ${up ? 'up' : (move.delta_bp < 0 ? 'down' : 'neutral')}`;
+  const sign = up ? '+' : '';
+  const arrow = up ? '▲' : (move.delta_bp < 0 ? '▼' : '·');
+  tm.querySelector('.value').innerHTML = move.date
+    ? `${sign}${move.delta_bp} bp <span class="arr ${up ? 'up' : 'dn'}">${arrow}</span>`
+    : '—';
+  tm.querySelector('.delta').textContent = move.date
+    ? `to ${move.rate_pct.toFixed(2)}% on ${move.date}`
+    : 'no recorded moves';
+
+  const tr = document.getElementById('tileTrend');
+  tr.className = 'stat';
+  tr.querySelector('.value').textContent = t.trending.term || '—';
+  tr.querySelector('.delta').textContent = t.trending.term
+    ? `${t.trending.score.toFixed(1)}× baseline · since ${t.trending.since}`
+    : '—';
+
+  const tg = document.getElementById('tileRegime');
+  tg.className = `stat ${t.regime.class}`;
+  const regimeLabel = { accommodation: 'Accommodation', tightening: 'Tightening', neutral: 'Neutral' }[t.regime.class] || t.regime.class;
+  tg.querySelector('.value').textContent = regimeLabel;
+  tg.querySelector('.delta').textContent = `derived from trailing 6m rate change`;
+}
+
+// ------------------------------------------------------- net tone + bands + rate
+function drawTone() {
+  const meetings = DATA.meetings.filter(m => m.net_tone !== null);
+  const dates = meetings.map(m => m.date);
+  const nt = meetings.map(m => m.net_tone);
+  const ma3 = nt.map((_, i) => {
+    const lo = Math.max(0, i - 2);
+    const slice = nt.slice(lo, i + 1);
+    return slice.reduce((a, b) => a + b, 0) / slice.length;
+  });
+
+  const shapes = [];
+  const colorOf = { accommodation: 'rgba(46,125,50,0.16)', tightening: 'rgba(194,82,45,0.16)', neutral: 'rgba(158,158,158,0.10)' };
+  let s = 0;
+  for (let i = 1; i <= meetings.length; i++) {
+    if (i === meetings.length || meetings[i].regime !== meetings[s].regime) {
+      shapes.push({
+        type: 'rect', xref: 'x', yref: 'paper',
+        x0: meetings[s].date,
+        x1: (i === meetings.length ? meetings[i - 1].date : meetings[i].date),
+        y0: 0, y1: 1,
+        fillcolor: colorOf[meetings[s].regime], line: { width: 0 }, layer: 'below',
+      });
+      s = i;
+    }
+  }
+
+  const rateTrace = {
+    x: DATA.rate.dates, y: DATA.rate.values,
+    mode: 'lines', line: { color: PALETTE.accent, width: 1.7, shape: 'hv' },
+    name: 'NBP reference rate', yaxis: 'y2',
+    hovertemplate: '%{x}<br>NBP ref: %{y:.2f}%<extra></extra>',
+  };
+  const moves = DATA.rate_changes || [];
+  const moveTrace = {
+    x: moves.map(m => m.date),
+    y: moves.map(m => m.rate_pct),
+    mode: 'markers',
+    marker: {
+      size: moves.map(m => 4 + Math.min(10, Math.abs(m.delta_bp) / 12)),
+      color: moves.map(m => m.delta_bp > 0 ? PALETTE.salmon : PALETTE.green),
+      line: { color: '#fff', width: 1.2 },
+      symbol: moves.map(m => m.delta_bp > 0 ? 'triangle-up' : 'triangle-down'),
+    },
+    name: 'Rate moves', yaxis: 'y2',
+    hovertemplate: '%{x}<br>%{customdata:+d} bp to %{y:.2f}%<extra></extra>',
+    customdata: moves.map(m => m.delta_bp),
+  };
+
+  const traces = [
+    { x: dates, y: ma3.map(v => v >= 0 ? v : 0), fill: 'tozeroy', mode: 'none', fillcolor: 'rgba(194,82,45,0.40)', name: 'hawkish tilt', hoverinfo: 'skip' },
+    { x: dates, y: ma3.map(v => v < 0 ? v : 0),  fill: 'tozeroy', mode: 'none', fillcolor: 'rgba(46,125,50,0.40)', name: 'dovish tilt',  hoverinfo: 'skip' },
+    { x: dates, y: nt,  mode: 'lines', line: { color: '#888', width: 0.7 }, name: 'tone (per meeting)', hovertemplate: '%{x}<br>net tone: %{y:.2f}<extra></extra>' },
+    { x: dates, y: ma3, mode: 'lines', line: { color: PALETTE.ink, width: 1.9 }, name: 'tone (3m MA)', hovertemplate: '%{x}<br>3m MA: %{y:.2f}<extra></extra>' },
+    rateTrace, moveTrace,
+  ];
+
+  const bigMoves = moves.filter(m => Math.abs(m.delta_bp) >= 50);
+  const annotations = bigMoves.map(m => ({
+    x: m.date, y: m.rate_pct, yref: 'y2', xref: 'x',
+    text: (m.delta_bp > 0 ? '+' : '') + m.delta_bp + ' bp',
+    showarrow: true, arrowhead: 2, arrowsize: 0.9, arrowwidth: 1,
+    arrowcolor: m.delta_bp > 0 ? PALETTE.salmon : PALETTE.green,
+    ax: 0, ay: m.delta_bp > 0 ? -22 : 22,
+    font: { family: "'JetBrains Mono',monospace", size: 9, color: m.delta_bp > 0 ? PALETTE.salmon : PALETTE.green },
+    bgcolor: 'rgba(255,255,255,0.85)', borderpad: 2,
+  }));
+
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.shapes = shapes;
+  lay.annotations = annotations;
+  lay.xaxis.range = [DATA.meta.first_date, DATA.meta.last_date];
+  lay.yaxis.title = { text: 'net tone (hawk−dove)/(hawk+dove)', font: FONT_MONO };
+  lay.yaxis.range = [-1.05, 1.05];
+  lay.yaxis2 = {
+    title: { text: 'NBP reference rate (%)', font: FONT_MONO },
+    overlaying: 'y', side: 'right',
+    gridcolor: 'transparent', zerolinecolor: 'transparent',
+    tickfont: FONT_MONO, linecolor: '#cccccc', rangemode: 'tozero',
+  };
+  lay.margin = { l: 60, r: 60, t: 14, b: 60 };
+  lay.showlegend = true;
+  lay.legend = { orientation: 'h', y: -0.18, x: 0.5, xanchor: 'center', font: FONT_MONO };
+  Plotly.newPlot('tonePlot', traces, lay, CFG);
+}
+
+// ------------------------------------------------------ topic series (4x2 grid)
+function drawTopics() {
+  const dates = DATA.topics.dates;
+  const series = DATA.topics.series;
+  const colors = { inflation: PALETTE.salmon, growth: PALETTE.accent, labour: PALETTE.green, fiscal: '#7c43bd', energy: '#ff8c00', fx: '#0288d1', geopolit: '#b71c1c', global: PALETTE.muted };
+  const labels = { inflation: 'Inflation', growth: 'Growth', labour: 'Labour / wages', fiscal: 'Fiscal / public finances', energy: 'Energy', fx: 'FX / zloty', geopolit: 'Geopolitics', global: 'Global / external' };
+  const keys = Object.keys(series);
+  const traces = keys.map((k, i) => {
+    const ax = i + 1;
+    return {
+      x: dates, y: series[k], mode: 'lines',
+      name: labels[k] || k, line: { color: colors[k] || '#666', width: 1.5 },
+      hovertemplate: `%{x}<br>${labels[k] || k}: %{y:.1f} per 1k<extra></extra>`,
+      xaxis: ax === 1 ? 'x' : `x${ax}`, yaxis: ax === 1 ? 'y' : `y${ax}`,
+      showlegend: false,
+    };
+  });
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.margin = { l: 50, r: 18, t: 26, b: 40 };
+  lay.grid = { rows: 2, columns: 4, pattern: 'independent', xgap: 0.08, ygap: 0.22 };
+  lay.annotations = keys.map((k, i) => {
+    const row = Math.floor(i / 4);
+    const col = i % 4;
+    return {
+      x: (col + 0.5) / 4, y: row === 0 ? 1.02 : 0.46,
+      xref: 'paper', yref: 'paper',
+      text: `<b>${labels[k] || k}</b>`, showarrow: false,
+      font: { family: "'JetBrains Mono',monospace", size: 11, color: PALETTE.ink },
+    };
+  });
+  for (let i = 1; i <= 8; i++) {
+    const xKey = i === 1 ? 'xaxis' : `xaxis${i}`;
+    const yKey = i === 1 ? 'yaxis' : `yaxis${i}`;
+    lay[xKey] = { gridcolor: '#eeeeee', zerolinecolor: '#dddddd', tickfont: FONT_MONO, linecolor: '#cccccc', range: [DATA.meta.first_date, DATA.meta.last_date] };
+    lay[yKey] = { gridcolor: '#eeeeee', zerolinecolor: '#dddddd', tickfont: FONT_MONO, linecolor: '#cccccc', rangemode: 'tozero' };
+  }
+  Plotly.newPlot('topicsPlot', traces, lay, CFG);
+}
+
+// ----------------------------------------------------------- word cloud
+let cloudYearIdx = 0;
+let playing = false;
+let playTimer = null;
+function initWordCloud() {
+  const years = DATA.per_year.map(y => y.year);
+  cloudYearIdx = years.length - 1;
+  const slider = document.getElementById('yearSlider');
+  slider.max = years.length - 1;
+  slider.value = cloudYearIdx;
+  document.getElementById('yearMin').textContent = years[0];
+  document.getElementById('yearMax').textContent = years[years.length - 1];
+  slider.addEventListener('input', () => {
+    cloudYearIdx = parseInt(slider.value);
+    renderCloud();
+  });
+  document.getElementById('playBtn').addEventListener('click', togglePlay);
+  renderCloud();
+}
+function renderCloud() {
+  const yr = DATA.per_year[cloudYearIdx];
+  const canvas = document.getElementById('cloud');
+  const cssW = canvas.clientWidth, cssH = canvas.clientHeight;
+  canvas.width = cssW; canvas.height = cssH;
+  const max = yr.top_terms[0] ? yr.top_terms[0][1] : 1;
+  const list = yr.top_terms.map(([t, w]) => [t, Math.max(12, 56 * Math.sqrt(w / max))]);
+  const colors = [PALETTE.accent, PALETTE.salmon, PALETTE.green, PALETTE.ink, PALETTE.soft];
+  WordCloud(canvas, {
+    list: list, gridSize: 6, weightFactor: 1,
+    fontFamily: "'JetBrains Mono','Fira Code',Menlo,Consolas,monospace",
+    color: () => colors[Math.floor(Math.random() * colors.length)],
+    backgroundColor: '#fafafa', rotateRatio: 0.20, rotationSteps: 2,
+    shrinkToFit: true, drawOutOfBound: false, minSize: 10,
+    origin: [cssW / 2, cssH / 2],
+  });
+  document.getElementById('yearPill').firstChild.textContent = yr.year;
+  document.getElementById('meetingCount').textContent = `${yr.n_meetings} meetings`;
+  document.getElementById('cloudCaption').textContent = `Year ${yr.year}, top distinctive term: "${yr.distinctive_term}"`;
+  const ol = document.getElementById('topList');
+  ol.innerHTML = yr.top_terms.slice(0, 10).map(([t, w]) => `<li>${t}</li>`).join('');
+}
+function togglePlay() {
+  const btn = document.getElementById('playBtn');
+  if (playing) { clearInterval(playTimer); playing = false; btn.textContent = '▶ Play full sweep'; return; }
+  playing = true; btn.textContent = '⏸ Pause';
+  playTimer = setInterval(() => {
+    cloudYearIdx = (cloudYearIdx + 1) % DATA.per_year.length;
+    document.getElementById('yearSlider').value = cloudYearIdx;
+    renderCloud();
+    if (cloudYearIdx === DATA.per_year.length - 1) {
+      clearInterval(playTimer); playing = false; btn.textContent = '▶ Play full sweep';
+    }
+  }, 1200);
+}
+
+// ---------------------------------------------------- distinctive timeline
+function drawTimeline() {
+  const dominantRegimeByYear = {};
+  for (const m of DATA.meetings) {
+    if (!dominantRegimeByYear[m.year]) dominantRegimeByYear[m.year] = { accommodation: 0, neutral: 0, tightening: 0 };
+    dominantRegimeByYear[m.year][m.regime]++;
+  }
+  const tl = document.getElementById('timeline');
+  tl.style.gridTemplateColumns = `repeat(${DATA.per_year.length}, 1fr)`;
+  tl.innerHTML = DATA.per_year.map(y => {
+    const tally = dominantRegimeByYear[y.year] || {};
+    const dom = Object.entries(tally).sort((a, b) => b[1] - a[1])[0];
+    const regimeCls = dom ? dom[0] : 'neutral';
+    return `<div class="cell ${regimeCls}" title="${y.year} · ${y.n_meetings} meetings · regime ${regimeCls}"><div class="yr">${y.year}</div><div class="term">${y.distinctive_term}</div></div>`;
+  }).join('');
+}
+
+// --------------------------------------------------------- term tracker
+const SUGGESTIONS = ['inflation', 'core inflation', 'ukraine', 'pandemic', 'energy prices', 'wage growth', 'zloty', 'fiscal', 'pause', 'restrictive'];
+const TRACKER_COLORS = [PALETTE.accent, PALETTE.salmon, PALETTE.green, '#7c43bd', '#ff8c00', '#0288d1', '#b71c1c', PALETTE.muted];
+function initTermTracker() {
+  const suggest = document.getElementById('trackerSuggest');
+  suggest.innerHTML = 'try: ' + SUGGESTIONS.map(t => `<span class="chip" data-term="${t}">${t}</span>`).join('');
+  suggest.querySelectorAll('.chip').forEach(el => {
+    el.addEventListener('click', () => {
+      const inp = document.getElementById('termInput');
+      const cur = inp.value.trim();
+      const t = el.dataset.term;
+      inp.value = cur ? cur.replace(/,\s*$/, '') + ', ' + t : t;
+      renderTrackerFromInput();
+    });
+  });
+  document.getElementById('termInput').addEventListener('input', renderTrackerFromInput);
+  document.getElementById('termInput').value = 'inflation, ukraine, pandemic';
+  renderTrackerFromInput();
+}
+function renderTrackerFromInput() {
+  const raw = document.getElementById('termInput').value;
+  const terms = raw.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  renderTracker(terms);
+}
+function _countTermInMeeting(term, meeting) {
+  const tx = meeting.text_lc; if (!tx) return 0;
+  if (term.includes(' ')) {
+    let c = 0, idx = 0;
+    while ((idx = tx.indexOf(term, idx)) !== -1) { c++; idx += term.length; }
+    return c;
+  }
+  const re = new RegExp(`\\b${term.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}\\b`, 'g');
+  return (tx.match(re) || []).length;
+}
+function _seriesForTerm(term) {
+  if (DATA.term_index[term]) return { y: DATA.term_index[term], label: term, source: 'indexed' };
+  const sing = term.endsWith('s') ? term.slice(0, -1) : null;
+  const plur = !term.endsWith('s') ? term + 's' : null;
+  for (const alt of [sing, plur].filter(Boolean)) {
+    if (DATA.term_index[alt]) return { y: DATA.term_index[alt], label: alt + ' (auto-matched)', source: 'indexed' };
+  }
+  const y = DATA.meetings.map(m => {
+    const c = _countTermInMeeting(term, m);
+    return m.n_words > 0 ? Math.round(1000 * c / m.n_words * 1000) / 1000 : 0;
+  });
+  return { y, label: term, source: 'live' };
+}
+let TRACKER_DATA = { dates: [], traces: [] };
+function renderTracker(terms) {
+  if (!terms.length) { Plotly.purge('trackerPlot'); TRACKER_DATA = { dates: [], traces: [] }; return; }
+  const dates = DATA.meetings.map(m => m.date);
+  const traces = [];
+  terms.forEach((term, i) => {
+    const { y, label } = _seriesForTerm(term);
+    const color = TRACKER_COLORS[i % TRACKER_COLORS.length];
+    traces.push({
+      x: dates, y: y, mode: 'lines+markers',
+      line: { color, width: 1.7 }, marker: { size: 4, color: '#fff', line: { color, width: 1.4 } },
+      name: label, hovertemplate: `%{x}<br>${label}: %{y:.2f} per 1k<extra></extra>`,
+    });
+  });
+  TRACKER_DATA = { dates, traces, labels: terms };
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.yaxis.title = { text: 'per 1,000 words', font: FONT_MONO };
+  lay.xaxis.range = rangeFor(WIN_STATE.tracker);
+  lay.showlegend = true;
+  lay.legend = { orientation: 'h', y: -0.18, x: 0.5, xanchor: 'center', font: FONT_MONO };
+  lay.margin = { l: 55, r: 18, t: 14, b: 60 };
+  Plotly.newPlot('trackerPlot', traces, lay, CFG);
+}
+
+// --------------------------------------------------------- cosine heatmap
+function drawCosine() {
+  const dates = DATA.cosine.dates;
+  const z = DATA.cosine.matrix;
+  const tickIdx = [], tickText = [];
+  let prevYear = null;
+  for (let i = 0; i < dates.length; i++) {
+    const yr = dates[i].slice(0, 4);
+    if (yr !== prevYear) { tickIdx.push(i); tickText.push(yr); prevYear = yr; }
+  }
+  const colorscale = [
+    [0.00, '#f7fbff'], [0.20, '#c6dbef'], [0.40, '#6baed6'],
+    [0.60, '#2171b5'], [0.80, '#08306b'], [0.95, '#c2522d'], [1.00, '#7f1d1d'],
+  ];
+  const off = [];
+  for (let i = 0; i < z.length; i++) for (let j = 0; j < z.length; j++) if (i !== j) off.push(z[i][j]);
+  off.sort((a, b) => a - b);
+  const p05 = off[Math.floor(off.length * 0.05)];
+  const p95 = off[Math.floor(off.length * 0.95)];
+  const traces = [{
+    z: z, x: dates, y: dates, type: 'heatmap',
+    colorscale, zmin: Math.max(0.05, p05), zmax: Math.min(0.45, p95 * 1.5),
+    colorbar: { title: 'cosine', titleside: 'right', titlefont: FONT_MONO, tickfont: FONT_MONO, thickness: 12, len: 0.7 },
+    hovertemplate: '%{y} ↔ %{x}<br>similarity: %{z:.3f}<extra></extra>',
+  }];
+  const lay = JSON.parse(JSON.stringify(PLOT_BASE));
+  lay.margin = { l: 70, r: 30, t: 20, b: 60 };
+  lay.xaxis = { ...lay.xaxis, tickmode: 'array', tickvals: tickIdx.map(i => dates[i]), ticktext: tickText, tickangle: -90 };
+  lay.yaxis = { ...lay.yaxis, tickmode: 'array', tickvals: tickIdx.map(i => dates[i]), ticktext: tickText, autorange: 'reversed' };
+  Plotly.newPlot('cosinePlot', traces, lay, CFG);
+}
+
+// --------------------------------------------------------- CSV downloads
+function downloadCSV(filename, rows, chartLabel) {
+  const today = new Date().toISOString().slice(0, 10);
+  const header = [
+    '# Source: Marcin Dec, yieldcartography.com',
+    '# Downloaded: ' + today,
+    '# Page: /mpc/  Chart: ' + chartLabel,
+    '# Citation: Dec, M. (2026). yieldcartography.com [computer-based research artifact]. Retrieved ' + today + '.',
+  ];
+  const body = rows.map(r => r.map(v => (v === null || v === undefined) ? '' : String(v)).join(','));
+  const csv = header.concat(body).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function bindCsvButtons() {
+  document.getElementById('csvTone').addEventListener('click', () => {
+    const rows = [['date', 'net_tone', 'hawk_per1k', 'dove_per1k', 'regime', 'nbp_rate_pct']];
+    const rateBy = {}; DATA.rate.dates.forEach((d, i) => rateBy[d] = DATA.rate.values[i]);
+    DATA.meetings.forEach(m => rows.push([m.date, m.net_tone, m.hawk_per1k, m.dove_per1k, m.regime, rateBy[m.date] || '']));
+    downloadCSV('mpc_tone_history.csv', rows, 'Hawkish-vs-dovish net tone with NBP rate');
+  });
+  document.getElementById('csvTopics').addEventListener('click', () => {
+    const keys = Object.keys(DATA.topics.series);
+    const rows = [['date', ...keys]];
+    DATA.topics.dates.forEach((d, i) => rows.push([d, ...keys.map(k => DATA.topics.series[k][i])]));
+    downloadCSV('mpc_topics_per1k.csv', rows, 'Eight macro topics, frequency per 1,000 words');
+  });
+  document.getElementById('csvTracker').addEventListener('click', () => {
+    if (!TRACKER_DATA.traces.length) return;
+    const labels = TRACKER_DATA.labels;
+    const rows = [['date', ...labels]];
+    TRACKER_DATA.dates.forEach((d, i) => rows.push([d, ...TRACKER_DATA.traces.map(tr => tr.y[i])]));
+    downloadCSV('mpc_terms_' + labels.join('_').replace(/\s+/g, '-') + '.csv', rows, 'Term tracker: ' + labels.join(', '));
+  });
+  document.getElementById('csvCosine').addEventListener('click', () => {
+    const dates = DATA.cosine.dates;
+    const rows = [['', ...dates]];
+    DATA.cosine.matrix.forEach((row, i) => rows.push([dates[i], ...row]));
+    downloadCSV('mpc_cosine_similarity.csv', rows, 'Pairwise meeting cosine similarity');
+  });
+}
+
+load();
+</script>
+
+</body>
+</html>
