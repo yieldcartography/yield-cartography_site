@@ -243,14 +243,6 @@
     </div>
   </div>
 
-  <!-- ===================================================================== -->
-  <!-- DISTINCTIVE-TERM TIMELINE                                             -->
-  <!-- ===================================================================== -->
-  <div class="panel">
-    <h3 style="margin:0 0 6px 0">One word per year</h3>
-    <p class="note">The single most distinctive TF-IDF term for each year. Cell color reflects the dominant monetary-policy regime in that year (salmon tightening, green accommodation, grey neutral).</p>
-    <div class="timeline" id="timeline"></div>
-  </div>
 
   <!-- ===================================================================== -->
   <!-- TERM TRACKER                                                          -->
@@ -284,8 +276,8 @@
     <div class="pill-row" id="kPills">
       <span class="pill-label">Clusters:</span>
       <span class="pill" data-k="4">K = 4</span>
-      <span class="pill active" data-k="5">K = 5</span>
-      <span class="pill" data-k="6">K = 6</span>
+      <span class="pill" data-k="5">K = 5</span>
+      <span class="pill active" data-k="6">K = 6</span>
       <span class="pill" data-k="7">K = 7</span>
     </div>
     <div id="clusterStrip" class="cluster-strip"></div>
@@ -381,7 +373,6 @@ async function load() {
   drawTone();
   drawTopics();
   initWordCloud();
-  drawTimeline();
   initTermTracker();
   drawClusters();
   bindCsvButtons();
@@ -517,20 +508,45 @@ function classifyTone(v) {
 }
 function drawTiles() {
   const t = DATA.tiles;
+  const meetings = DATA.meetings.filter(m => m.net_tone !== null);
+
+  // Helper: render a value + change-arrow in the curves-tab style.
+  // For tone, a POSITIVE delta is hawkish-direction → salmon ▲ ;
+  // a NEGATIVE delta is dovish-direction → green ▼. Matches the rate-move
+  // tile's convention on this page.
+  function valueWithDelta(curVal, delta, decimals = 2, minShow = 0.005) {
+    if (curVal === null || curVal === undefined) return '—';
+    const head = (curVal >= 0 ? '+' : '') + curVal.toFixed(decimals);
+    if (delta === null || delta === undefined || Math.abs(delta) < minShow) return head;
+    const up = delta > 0;
+    const sym = up ? '▲' : '▼';
+    const sign = up ? '+' : '';
+    return `${head} <span class="arr ${up ? 'up' : 'dn'}">${sym} ${sign}${delta.toFixed(decimals)}</span>`;
+  }
+
+  // Tile 1: latest single meeting tone, with delta vs prior meeting
   const tt = document.getElementById('tileTone');
   tt.className = `stat ${t.tone.class}`;
   const v = t.tone.value;
+  const prev = meetings.length >= 2 ? meetings[meetings.length - 2] : null;
+  const dlt  = (v !== null && prev) ? v - prev.net_tone : null;
   const cls_lbl = t.tone.class === 'hawk' ? 'hawkish' : t.tone.class === 'dove' ? 'dovish' : 'neutral';
-  tt.querySelector('.value').innerHTML = v === null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2);
+  tt.querySelector('.value').innerHTML = valueWithDelta(v, dlt);
   tt.querySelector('.delta').textContent = `${cls_lbl} · ${t.tone.date} · hawk ${t.tone.hawk?.toFixed(1)} / dove ${t.tone.dove?.toFixed(1)} per 1k`;
 
-  const meetings = DATA.meetings.filter(m => m.net_tone !== null);
+  // Tile 2: 3-meeting MA with delta vs prior 3m MA
   const last3 = meetings.slice(-3).map(m => m.net_tone);
   const ma = last3.length ? last3.reduce((a, b) => a + b, 0) / last3.length : null;
+  let prevMA = null;
+  if (meetings.length >= 4) {
+    const prev3 = meetings.slice(-4, -1).map(m => m.net_tone);
+    prevMA = prev3.reduce((a, b) => a + b, 0) / prev3.length;
+  }
+  const dltMA = (ma !== null && prevMA !== null) ? ma - prevMA : null;
   const maCls = classifyTone(ma);
   const ttma = document.getElementById('tileToneMA');
   ttma.className = `stat ${maCls}`;
-  ttma.querySelector('.value').innerHTML = ma === null ? '—' : (ma >= 0 ? '+' : '') + ma.toFixed(2);
+  ttma.querySelector('.value').innerHTML = valueWithDelta(ma, dltMA);
   const maLbl = maCls === 'hawk' ? 'hawkish' : maCls === 'dove' ? 'dovish' : 'neutral';
   ttma.querySelector('.delta').textContent = ma === null ? '—' :
     `${maLbl} · avg of ${last3.length} meetings to ${meetings[meetings.length-1].date}`;
