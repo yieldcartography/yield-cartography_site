@@ -116,6 +116,9 @@
       <tr><td class="code">ACM rf</td><td>Risk-free expected average short-rate path from the Adrian-Crump-Moench five-factor affine term-structure model.</td></tr>
       <tr><td class="code">BRW rf</td><td>Same path with the Bauer-Rudebusch-Wu small-sample bias correction applied to the VAR persistence.</td></tr>
       <tr><td class="code">NBP SPF</td><td>Implied 1y/3y/5y horizon path from the most recent NBP Survey of Professional Forecasters.</td></tr>
+      <tr><td class="code">BondSpot</td><td>Cash turnover of the bond on the BondSpot venue in the prior calendar month, in PLN mln.</td></tr>
+      <tr><td class="code">Min-Fin</td><td>Whole-market outright secondary turnover of the series from the Ministry of Finance monthly disclosure (Transakcje_po_seriach), latest reported month, in PLN bn. Publication lags up to two months. Excludes repo and sell-buy-back.</td></tr>
+      <tr><td class="code">Share</td><td>BondSpot venue turnover as a percent of the Min-Fin outright figure, both taken in the same (Min-Fin) month.</td></tr>
       <tr><td class="code">Segment</td><td>Short (TTM &le; 1.5y), belly (1.5-7y), long (&gt;7y); used for the colour coding of the bond bubbles on the curve.</td></tr>
       <tr><td class="code">MAE</td><td>Median absolute fit error in basis points across the bond panel on the snapshot date.</td></tr>
     </table>
@@ -191,10 +194,10 @@
 
     <div class="panel full">
       <h3>Bond panel — click a row to highlight on the curve</h3>
-      <p class="note">All bonds in the snapshot fit, sorted by time-to-maturity. Outstanding amount in PLN bn, prior-month BondSpot turnover in PLN bn, fitted YTM in percent.</p>
+      <p class="note">All bonds in the snapshot fit, sorted by time-to-maturity. Outstanding amount in PLN bn, fitted YTM in percent. BondSpot is venue turnover in the prior calendar month (PLN mln). Min-Fin is whole-market outright secondary turnover for the latest reported month (PLN bn, publication lag up to two months). Share is BondSpot / Min-Fin on the Min-Fin month.<span id="tovMonths"></span></p>
       <div style="overflow-x:auto;">
         <table class="bond-table" id="bondTable">
-          <thead><tr><th class="lbl">ISIN</th><th class="lbl">Series</th><th>TTM (y)</th><th>YTM (%)</th><th>Outstanding (PLNbn)</th><th>Turnover prior month (PLNbn)</th><th class="lbl">Segment</th></tr></thead>
+          <thead><tr><th class="lbl">ISIN</th><th class="lbl">Series</th><th>TTM (y)</th><th>YTM (%)</th><th>Outstanding (PLNbn)</th><th>BondSpot prior mo (PLNmln)</th><th>Min-Fin outright (PLNbn)</th><th>Share (%)</th><th class="lbl">Segment</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -405,8 +408,8 @@ function bindCsvButtons(){
   });
   document.getElementById('csvBonds').addEventListener('click', ()=>{
     const s = DATA.snaps[curIdx];
-    const rows = [['date','isin','series','ttm_years','ytm_pct','outstanding_pln_bn','turnover_prev_month_pln_bn','segment']];
-    (s.bonds||[]).forEach(b => rows.push([s.date, b.isin, b.name, b.ttm, b.ytm, b.out, b.turnover, '"'+(b.segment||'')+'"']));
+    const rows = [['date','isin','series','ttm_years','ytm_pct','outstanding_pln_bn','turnover_bondspot_prev_month_pln_mln','turnover_minfin_outright_pln_bn','bondspot_share_pct','segment']];
+    (s.bonds||[]).forEach(b => rows.push([s.date, b.isin, b.name, b.ttm, b.ytm, b.out, b.tov_bs, b.tov_mf, b.tov_share, '"'+(b.segment||'')+'"']));
     downloadCSV('yc_bond_panel_' + s.date + '.csv', rows, 'Bond panel on snapshot date ' + s.date);
   });
   document.getElementById('csvFwd').addEventListener('click', ()=>{
@@ -501,7 +504,7 @@ function draw(){
   document.getElementById('stat-bonds-d').textContent = 'fit MAE ' + s.mae_bp.toFixed(1) + ' bp';
   // Default selected ISIN to highest-turnover bond on the current snapshot
   if (s.bonds && s.bonds.length){
-    const top = [...s.bonds].sort((a,b) => (b.turnover||0) - (a.turnover||0))[0];
+    const top = [...s.bonds].sort((a,b) => (b.tov_bs||0) - (a.tov_bs||0))[0];
     if (top && DATA.bond_hist[top.isin]) selectedISIN = top.isin;
   }
   drawSnapCurve(s);
@@ -568,7 +571,7 @@ function drawSnapCurve(s){
       const opacities = arr.map(b => selectedISIN && b.isin===selectedISIN ? 1.0 : 0.6);
       traces.push({ x: arr.map(b=>b.ttm), y: arr.map(b=>b.ytm), mode:'markers',
         marker:{size:sizes, color:map[k].color, opacity:opacities, line:{color:'#fff',width:1}},
-        text: arr.map(b => `<b>${b.name}</b> · ${b.isin}<br>TTM ${b.ttm.toFixed(2)}y · YTM ${b.ytm.toFixed(2)}%<br>Outstanding ${(b.out||0).toFixed(1)} PLNbn · turnover ${(b.turnover||0).toFixed(2)} PLNbn`),
+        text: arr.map(b => `<b>${b.name}</b> · ${b.isin}<br>TTM ${b.ttm.toFixed(2)}y · YTM ${b.ytm.toFixed(2)}%<br>Outstanding ${(b.out||0).toFixed(1)} PLNbn · BondSpot ${(b.tov_bs||0).toFixed(0)} PLNmln · Min-Fin ${b.tov_mf==null?'n/a':b.tov_mf.toFixed(1)+' PLNbn'}`),
         hoverinfo:'text', showlegend:false });
     });
   }
@@ -649,13 +652,15 @@ function drawXcountrySnap(s){
 function drawBondTable(s){
   const tbody = document.querySelector('#bondTable tbody');
   tbody.innerHTML = '';
-  if (!s.bonds || !s.bonds.length){ tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#888;padding:14px">No bond panel for this snapshot</td></tr>'; return; }
+  const tovNote = document.getElementById('tovMonths');
+  if (tovNote) tovNote.textContent = (s.tov_bs_month ? ' BondSpot month: ' + s.tov_bs_month + '.' : '') + (s.tov_mf_month ? ' Min-Fin month: ' + s.tov_mf_month + '.' : '');
+  if (!s.bonds || !s.bonds.length){ tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;padding:14px">No bond panel for this snapshot</td></tr>'; return; }
   const sorted = [...s.bonds].sort((a,b)=>a.ttm-b.ttm);
   sorted.forEach(b => {
     const tr = document.createElement('tr');
     if (b.isin === selectedISIN) tr.classList.add('selected');
     const segCls = segClass(b.segment, b.ttm);
-    tr.innerHTML = `<td class="lbl">${b.isin}</td><td class="lbl">${b.name}</td><td>${b.ttm.toFixed(2)}</td><td>${b.ytm.toFixed(2)}</td><td>${(b.out||0).toFixed(1)}</td><td>${(b.turnover||0).toFixed(2)}</td><td class="lbl ${segCls}">${b.segment||'—'}</td>`;
+    tr.innerHTML = `<td class="lbl">${b.isin}</td><td class="lbl">${b.name}</td><td>${b.ttm.toFixed(2)}</td><td>${b.ytm.toFixed(2)}</td><td>${(b.out||0).toFixed(1)}</td><td>${b.tov_bs==null?'–':b.tov_bs.toFixed(0)}</td><td>${b.tov_mf==null?'–':b.tov_mf.toFixed(1)}</td><td>${b.tov_share==null?'–':b.tov_share.toFixed(1)}</td><td class="lbl ${segCls}">${b.segment||'—'}</td>`;
     tr.addEventListener('click', ()=>{ selectedISIN = b.isin; drawSnapCurve(s); drawBondTable(s); drawBondHist(); });
     tbody.appendChild(tr);
   });
