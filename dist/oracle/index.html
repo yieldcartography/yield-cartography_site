@@ -25,10 +25,11 @@
   --ink: #1a1a1a; --ink-soft: #3a3a3a; --muted: #6a6a6a; --rule: #d8d8d8;
   --bg: #fafafa; --accent: #1f4e79; --accent-soft: #2e75b6; --accent-tint: #e8f0f7;
   --red: #d11b1b; --green: #22aa22; --panel: #ffffff;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   --mono: 'JetBrains Mono', 'Fira Code', 'Source Code Pro', Menlo, Consolas, monospace;
 }
 body { margin: 0; background: var(--bg); color: var(--ink);
-       font-family: Georgia, 'Times New Roman', serif; }
+       font-family: var(--sans); }
 .wrap { max-width: 1280px; margin: 0 auto; padding: 28px 24px 60px 24px; }
 h1 { font-size: 26px; margin: 0; letter-spacing: 0.5px; }
 h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 1px;
@@ -109,16 +110,15 @@ td.neg { color: var(--red); } td.pos { color: var(--green); }
 
 <main>
   <h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Oracle</h1>
-  <div class="sub" id="masthead"></div>
 
-  <p style="color:var(--muted);margin:14px 0 10px 0;font-size:13px;line-height:1.55;max-width:860px">
+  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px;line-height:1.55">
   Market-implied NBP policy expectations distilled into a next-move view. The tab strips
   term premium from the curve via the ACM model with BRW bias correction, lays the survey
   path of professional forecasters alongside, and blends the implied move with the lexical
   tone of the latest MPC minutes into a single gauge. The slider walks every panel back
   through two decades of month-end history.</p>
 
-  <a class="short-link" href="https://yieldcartography.com/shorts/oracle-index/">Read the short: does the curve know the next MPC move?</a>
+  <a class="short-link" href="/shorts/oracle-index/">Read the short: does the curve know the next MPC move?</a>
 
   <div class="stats">
     <div class="stat" id="tile3m">
@@ -208,7 +208,7 @@ td.neg { color: var(--red); } td.pos { color: var(--green); }
       lengthens.</p>
     </div>
     <div style="flex:1 1 480px;min-width:360px">
-      <h2>Expected policy path, next 2.5 years <button class="csv-btn" id="csvPaths">CSV</button></h2>
+      <h2>Expected policy path, next 2 years <button class="csv-btn" id="csvPaths">CSV</button></h2>
       <div id="hero"></div>
       <p class="note">ACM risk-free and BRW bias-corrected 1m forwards from the integro-spline
       construction of chart 04. PF is the NBP Survey of Professional Forecasters implied path,
@@ -446,10 +446,6 @@ function drawTiles(s){
 }
 
 function drawMasthead(s){
-  document.getElementById('masthead').textContent =
-    'As of ' + s.date + ' . NBP reference rate ' + s.nbp.toFixed(2) +
-    '% ACT/365 . PF vintage ' +
-    (s.pf_meta ? s.pf_meta.fcast + ', shift ' + s.pf_meta.shift_m + 'm' : 'n/a');
   document.getElementById('snapDate').textContent = s.date;
 }
 
