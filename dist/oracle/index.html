@@ -81,6 +81,10 @@ td.neg { color: var(--red); } td.pos { color: var(--green); }
 .bar .cut { background: var(--accent-soft); } .bar .hold { background: #9aa3ab; }
 .bar .hike { background: var(--red); }
 .note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); line-height: 1.6; }
+.panel { background: var(--panel); border: 1px solid var(--rule); padding: 16px; border-radius: 4px; margin-bottom: 18px; }
+.panel h3 { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px; margin: 0 0 6px 0; color: var(--accent); }
+.panel p.note { font-family: var(--sans); font-size: 12.5px; color: var(--muted); margin: 0 0 10px 0; line-height: 1.5; }
+.panel-head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
 .csv-btn { font-family: var(--mono); font-size: 10.5px; padding: 5px 11px; border: 1px solid var(--accent);
   border-radius: 4px; background: #fff; color: var(--accent); cursor: pointer;
   text-transform: uppercase; letter-spacing: 0.5px; margin-left: 10px; vertical-align: middle; }
@@ -190,8 +194,8 @@ td.neg { color: var(--red); } td.pos { color: var(--green); }
   </div>
 
   <div style="display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap">
-    <div style="flex:1 1 360px;min-width:320px">
-      <h2>Implied moves vs reference rate <button class="csv-btn" id="csvMoves">CSV</button></h2>
+    <div class="panel" style="flex:1 1 360px;min-width:320px;margin-bottom:0">
+      <div class="panel-head-row"><h3 style="margin:0">Implied moves vs reference rate</h3><button class="csv-btn" id="csvMoves">CSV</button></div>
       <table class="orc" id="movtab"></table>
       <p class="note">Cumulative change of the 1m forward vs the NBP reference rate
       (ACT/365) on the snapshot date. Moves priced = BRW change divided by 25 bp.</p>
@@ -207,8 +211,8 @@ td.neg { color: var(--red); } td.pos { color: var(--green); }
       from. Reading down the rows traces how the priced path steepens or fades as the horizon
       lengthens.</p>
     </div>
-    <div style="flex:1 1 480px;min-width:360px">
-      <h2>Expected policy path, next 2 years <button class="csv-btn" id="csvPaths">CSV</button></h2>
+    <div class="panel" style="flex:1 1 480px;min-width:360px;margin-bottom:0">
+      <div class="panel-head-row"><h3 style="margin:0">Expected policy path, next 2 years</h3><button class="csv-btn" id="csvPaths">CSV</button></div>
       <div id="hero"></div>
       <p class="note">ACM risk-free and BRW bias-corrected 1m forwards from the integro-spline
       construction of chart 04. PF is the NBP Survey of Professional Forecasters implied path,
@@ -219,23 +223,29 @@ td.neg { color: var(--red); } td.pos { color: var(--green); }
     </div>
   </div>
 
-  <h2>MPC minutes lex gauge <button class="csv-btn" id="csvTone">CSV (full history)</button></h2>
-  <div id="tone"></div>
-  <p class="note">Net tone = (hawkish - dovish) / (hawkish + dovish) word counts per minutes,
-  custom MPC lexicon from the minutes pipeline. Full history shown, the vertical playhead
-  marks the slider date.</p>
+  <div class="panel" style="margin-top:18px">
+    <div class="panel-head-row"><h3 style="margin:0">MPC minutes lex gauge</h3><button class="csv-btn" id="csvTone">CSV (full history)</button></div>
+    <div id="tone"></div>
+    <p class="note">Net tone = (hawkish - dovish) / (hawkish + dovish) word counts per minutes,
+    custom MPC lexicon from the minutes pipeline. Full history shown, the vertical playhead
+    marks the slider date.</p>
+  </div>
 
-  <h2>Literal hike* and cut* frequencies <button class="csv-btn" id="csvHikeCut">CSV (full history)</button></h2>
-  <div id="hikecut"></div>
-  <p class="note">Occurrences of the word families hike* and cut* per 1k words of each
-  minutes document. Same timescale and playhead as the lex gauge above.</p>
+  <div class="panel">
+    <div class="panel-head-row"><h3 style="margin:0">Literal hike* and cut* frequencies</h3><button class="csv-btn" id="csvHikeCut">CSV (full history)</button></div>
+    <div id="hikecut"></div>
+    <p class="note">Occurrences of the word families hike* and cut* per 1k words of each
+    minutes document. Same timescale and playhead as the lex gauge above.</p>
+  </div>
 
-  <h2>Oracle index history <button class="csv-btn" id="csvOracle">CSV (full history)</button></h2>
-  <div id="oracleidx"></div>
-  <p class="note">The blended score on the [-100, +100] scale at every month-end snapshot,
-  with the NBP reference rate stepped on the right axis. Shaded bands mark the stance
-  zones: LOOSENING below -40, TIGHTENING above +40, NEUTRAL in between. Same timescale
-  and playhead as the charts above.</p>
+  <div class="panel">
+    <div class="panel-head-row"><h3 style="margin:0">Oracle index history</h3><button class="csv-btn" id="csvOracle">CSV (full history)</button></div>
+    <div id="oracleidx"></div>
+    <p class="note">The blended score on the [-100, +100] scale at every month-end snapshot,
+    with the NBP reference rate stepped on the right axis. Shaded bands mark the stance
+    zones: LOOSENING below -40, TIGHTENING above +40, NEUTRAL in between. Same timescale
+    and playhead as the charts above.</p>
+  </div>
 
   <div style="border-top: 1px solid var(--rule); margin-top: 44px; padding-top: 14px;">
     <p class="note"><b>Disclaimer.</b> The Oracle index, the underlying models and every
