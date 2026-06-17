@@ -488,7 +488,7 @@ function _syncTovBasisUI(){
   const note  = document.getElementById('tovBasisNote');
   const isMin = (curTovSource === 'minfin');
   if (pills){ pills.style.opacity = isMin ? '1' : '0.4'; pills.style.pointerEvents = isMin ? 'auto' : 'none'; }
-  if (note){ note.textContent = isMin ? '' : 'BondSpot is a cash (outright) venue — no repo or sell-buy-back.'; }
+  if (note){ note.textContent = isMin ? '' : 'No BondSpot repo / sell-buy-back data currently available. Outright only.'; }
 }
 
 function bindPills(){
@@ -568,8 +568,16 @@ function drawTurnoverSeg(){
   // collapse at the right edge for months the source hasn't published yet.
   const last = _lastNonZeroIdx(total);
   const cut = (last >= 0 && last < total.length - 1) ? last + 1 : total.length;
-  const months = tp.months.slice(0, cut);
-  const sShort = short.slice(0, cut), sBelly = belly.slice(0, cut), sLong = longS.slice(0, cut);
+  // Repo + sell-buy-back data only begin in 2014, so for the repo/BSB and the
+  // combined "all" bases clamp the left edge to where that data starts.
+  // Outright keeps the full 2005-to-date history.
+  let start = 0;
+  if (src === 'minfin' && (curTovBasis === 'repobsb' || curTovBasis === 'all')){
+    const rb = (tp.minfin_basis && tp.minfin_basis.repobsb) ? tp.minfin_basis.repobsb.total_bn : null;
+    if (rb){ const f = _firstNonZeroIdx(rb); if (f > 0) start = f; }
+  }
+  const months = tp.months.slice(start, cut);
+  const sShort = short.slice(start, cut), sBelly = belly.slice(start, cut), sLong = longS.slice(start, cut);
   const traces = [
     { x:months, y:sShort, name:'short ≤1.5y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.short,width:0.6}, fillcolor:'rgba(136,136,136,0.55)', hovertemplate:'%{x} · short %{y:.2f} bn<extra></extra>' },
     { x:months, y:sBelly, name:'belly 1.5-7y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.accent,width:0.6}, fillcolor:'rgba(31,78,121,0.55)', hovertemplate:'%{x} · belly %{y:.2f} bn<extra></extra>' },
@@ -624,7 +632,7 @@ function drawTurnoverShare(){
   lay.xaxis = Object.assign({}, lay.xaxis || {}, { autorange: true });
   lay.annotations = [{ xref:'paper', yref:'paper', x:1, y:1.10, xanchor:'right', yanchor:'bottom',
     showarrow:false, font:{family:FONT_MONO.family, size:10, color:'var(--muted)'},
-    text:'outright / outright basis (BondSpot is cash-only)' }];
+    text:'outright-to-outright comparison' }];
   Plotly.react('tovShareChart', traces, lay, CFG);
 }
 
@@ -680,6 +688,13 @@ function drawAll(){
   }
 }
 
+function _firstNonZeroIdx(arr){
+  for (let i = 0; i < arr.length; i++){
+    const v = arr[i];
+    if (v !== null && v !== undefined && +v > 0) return i;
+  }
+  return -1;
+}
 function _lastNonZeroIdx(arr){
   for (let i = arr.length - 1; i >= 0; i--){
     const v = arr[i];
