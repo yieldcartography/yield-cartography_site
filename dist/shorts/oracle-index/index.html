@@ -67,7 +67,7 @@
 
   <p class="short-meta">Short 06 &middot; 2026-06-10 &middot; Oracle &middot; policy expectations</p>
   <h1 class="short-title">Does the curve know the next MPC move? An oracle from bias-corrected forwards and minutes tone</h1>
-  <p class="short-sub">A fixed-weight blend of the BRW bias-corrected policy path and the hawkish-dovish tone of the MPC minutes predicts the direction of NBP reference-rate moves out of sample: a 94% hit rate at three months, OOS R&sup2; of 0.43 against a random walk, with the minutes leg statistically significant at the meetings horizon.</p>
+  <p class="short-sub">A fixed-weight blend of the BRW bias-corrected policy path and the hawkish-dovish tone of the MPC minutes predicts the direction of NBP reference-rate moves out of sample: a 94% hit rate at three months, an out-of-sample forecast skill of 0.43 against a random walk, with the minutes leg statistically significant at the meetings horizon.</p>
 
   <div class="body-text">
     <p>The most common way to read policy expectations off a yield curve is also the most misleading one. Raw NSS forwards embed term premium, so they overstate the priced tightening at every horizon and at every point of the last two decades of Polish data. The clean object is the expected short-rate path from an affine term-structure model: here the Adrian-Crump-Moench five-factor decomposition with the Bauer-Rudebusch-Wu small-sample bias correction applied to the VAR persistence, converted to one-month forwards. The cumulative move it implies at a given horizon, expressed in basis points against the current reference rate, is the market leg of the index.</p>
@@ -118,20 +118,21 @@
   </div>
 
   <table class="key-tab">
-    <thead><tr><th class="lbl">Horizon</th><th>MZ &beta; (t)</th><th>Wald a=0, &beta;=1, p</th><th>Tone t (IS)</th><th>OOS R&sup2; raw</th><th>CW t, tone (OOS)</th><th>Hit rate, moves</th></tr></thead>
+    <thead><tr><th class="lbl">Horizon</th><th>MZ &beta; (t)</th><th>Wald a=0, &beta;=1, p</th><th>Tone t (IS)</th><th>Skill, raw</th><th>CW t, tone (OOS)</th><th>Hit rate, moves</th></tr></thead>
     <tbody>
       <tr><td class="lbl">3 months</td><td>1.19 (4.1)</td><td>0.42</td><td>4.5</td><td>0.43</td><td>3.3</td><td>94%</td></tr>
       <tr><td class="lbl">6 months</td><td>1.10 (3.5)</td><td>0.69</td><td>3.9</td><td>0.45</td><td>2.8</td><td>84%</td></tr>
       <tr><td class="lbl">12 months</td><td>1.01 (3.3)</td><td>0.92</td><td>2.5</td><td>0.34</td><td>1.2</td><td>75%</td></tr>
     </tbody>
   </table>
+  <p class="cap">"Skill, raw" is the out-of-sample R&sup2; of the raw model path against a random-walk benchmark (Campbell-Thompson): positive means lower squared forecast error than assuming no change. MZ = Mincer-Zarnowitz, CW = Clark-West.</p>
 
   <div class="body-text">
     <p>The figure compresses the index's value proposition into one picture. Through the long flat years of 2016 to 2019 the score idles in the neutral band while the reference rate sits at 1.50%, which is itself a forecast: nothing was priced and nothing happened. By June 2021, with the rate still at the COVID floor of 0.10%, the score is at +53 and inside the tightening band, four months before the October liftoff, and it climbs to +80 as the hikes land. The mirror image plays out at the top: by June 2023 the score sits at -79 with the rate still at 6.75%, the first cut arrives that September, and the index then rides the loosening band through the whole 2024 to 2026 staircase down to 3.75%. The table above says the same thing with error bands attached.</p>
 
     <p>Three results stand out. First, the in-sample Mincer-Zarnowitz slope on the BRW-implied move is statistically indistinguishable from one at every horizon, and the joint unbiasedness restriction is never rejected, with Newey-West errors carrying the full monthly overlap. The bias-corrected curve is an unbiased forecaster of cumulative NBP moves. Raw NSS forwards fail the same test immediately, which is why they are excluded from the index by construction.</p>
 
-    <p>Second, recalibration destroys value. Re-estimating the Mincer-Zarnowitz line each month on an expanding window, the textbook move, cuts the OOS R&sup2; roughly in half relative to using the model path raw. With a slope already at one, estimation noise and regime shifts are all that recalibration can add.</p>
+    <p>Second, recalibration destroys value. Re-estimating the Mincer-Zarnowitz line each month on an expanding window, the textbook move, cuts the skill roughly in half relative to using the model path raw. With a slope already at one, estimation noise and regime shifts are all that recalibration can add.</p>
 
     <p>Third, the words matter, but only nearby. The minutes tone leg is significant in-sample at every horizon and survives the Clark-West test out of sample at three and six months (t of 3.3 and 2.8), then fades to insignificance at twelve. Minutes language is informative about the next one or two meetings, not about next year. Directional accuracy on the moves-only subsample, with a 12.5 bp dead zone on both sides, runs from 94% at three months to 75% at twelve, and a Pesaran-Timmermann statistic above two even on strictly non-overlapping subsamples. One number deserves its own caveat: the tone-augmented specification called 51 of 51 three-month directions in the OOS window, a record flattered by the dead-zone filter and a sample dominated by two long cutting cycles and one hiking cycle.</p>
   </div>
