@@ -200,22 +200,18 @@ td.neg { color: var(--red); } td.pos { color: var(--green); }
       <p class="note">Cumulative change of the 1m forward vs the NBP reference rate
       (ACT/365) on the snapshot date. Moves priced = BRW change divided by 25 bp.</p>
       <p style="color:var(--muted);margin:12px 0 0 0;font-size:13px;line-height:1.65">
-      This table reads the three expected-rate paths off at eight fixed horizons from three
-      months to two years, all measured against the NBP reference rate in force on the snapshot
-      date. The first three numeric columns give the level of the 1-month forward at each
-      horizon under the ACM model, its BRW bias-corrected variant, and the professional
-      forecasters survey. The two &Delta;bp columns convert the ACM and BRW levels into a
-      cumulative change versus the reference rate, so a positive figure is priced tightening and
-      a negative one priced easing. The final column expresses the BRW change in units of 25 bp,
-      the standard MPC step, the same quantity the move tiles and the Oracle gauge are built
-      from. Reading down the rows traces how the priced path steepens or fades as the horizon
-      lengthens.</p>
+      The three expected-rate paths read off at eight horizons from three months to two years,
+      measured against the NBP reference rate on the snapshot date. The first three columns give
+      the 1-month forward level under ACM, its BRW bias-corrected variant, and the forecaster
+      survey. The two &Delta;bp columns convert the ACM and BRW levels into a cumulative change
+      versus the reference rate, positive for priced tightening. The final column expresses the
+      BRW change in 25 bp steps, the same quantity the move tiles and gauge use.</p>
     </div>
     <div class="panel" style="flex:1 1 480px;min-width:360px;margin-bottom:0">
       <div class="panel-head-row"><h3 style="margin:0">Expected policy path, next 2 years</h3><button class="csv-btn" id="csvPaths">CSV</button></div>
       <div id="hero"></div>
-      <p class="note">ACM risk-free and BRW bias-corrected 1m forwards from the integro-spline
-      construction of chart 04. PF is the NBP Survey of Professional Forecasters implied path,
+      <p class="note">ACM risk-free and BRW bias-corrected 1-month forwards, smoothed by an
+      integro-spline construction. PF is the NBP Survey of Professional Forecasters implied path,
       time-shifted to the snapshot date. NSS market forwards are omitted on purpose, they embed
       term premium and overstate the priced tightening at every horizon. The dotted grey
       staircase is the expected policy rate stepped in 25 bp clips from the rounded BRW moves,
