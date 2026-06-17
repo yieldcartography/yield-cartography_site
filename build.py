@@ -117,6 +117,12 @@ def build():
     if not mf_outright.empty:
         print(f'  Min-Fin outright: {len(mf_outright):,} (Seria, month) rows, '
               f'{mf_outright["Month"].min()} to {mf_outright["Month"].max()}')
+    # Min-Fin repo + sell-buy-back (conditional transactions), for the
+    # turnover-tab basis selector. Live file only (begins 2014-04).
+    mf_repobsb = _read_minfin_repobsb_long(YIELDS_DIR)
+    if not mf_repobsb.empty:
+        print(f'  Min-Fin repo+BSB: {len(mf_repobsb):,} (Seria, month) rows, '
+              f'{mf_repobsb["Month"].min()} to {mf_repobsb["Month"].max()}')
 
     # Per-(ISIN, month) BondSpot venue turnover (PLN mln, sum of daily
     # turnover_value) and a (Seria, month) lookup of the Min-Fin outright
@@ -333,7 +339,7 @@ def build():
         'corr_pl_ea':    corr_pl_ea,
         'pca':           pca,
         'liquidity':     liq,
-        'turnover_panel': _build_turnover_panel(bases, mf_outright),
+        'turnover_panel': _build_turnover_panel(bases, mf_outright, mf_repobsb),
         'freshness':     _build_freshness(bases, nss, acm, brw),
         'eh':            eh,
         'snaps':         snaps,
@@ -630,7 +636,57 @@ def _read_minfin_outright_long(yields_dir):
     return out.sort_values(['Seria', 'Month']).reset_index(drop=True)
 
 
-def _build_turnover_panel(bases, mf_outright=None):
+def _read_minfin_repobsb_long(yields_dir):
+    """Min-Fin repo + sell-buy-back (BSB) monthly turnover, long form
+    (Seria, Month[M], mf_bn in PLN bn), summed across the two conditional
+    transaction types. Live file only: repo and BSB are not in the pre-2014
+    static outright extract, so this series begins 2014-04."""
+    import warnings as _w
+    from pathlib import Path as _P
+    yields_dir = _P(yields_dir)
+
+    def _parse_long(path, sheet):
+        try:
+            with _w.catch_warnings():
+                _w.filterwarnings('ignore')
+                raw = pd.read_excel(path, sheet_name=sheet, engine='openpyxl',
+                                    dtype=object, header=None)
+        except Exception as e:
+            print(f'  WARN: could not read {path.name} sheet "{sheet}": {e}')
+            return pd.DataFrame(columns=['Seria', 'Month', 'mf_bn'])
+        date_row = raw.iloc[2, 1:]
+        date_vals = [v for v in date_row if v is not None and str(v) != 'nan']
+        n_dates = len(date_vals)
+        months = pd.PeriodIndex([pd.Timestamp(d).to_period('M') for d in date_vals], freq='M')
+        data = raw.iloc[3:, :]
+        data = data[data.iloc[:, 0].astype(str).str.strip() != 'Razem/Total']
+        data = data[~data.iloc[:, 0].isna()]
+        recs = []
+        for _, r in data.iterrows():
+            seria = str(r.iloc[0]).strip()
+            vals = r.iloc[1: 1 + n_dates].values
+            for m, v in zip(months, vals):
+                try:
+                    t = float(v) if v is not None and str(v) != 'nan' else None
+                except (TypeError, ValueError):
+                    t = None
+                if t is not None:
+                    recs.append({'Seria': seria, 'Month': m, 'mf_bn': t / 1000.0})
+        return pd.DataFrame(recs)
+
+    live = sorted(yields_dir.glob('Transakcje_po_seriach*.xlsx'))
+    if not live:
+        return pd.DataFrame(columns=['Seria', 'Month', 'mf_bn'])
+    repo = _parse_long(live[-1], 'Obligacje(T-bonds)_repo')
+    bsb = _parse_long(live[-1], 'Obligacje(T-bonds)_bsb')
+    both = pd.concat([repo, bsb], ignore_index=True)
+    if both.empty:
+        return both
+    both = both.groupby(['Seria', 'Month'], as_index=False)['mf_bn'].sum()
+    return both.sort_values(['Seria', 'Month']).reset_index(drop=True)
+
+
+def _build_turnover_panel(bases, mf_outright=None, mf_repobsb=None):
     """Monthly turnover panel for the liquidity page.
 
     Three views, all in PLN bn:
@@ -735,6 +791,16 @@ def _build_turnover_panel(bases, mf_outright=None):
     mf_seg = _segment_totals(mf, 'mf_bn', 'Nazwa', 'ref_month_p')
     bs_seg = _segment_totals(bs, 'bs_bn', 'name',  'month')
 
+    # Min-Fin repo + sell-buy-back, mapped to segments on the same monthly grid.
+    if mf_repobsb is not None and not mf_repobsb.empty:
+        mr = mf_repobsb.copy()
+        mr['Nazwa'] = mr['Seria']
+        mr['ref_month_p'] = mr['Month']
+        mr = mr.dropna(subset=['mf_bn'])
+    else:
+        mr = pd.DataFrame(columns=['Nazwa', 'ref_month_p', 'mf_bn'])
+    rb_seg = _segment_totals(mr, 'mf_bn', 'Nazwa', 'ref_month_p')
+
     mf_total = [round(mf_seg['short'][i] + mf_seg['belly'][i] + mf_seg['long'][i], 4) for i in range(len(months_p))]
     bs_total = [round(bs_seg['short'][i] + bs_seg['belly'][i] + bs_seg['long'][i], 4) for i in range(len(months_p))]
 
@@ -753,6 +819,7 @@ def _build_turnover_panel(bases, mf_outright=None):
         month_strs = month_strs[:cut]
         for k in mf_seg: mf_seg[k] = mf_seg[k][:cut]
         for k in bs_seg: bs_seg[k] = bs_seg[k][:cut]
+        for k in rb_seg: rb_seg[k] = rb_seg[k][:cut]
         mf_total = mf_total[:cut]
         bs_total = bs_total[:cut]
 
@@ -798,8 +865,25 @@ def _build_turnover_panel(bases, mf_outright=None):
     # ---- Outstanding stock by segment (independent of turnover trimming) ----
     out_panel = _build_outstanding_panel(b, mat_map)
 
+    # Min-Fin segment turnover under the three transaction-type bases. The
+    # left-hand chart switches between these; outright stays the default and
+    # also feeds the BondSpot-share figure.
+    _n = len(month_strs)
+    def _seg_obj(seg):
+        sh, be, lo = seg['short'], seg['belly'], seg['long']
+        tot = [round(sh[i] + be[i] + lo[i], 4) for i in range(_n)]
+        return {'short_bn': sh, 'belly_bn': be, 'long_bn': lo, 'total_bn': tot}
+    all_seg = {k: [round(mf_seg[k][i] + rb_seg[k][i], 4) for i in range(_n)]
+               for k in ('short', 'belly', 'long')}
+    minfin_basis = {
+        'outright': _seg_obj(mf_seg),
+        'repobsb':  _seg_obj(rb_seg),
+        'all':      _seg_obj(all_seg),
+    }
+
     return {
         'months':            month_strs,
+        'minfin_basis':      minfin_basis,
         'minfin_short_bn':   mf_seg['short'],
         'minfin_belly_bn':   mf_seg['belly'],
         'minfin_long_bn':    mf_seg['long'],

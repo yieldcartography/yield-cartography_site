@@ -172,6 +172,16 @@
     </div>
   </div>
 
+  <div class="control-row" id="tovBasisRow">
+    <span class="label-mono">Transactions:</span>
+    <div class="pill-row" id="tovBasisPills" style="margin:0">
+      <span class="pill active" data-basis="outright">Outright</span>
+      <span class="pill" data-basis="repobsb">Repo and BSB</span>
+      <span class="pill" data-basis="all">All</span>
+    </div>
+    <span class="label-mono" id="tovBasisNote" style="margin-left:10px;color:var(--muted);font-size:11px"></span>
+  </div>
+
   <div class="grid-2">
 
     <div class="panel">
@@ -346,11 +356,22 @@ function bindCsvButtons(){
   document.getElementById('csvTurnoverSeg').addEventListener('click', ()=>{
     const tp = DATA.turnover_panel; if (!tp){ alert('Turnover panel not built.'); return; }
     const src = curTovSource;
-    const rows = [['month', src + '_short_bn', src + '_belly_bn', src + '_long_bn', src + '_total_bn']];
-    for (let i=0; i<tp.months.length; i++){
-      rows.push([tp.months[i], tp[`${src}_short_bn`][i], tp[`${src}_belly_bn`][i], tp[`${src}_long_bn`][i], tp[`${src}_total_bn`][i]]);
+    let short, belly, longS, total, tag;
+    if (src === 'minfin'){
+      const mb = (tp.minfin_basis && tp.minfin_basis[curTovBasis]) ? tp.minfin_basis[curTovBasis] : null;
+      if (mb){ short=mb.short_bn; belly=mb.belly_bn; longS=mb.long_bn; total=mb.total_bn; }
+      else   { short=tp.minfin_short_bn; belly=tp.minfin_belly_bn; longS=tp.minfin_long_bn; total=tp.minfin_total_bn; }
+      tag = 'minfin_' + curTovBasis;
+    } else {
+      short=tp.bspot_short_bn; belly=tp.bspot_belly_bn; longS=tp.bspot_long_bn; total=tp.bspot_total_bn;
+      tag = 'bspot';
     }
-    downloadCSV('yc_turnover_segment_' + src + '.csv', rows, 'Monthly turnover by segment (' + (src==='minfin'?'Min-Fin total':'BondSpot venue') + ')');
+    const rows = [['month', tag + '_short_bn', tag + '_belly_bn', tag + '_long_bn', tag + '_total_bn']];
+    for (let i=0; i<tp.months.length; i++){
+      rows.push([tp.months[i], short[i], belly[i], longS[i], total[i]]);
+    }
+    const lab = (src==='minfin') ? ('Min-Fin total, ' + (curTovBasis==='repobsb'?'repo + sell-buy-back':curTovBasis==='all'?'all transaction types':'outright')) : 'BondSpot venue, outright';
+    downloadCSV('yc_turnover_segment_' + tag + '.csv', rows, 'Monthly turnover by segment (' + lab + ')');
   });
   document.getElementById('csvTurnoverShare').addEventListener('click', ()=>{
     const tp = DATA.turnover_panel; if (!tp){ alert('Turnover panel not built.'); return; }
@@ -455,8 +476,20 @@ function initStats(){
 }
 
 let curTovSource = 'minfin';
+let curTovBasis = 'outright';   // outright | repobsb | all (Min-Fin only)
 let curTovBond = null;
 let curTovLiveOnly = true;
+
+// The transaction-type basis only applies to the Min-Fin source; BondSpot is
+// a cash (outright) venue, so grey the pills out and explain when BondSpot is
+// selected.
+function _syncTovBasisUI(){
+  const pills = document.getElementById('tovBasisPills');
+  const note  = document.getElementById('tovBasisNote');
+  const isMin = (curTovSource === 'minfin');
+  if (pills){ pills.style.opacity = isMin ? '1' : '0.4'; pills.style.pointerEvents = isMin ? 'auto' : 'none'; }
+  if (note){ note.textContent = isMin ? '' : 'BondSpot is a cash (outright) venue — no repo or sell-buy-back.'; }
+}
 
 function bindPills(){
   document.querySelectorAll('#winPills .pill').forEach(p=>{
@@ -472,9 +505,20 @@ function bindPills(){
       document.querySelectorAll('#tovSourcePills .pill').forEach(x=>x.classList.remove('active'));
       p.classList.add('active');
       curTovSource = p.dataset.tov;
+      _syncTovBasisUI();
       drawTurnoverSeg();
     });
   });
+  document.querySelectorAll('#tovBasisPills .pill').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      if (curTovSource !== 'minfin') return;   // basis applies to Min-Fin only
+      document.querySelectorAll('#tovBasisPills .pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      curTovBasis = p.dataset.basis;
+      drawTurnoverSeg();
+    });
+  });
+  _syncTovBasisUI();
   const sel = document.getElementById('tovBondSelect');
   if (sel) sel.addEventListener('change', () => { curTovBond = sel.value; drawTurnoverBond(); });
   const lo = document.getElementById('tovLiveOnly');
@@ -507,25 +551,34 @@ function drawTurnoverSeg(){
   const tp = DATA.turnover_panel;
   if (!tp){ return; }
   const src = curTovSource; // 'minfin' or 'bspot'
-  const titleSrc = (src === 'minfin') ? 'Min-Fin total' : 'BondSpot venue';
+  let short, belly, longS, total, titleSrc;
+  if (src === 'minfin'){
+    const mb = (tp.minfin_basis && tp.minfin_basis[curTovBasis]) ? tp.minfin_basis[curTovBasis] : null;
+    if (mb){ short = mb.short_bn; belly = mb.belly_bn; longS = mb.long_bn; total = mb.total_bn; }
+    else   { short = tp.minfin_short_bn; belly = tp.minfin_belly_bn; longS = tp.minfin_long_bn; total = tp.minfin_total_bn; }
+    const bl = (curTovBasis === 'repobsb') ? 'repo + sell-buy-back'
+             : (curTovBasis === 'all') ? 'all transaction types' : 'outright';
+    titleSrc = 'Min-Fin total · ' + bl;
+  } else {
+    short = tp.bspot_short_bn; belly = tp.bspot_belly_bn; longS = tp.bspot_long_bn; total = tp.bspot_total_bn;
+    titleSrc = 'BondSpot venue · outright';
+  }
   document.getElementById('tovSegTitle').textContent = 'Monthly turnover by segment — ' + titleSrc;
-  // Trim trailing zero months for the SELECTED source so the chart doesn't
+  // Trim trailing zero months for the SELECTED series so the chart doesn't
   // collapse at the right edge for months the source hasn't published yet.
-  const total = tp[`${src}_total_bn`];
   const last = _lastNonZeroIdx(total);
   const cut = (last >= 0 && last < total.length - 1) ? last + 1 : total.length;
   const months = tp.months.slice(0, cut);
-  const short = tp[`${src}_short_bn`].slice(0, cut);
-  const belly = tp[`${src}_belly_bn`].slice(0, cut);
-  const longS = tp[`${src}_long_bn`].slice(0, cut);
+  const sShort = short.slice(0, cut), sBelly = belly.slice(0, cut), sLong = longS.slice(0, cut);
   const traces = [
-    { x:months, y:short, name:'short ≤1.5y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.short,width:0.6}, fillcolor:'rgba(136,136,136,0.55)', hovertemplate:'%{x} · short %{y:.2f} bn<extra></extra>' },
-    { x:months, y:belly, name:'belly 1.5-7y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.accent,width:0.6}, fillcolor:'rgba(31,78,121,0.55)', hovertemplate:'%{x} · belly %{y:.2f} bn<extra></extra>' },
-    { x:months, y:longS, name:'long >7y',    type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.salmon,width:0.6}, fillcolor:'rgba(194,82,45,0.55)', hovertemplate:'%{x} · long %{y:.2f} bn<extra></extra>' },
+    { x:months, y:sShort, name:'short ≤1.5y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.short,width:0.6}, fillcolor:'rgba(136,136,136,0.55)', hovertemplate:'%{x} · short %{y:.2f} bn<extra></extra>' },
+    { x:months, y:sBelly, name:'belly 1.5-7y', type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.accent,width:0.6}, fillcolor:'rgba(31,78,121,0.55)', hovertemplate:'%{x} · belly %{y:.2f} bn<extra></extra>' },
+    { x:months, y:sLong, name:'long >7y',    type:'scatter', mode:'lines', stackgroup:'one', line:{color:PALETTE.salmon,width:0.6}, fillcolor:'rgba(194,82,45,0.55)', hovertemplate:'%{x} · long %{y:.2f} bn<extra></extra>' },
   ];
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:'monthly turnover (PLN bn)', font:FONT_MONO };
   lay.legend = { orientation:'h', y:1.08, x:0, font:FONT_MONO };
+  lay.xaxis = Object.assign({}, lay.xaxis || {}, { autorange: true });
   Plotly.react('tovSegChart', traces, lay, CFG);
 }
 
@@ -568,6 +621,10 @@ function drawTurnoverShare(){
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:'BondSpot share of Min-Fin total (%)', font:FONT_MONO };
   lay.shapes = [{ type:'line', xref:'paper', x0:0, x1:1, y0:0, y1:0, line:{color:'#bbb',width:1,dash:'dot'} }];
+  lay.xaxis = Object.assign({}, lay.xaxis || {}, { autorange: true });
+  lay.annotations = [{ xref:'paper', yref:'paper', x:1, y:1.10, xanchor:'right', yanchor:'bottom',
+    showarrow:false, font:{family:FONT_MONO.family, size:10, color:'var(--muted)'},
+    text:'outright / outright basis (BondSpot is cash-only)' }];
   Plotly.react('tovShareChart', traces, lay, CFG);
 }
 
