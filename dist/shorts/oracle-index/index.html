@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Does the curve know the next MPC move? — yieldcartography</title>
+<meta name="description" content="Two-page short on the Oracle index: a fixed-weight blend of the BRW bias-corrected policy path and MPC minutes tone that predicts NBP reference-rate moves out of sample.">
+<link rel="stylesheet" href="/assets/style.css?v=7">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://yieldcartography.com/shorts/oracle-index/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Does the curve know the next MPC move? — yieldcartography">
+<meta property="og:description" content="A 0.70/0.30 blend of the bias-corrected market path and minutes tone hits 94% of directional NBP calls at three months, out of sample, 2010-2026.">
+<meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yieldcartography.com/shorts/oracle-index/">
+<meta property="og:site_name" content="yieldcartography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Does the curve know the next MPC move? — yieldcartography">
+<meta name="twitter:description" content="A 0.70/0.30 blend of the bias-corrected market path and minutes tone hits 94% of directional NBP calls at three months, out of sample, 2010-2026.">
+<meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<style>
+  .short-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.6px; }
+  .short-title { font-size: 28px; line-height: 1.18; letter-spacing: -0.4px; margin: 4px 0 6px 0; }
+  .short-sub { font-size: 17px; color: var(--ink-soft); margin: 0 0 28px 0; line-height: 1.45; max-width: 760px; }
+  .key-fig { background: #fff; border: 1px solid var(--rule); padding: 16px 18px; margin: 24px 0; border-radius: 4px; }
+  .key-fig .cap { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.5; font-family: var(--mono); }
+  .key-tab { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; margin: 18px 0; }
+  .key-tab th, .key-tab td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); }
+  .key-tab th { color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; background: #f5f5f5; }
+  .key-tab th.lbl, .key-tab td.lbl { text-align: left; }
+  .practitioner-box { background: var(--accent-tint); border-left: 3px solid var(--accent); padding: 14px 18px; margin: 24px 0; border-radius: 0 4px 4px 0; }
+  .practitioner-box .pl-label { font-family: var(--mono); font-size: 10.5px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 5px; }
+  .practitioner-box .pl-text { font-size: 14px; color: var(--ink); line-height: 1.55; }
+  .source-line { font-family: var(--mono); font-size: 11.5px; color: var(--muted); padding: 10px 0; border-top: 1px solid var(--rule); margin-top: 22px; }
+  .source-line a { color: var(--accent); }
+  .body-text { font-size: 14.5px; line-height: 1.65; color: var(--ink); }
+  .body-text p { margin: 0 0 14px 0; }
+  .comments { margin-top: 36px; padding: 18px 22px; background: #f7f7f7; border: 1px dashed var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/oracle/">oracle</a>
+    <a href="/mpc/">MPC</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/total-return/">total return</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/" class="active">shorts</a>
+    <a href="/movies/">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+  <p class="short-meta">Short 06 &middot; 2026-06-10 &middot; Oracle &middot; policy expectations</p>
+  <h1 class="short-title">Does the curve know the next MPC move? An oracle from bias-corrected forwards and minutes tone</h1>
+  <p class="short-sub">A fixed-weight blend of the BRW bias-corrected policy path and the hawkish-dovish tone of the MPC minutes predicts the direction of NBP reference-rate moves out of sample: a 94% hit rate at three months, OOS R&sup2; of 0.43 against a random walk, with the minutes leg statistically significant at the meetings horizon.</p>
+
+  <div class="body-text">
+    <p>The most common way to read policy expectations off a yield curve is also the most misleading one. Raw NSS forwards embed term premium, so they overstate the priced tightening at every horizon and at every point of the last two decades of Polish data. The clean object is the expected short-rate path from an affine term-structure model: here the Adrian-Crump-Moench five-factor decomposition with the Bauer-Rudebusch-Wu small-sample bias correction applied to the VAR persistence, converted to one-month forwards. The cumulative move it implies at a given horizon, expressed in basis points against the current reference rate, is the market leg of the index.</p>
+
+    <p>The second leg comes from the MPC's own words. Every set of minutes since 2007 is scored with a custom hawkish-dovish lexicon, and the net tone, hawkish minus dovish over their sum, lands in [-1, 1] per meeting. Minutes are published with a lag of roughly a month, so the backtest only lets a meeting's tone enter the information set thirty days after the meeting date. The display version of the index tolerates the small look-ahead, the test version does not.</p>
+
+    <p>The Oracle index is then deliberately naive: 0.70 times the market leg (the implied three-month move divided by the 25 bp step size, clipped to one move) plus 0.30 times the latest available net tone, mapped linearly to probabilities of a cut, a hold and a hike over the next quarter. The weights are a choice, not an estimate, which is exactly what keeps the out-of-sample evaluation honest.</p>
+  </div>
+
+  <div class="key-fig">
+    <h3 style="font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin:0 0 12px 0">Figure &middot; Oracle score vs the NBP staircase, last ten years</h3>
+<svg viewBox="0 0 640 300" width="100%" style="background:#fff">
+<rect x="60" y="40.0" width="540" height="66.0" fill="#d11b1b" opacity="0.07"/>
+<rect x="60" y="194.0" width="540" height="66.0" fill="#2e75b6" opacity="0.07"/>
+<line x1="60" y1="260" x2="600" y2="260" stroke="#999" stroke-width="1"/>
+<line x1="60" y1="40" x2="60" y2="260" stroke="#999" stroke-width="1"/>
+<line x1="600" y1="40" x2="600" y2="260" stroke="#999" stroke-width="1"/>
+<line x1="60" y1="150.0" x2="600" y2="150.0" stroke="#cccccc" stroke-width="0.8" stroke-dasharray="3,3"/>
+<text x="55" y="263.0" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">-100</text>
+<text x="55" y="197.0" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">-40</text>
+<text x="55" y="153.0" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">0</text>
+<text x="55" y="109.0" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">+40</text>
+<text x="55" y="43.0" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">+100</text>
+<text x="605" y="263.0" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="10" fill="#2e7d32">0</text>
+<text x="605" y="200.1" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="10" fill="#2e7d32">2</text>
+<text x="605" y="137.3" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="10" fill="#2e7d32">4</text>
+<text x="605" y="74.4" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="10" fill="#2e7d32">6</text>
+<line x1="141.8" y1="260" x2="141.8" y2="264" stroke="#999" stroke-width="1"/>
+<text x="141.8" y="276" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">2018</text>
+<line x1="250.3" y1="260" x2="250.3" y2="264" stroke="#999" stroke-width="1"/>
+<text x="250.3" y="276" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">2020</text>
+<line x1="358.9" y1="260" x2="358.9" y2="264" stroke="#999" stroke-width="1"/>
+<text x="358.9" y="276" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">2022</text>
+<line x1="467.4" y1="260" x2="467.4" y2="264" stroke="#999" stroke-width="1"/>
+<text x="467.4" y="276" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">2024</text>
+<line x1="576.1" y1="260" x2="576.1" y2="264" stroke="#999" stroke-width="1"/>
+<text x="576.1" y="276" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">2026</text>
+<text x="22" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a" transform="rotate(-90 22 150)">oracle score</text>
+<text x="628" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#2e7d32" transform="rotate(90 628 150)">reference rate, %</text>
+<path d="M 60.0 212.9 L 64.3 212.9 L 64.3 212.9 L 69.2 212.9 L 69.2 212.9 L 73.7 212.9 L 73.7 212.9 L 78.3 212.9 L 78.3 212.9 L 82.7 212.9 L 82.7 212.9 L 87.2 212.9 L 87.2 212.9 L 92.0 212.9 L 92.0 212.9 L 96.1 212.9 L 96.1 212.9 L 100.7 212.9 L 100.7 212.9 L 104.9 212.9 L 104.9 212.9 L 109.8 212.9 L 109.8 212.9 L 114.3 212.9 L 114.3 212.9 L 118.9 212.9 L 118.9 212.9 L 123.5 212.9 L 123.5 212.9 L 127.8 212.9 L 127.8 212.9 L 132.5 212.9 L 132.5 212.9 L 137.0 212.9 L 137.0 212.9 L 141.3 212.9 L 141.3 212.9 L 146.2 212.9 L 146.2 212.9 L 150.4 212.9 L 150.4 212.9 L 154.7 212.9 L 154.7 212.9 L 159.4 212.9 L 159.4 212.9 L 163.9 212.9 L 163.9 212.9 L 168.4 212.9 L 168.4 212.9 L 173.1 212.9 L 173.1 212.9 L 177.7 212.9 L 177.7 212.9 L 181.9 212.9 L 181.9 212.9 L 186.8 212.9 L 186.8 212.9 L 191.2 212.9 L 191.2 212.9 L 195.4 212.9 L 195.4 212.9 L 200.5 212.9 L 200.5 212.9 L 204.6 212.9 L 204.6 212.9 L 208.9 212.9 L 208.9 212.9 L 213.7 212.9 L 213.7 212.9 L 218.3 212.9 L 218.3 212.9 L 222.5 212.9 L 222.5 212.9 L 227.4 212.9 L 227.4 212.9 L 231.8 212.9 L 231.8 212.9 L 236.4 212.9 L 236.4 212.9 L 241.0 212.9 L 241.0 212.9 L 245.4 212.9 L 245.4 212.9 L 250.0 212.9 L 250.0 212.9 L 254.7 212.9 L 254.7 212.9 L 258.9 212.9 L 258.9 212.9 L 263.6 212.9 L 263.6 228.6 L 268.1 228.6 L 268.1 244.3 L 272.4 244.3 L 272.4 256.9 L 277.2 256.9 L 277.2 256.9 L 281.8 256.9 L 281.8 256.9 L 286.4 256.9 L 286.4 256.9 L 290.8 256.9 L 290.8 256.9 L 295.3 256.9 L 295.3 256.9 L 299.9 256.9 L 299.9 256.9 L 304.4 256.9 L 304.4 256.9 L 308.8 256.9 L 308.8 256.9 L 313.0 256.9 L 313.0 256.9 L 317.9 256.9 L 317.9 256.9 L 322.3 256.9 L 322.3 256.9 L 327.0 256.9 L 327.0 256.9 L 331.4 256.9 L 331.4 256.9 L 335.9 256.9 L 335.9 256.9 L 340.6 256.9 L 340.6 256.9 L 345.1 256.9 L 345.1 256.9 L 349.4 256.9 L 349.4 244.3 L 354.2 244.3 L 354.2 220.7 L 358.6 220.7 L 358.6 205.0 L 363.4 205.0 L 363.4 189.3 L 367.5 189.3 L 367.5 173.6 L 372.1 173.6 L 372.1 150.0 L 376.4 150.0 L 376.4 118.6 L 381.2 118.6 L 381.2 95.0 L 385.7 95.0 L 385.7 71.4 L 390.0 71.4 L 390.0 55.7 L 394.9 55.7 L 394.9 55.7 L 399.3 55.7 L 399.3 47.9 L 403.9 47.9 L 403.9 47.9 L 408.4 47.9 L 408.4 47.9 L 412.9 47.9 L 412.9 47.9 L 417.6 47.9 L 417.6 47.9 L 421.8 47.9 L 421.8 47.9 L 426.4 47.9 L 426.4 47.9 L 430.6 47.9 L 430.6 47.9 L 435.5 47.9 L 435.5 47.9 L 439.9 47.9 L 439.9 47.9 L 444.5 47.9 L 444.5 47.9 L 449.1 47.9 L 449.1 47.9 L 453.4 47.9 L 453.4 71.4 L 458.2 71.4 L 458.2 79.3 L 462.7 79.3 L 462.7 79.3 L 467.0 79.3 L 467.0 79.3 L 471.9 79.3 L 471.9 79.3 L 476.2 79.3 L 476.2 79.3 L 480.3 79.3 L 480.3 79.3 L 485.3 79.3 L 485.3 79.3 L 489.9 79.3 L 489.9 79.3 L 494.0 79.3 L 494.0 79.3 L 498.9 79.3 L 498.9 79.3 L 503.4 79.3 L 503.4 79.3 L 508.0 79.3 L 508.0 79.3 L 512.6 79.3 L 512.6 79.3 L 516.9 79.3 L 516.9 79.3 L 521.5 79.3 L 521.5 79.3 L 526.3 79.3 L 526.3 79.3 L 530.4 79.3 L 530.4 79.3 L 535.0 79.3 L 535.0 79.3 L 539.5 79.3 L 539.5 79.3 L 544.0 79.3 L 544.0 95.0 L 548.6 95.0 L 548.6 95.0 L 553.2 95.0 L 553.2 102.9 L 557.5 102.9 L 557.5 102.9 L 562.2 102.9 L 562.2 110.7 L 566.9 110.7 L 566.9 118.6 L 571.0 118.6 L 571.0 126.4 L 575.8 126.4 L 575.8 134.3 L 580.4 134.3 L 580.4 134.3 L 584.5 134.3 L 584.5 134.3 L 589.3 134.3 L 589.3 142.1 L 593.8 142.1 L 593.8 142.1 L 598.1 142.1 L 598.1 142.1 L 600.0 142.1 L 600.0 142.1" fill="none" stroke="#22aa22" stroke-width="1.6"/>
+<polyline points="60.0,180.8 64.3,172.7 69.2,170.5 73.7,158.4 78.3,146.6 82.7,155.3 87.2,125.4 92.0,136.8 96.1,116.0 100.7,119.4 104.9,113.2 109.8,116.1 114.3,130.6 118.9,136.7 123.5,141.3 127.8,143.2 132.5,169.8 137.0,149.3 141.3,153.7 146.2,161.4 150.4,178.8 154.7,191.1 159.4,182.3 163.9,177.7 168.4,175.3 173.1,172.8 177.7,173.1 181.9,164.2 186.8,174.2 191.2,170.3 195.4,190.9 200.5,196.3 204.6,158.5 208.9,167.9 213.7,161.7 218.3,145.5 222.5,142.6 227.4,141.1 231.8,124.5 236.4,131.0 241.0,143.1 245.4,143.7 250.0,132.2 254.7,137.1 258.9,136.8 263.6,186.8 268.1,174.1 272.4,158.7 277.2,182.6 281.8,166.2 286.4,166.2 290.8,175.0 295.3,181.0 299.9,170.0 304.4,181.2 308.8,171.3 313.0,181.9 317.9,168.9 322.3,168.3 327.0,142.3 331.4,91.5 335.9,109.8 340.6,101.3 345.1,91.2 349.4,54.3 354.2,67.9 358.6,61.5 363.4,55.1 367.5,60.9 372.1,64.2 376.4,66.0 381.2,71.3 385.7,78.1 390.0,114.0 394.9,79.2 399.3,71.2 403.9,70.4 408.4,118.1 412.9,178.4 417.6,217.7 421.8,223.2 426.4,229.8 430.6,229.9 435.5,217.7 439.9,236.6 444.5,231.2 449.1,231.2 453.4,232.8 458.2,232.5 462.7,222.6 467.0,220.8 471.9,220.0 476.2,221.5 480.3,218.4 485.3,203.9 489.9,206.6 494.0,211.5 498.9,216.7 503.4,216.7 508.0,219.2 512.6,216.7 516.9,218.5 521.5,216.0 526.3,207.2 530.4,225.8 535.0,217.3 539.5,239.2 544.0,244.1 548.6,229.5 553.2,216.7 557.5,216.7 562.2,229.8 566.9,235.2 571.0,237.0 575.8,231.3 580.4,238.0 584.5,246.8 589.3,144.5 593.8,107.7 598.1,121.1 600.0,125.7" fill="none" stroke="#1f4e79" stroke-width="2"/>
+<line x1="380" y1="24" x2="404" y2="24" stroke="#1f4e79" stroke-width="2"/>
+<text x="410" y="28" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">oracle score (LHS)</text>
+<line x1="380" y1="40" x2="404" y2="40" stroke="#22aa22" stroke-width="1.6"/>
+<text x="410" y="44" font-family="-apple-system,sans-serif" font-size="11" fill="#3a3a3a">NBP reference rate (RHS)</text>
+</svg>
+<p class="cap">Oracle score (left axis, [-100, +100] scale) at month-end snapshots, June 2016 to June 2026, with the NBP reference rate stepped on the right axis. Shaded bands mark the stance zones, LOOSENING below -40 and TIGHTENING above +40. Generated from the same snapshot panel as the dashboard, where the full 2005-2026 history is available under a time slider.</p>
+  </div>
+
+  <table class="key-tab">
+    <thead><tr><th class="lbl">Horizon</th><th>MZ &beta; (t)</th><th>Wald a=0, &beta;=1, p</th><th>Tone t (IS)</th><th>OOS R&sup2; raw</th><th>CW t, tone (OOS)</th><th>Hit rate, moves</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">3 months</td><td>1.19 (4.1)</td><td>0.42</td><td>4.5</td><td>0.43</td><td>3.3</td><td>94%</td></tr>
+      <tr><td class="lbl">6 months</td><td>1.10 (3.5)</td><td>0.69</td><td>3.9</td><td>0.45</td><td>2.8</td><td>84%</td></tr>
+      <tr><td class="lbl">12 months</td><td>1.01 (3.3)</td><td>0.92</td><td>2.5</td><td>0.34</td><td>1.2</td><td>75%</td></tr>
+    </tbody>
+  </table>
+
+  <div class="body-text">
+    <p>The figure compresses the index's value proposition into one picture. Through the long flat years of 2016 to 2019 the score idles in the neutral band while the reference rate sits at 1.50%, which is itself a forecast: nothing was priced and nothing happened. By June 2021, with the rate still at the COVID floor of 0.10%, the score is at +53 and inside the tightening band, four months before the October liftoff, and it climbs to +80 as the hikes land. The mirror image plays out at the top: by June 2023 the score sits at -79 with the rate still at 6.75%, the first cut arrives that September, and the index then rides the loosening band through the whole 2024 to 2026 staircase down to 3.75%. The table above says the same thing with error bands attached.</p>
+
+    <p>Three results stand out. First, the in-sample Mincer-Zarnowitz slope on the BRW-implied move is statistically indistinguishable from one at every horizon, and the joint unbiasedness restriction is never rejected, with Newey-West errors carrying the full monthly overlap. The bias-corrected curve is an unbiased forecaster of cumulative NBP moves. Raw NSS forwards fail the same test immediately, which is why they are excluded from the index by construction.</p>
+
+    <p>Second, recalibration destroys value. Re-estimating the Mincer-Zarnowitz line each month on an expanding window, the textbook move, cuts the OOS R&sup2; roughly in half relative to using the model path raw. With a slope already at one, estimation noise and regime shifts are all that recalibration can add.</p>
+
+    <p>Third, the words matter, but only nearby. The minutes tone leg is significant in-sample at every horizon and survives the Clark-West test out of sample at three and six months (t of 3.3 and 2.8), then fades to insignificance at twelve. Minutes language is informative about the next one or two meetings, not about next year. Directional accuracy on the moves-only subsample, with a 12.5 bp dead zone on both sides, runs from 94% at three months to 75% at twelve, and a Pesaran-Timmermann statistic above two even on strictly non-overlapping subsamples. One number deserves its own caveat: the tone-augmented specification called 51 of 51 three-month directions in the OOS window, a record flattered by the dead-zone filter and a sample dominated by two long cutting cycles and one hiking cycle.</p>
+  </div>
+
+  <div class="practitioner-box">
+    <div class="pl-label">What this means for practitioners</div>
+    <div class="pl-text">If you want the market's view of the next NBP move, do not read NSS forwards, they price term premium on top of policy. Read the bias-corrected expected path raw, resist the urge to recalibrate it on history, and add the minutes tone only for the next quarter or two, where it carries statistically real information. A fixed 0.70/0.30 blend of the two has been a well-calibrated next-move gauge over sixteen years of out-of-sample Polish data.</div>
+  </div>
+
+  <div class="source-line">
+    Underlying machinery: ACM term premia with BRW bias correction (<a href="/term-premia/">term premia tab</a>), MPC minutes lexicon scores (<a href="/mpc/">MPC tab</a>), NBP Survey of Professional Forecasters implied paths (<a href="/curves/">curves tab</a>). The interactive Oracle dashboard built on this index is live in the <a href="/oracle/">Oracle tab</a>. See <a href="/about/#references">references</a> for the methods bibliography.
+  </div>
+
+  <h3 style="font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);margin:40px 0 4px 0">Comments</h3>
+  <p style="font-family:var(--mono);font-size:11px;color:var(--muted);margin:0 0 16px 0">Comments are GitHub Discussions on the public yieldcartography/yield-cartography_site repo. Sign in with GitHub to post.</p>
+  <script src="https://giscus.app/client.js"
+          data-repo="yieldcartography/yield-cartography_site"
+          data-repo-id="R_kgDOSZHQ8w"
+          data-category="General"
+          data-category-id="DIC_kwDOSZHQ884C8wQa"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="preferred_color_scheme"
+          data-lang="en"
+          crossorigin="anonymous"
+          async>
+  </script>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright">yieldcartography.com &middot; Marcin Dec &middot; all data and code released for academic and personal use &middot; last build 2026-06-10</div>
+</footer>
+
+</body>
+</html>

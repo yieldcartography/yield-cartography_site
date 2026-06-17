@@ -1691,6 +1691,21 @@ def main(argv=None):
         rel = out_path  # absolute path is fine when writing to an external repo
     print(f'  wrote {rel} ({out_path.stat().st_size/1024:.1f} KB)')
     print(f'  meta: {data["meta"]}')
+
+    # Regenerate the Oracle tab from the same YIELDS CSVs so it tracks every
+    # data refresh alongside yields.json. Non-fatal: a failure here must not
+    # block the rest of the site build.
+    try:
+        import sys as _sys
+        if str(YIELDS_DIR) not in _sys.path:
+            _sys.path.insert(0, str(YIELDS_DIR))
+        import oracle_build
+        oracle_out = DIST / 'oracle' / 'index.html'
+        oracle_build.write_page(oracle_out)
+        print(f'  wrote {oracle_out.relative_to(DIST.parent) if DIST.parent in oracle_out.parents else oracle_out} (Oracle tab)')
+    except Exception as e:
+        print(f'  WARNING: Oracle tab not regenerated ({type(e).__name__}: {e})')
+
     print('done.')
     return 0
 
