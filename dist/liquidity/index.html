@@ -216,7 +216,7 @@
         <h3 style="margin:0">Per-bond monthly turnover history</h3>
         <button class="csv-btn" id="csvTurnoverBond">CSV</button>
       </div>
-      <p class="note">Monthly turnover history for a chosen bond, Min-Fin total versus BondSpot venue side by side. The "Live only" toggle hides bonds that have already matured.</p>
+      <p class="note">Monthly turnover history for a chosen bond, Min-Fin outright versus BondSpot venue side by side (both outright, like-for-like). The "Live only" toggle hides bonds that have already matured.</p>
       <div class="control-row" style="margin-top:6px">
         <span class="label-mono">Bond:</span>
         <select id="tovBondSelect" style="font-family:var(--mono);font-size:12px;padding:5px 10px;border:1px solid var(--rule);border-radius:4px;background:#fff;color:var(--ink);min-width:280px"></select>
@@ -642,7 +642,7 @@ function drawTurnoverBond(){
   const e = tp.per_bond[curTovBond];
   if (!e){ Plotly.react('tovBondChart', [], PLOT_BASE, CFG); return; }
   const traces = [
-    { x:e.months, y:e.minfin_bn, mode:'lines+markers', line:{color:PALETTE.accent,width:1.8}, marker:{size:5,color:PALETTE.accent}, name:'Min-Fin total (bn)', hovertemplate:'%{x} · Min-Fin %{y:.3f} bn<extra></extra>' },
+    { x:e.months, y:e.minfin_bn, mode:'lines+markers', line:{color:PALETTE.accent,width:1.8}, marker:{size:5,color:PALETTE.accent}, name:'Min-Fin outright (bn)', hovertemplate:'%{x} · Min-Fin outright %{y:.3f} bn<extra></extra>' },
     { x:e.months, y:e.bspot_bn,  mode:'lines+markers', line:{color:PALETTE.salmon,width:1.5,dash:'dot'}, marker:{size:5,color:PALETTE.salmon,symbol:'square-open'}, name:'BondSpot venue (bn)', hovertemplate:'%{x} · BondSpot %{y:.3f} bn<extra></extra>' },
   ];
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
