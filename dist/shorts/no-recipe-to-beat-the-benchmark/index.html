@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>No simple recipe beats the bond benchmark — yieldcartography</title>
+<meta name="description" content="Two-page short on term-premium duration timing against the TBSP benchmark. A full-sample term premium manufactures a carry strategy that reverses sign the moment it is estimated in real time. Once estimation is honest, no rule reliably beats the benchmark after the search, the costs and out-of-sample markets.">
+<link rel="stylesheet" href="/assets/style.css?v=7">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://yieldcartography.com/shorts/no-recipe-to-beat-the-benchmark/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="No simple recipe beats the bond benchmark — yieldcartography">
+<meta property="og:description" content="Term-premium duration timing tested honestly against TBSP. The full-sample premium manufactures a spurious carry edge that flips sign in real time. The honest survivor fails the multiple-testing correction, the costs, and the cross-market check.">
+<meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yieldcartography.com/shorts/no-recipe-to-beat-the-benchmark/">
+<meta property="og:site_name" content="yieldcartography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="No simple recipe beats the bond benchmark — yieldcartography">
+<meta name="twitter:description" content="A full-sample term premium knows the future and fakes a carry edge. Estimate it honestly and the rule loses. No reliable recipe to beat TBSP survives the search, the costs and the cross-market check.">
+<meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<style>
+  .short-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.6px; }
+  .short-title { font-size: 28px; line-height: 1.18; letter-spacing: -0.4px; margin: 4px 0 6px 0; }
+  .short-sub { font-size: 17px; color: var(--ink-soft); margin: 0 0 28px 0; line-height: 1.45; max-width: 760px; }
+  .key-fig { background: #fff; border: 1px solid var(--rule); padding: 16px 18px; margin: 24px 0; border-radius: 4px; }
+  .key-fig .cap { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.5; font-family: var(--mono); }
+  .key-tab { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; margin: 18px 0; }
+  .key-tab th, .key-tab td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); }
+  .key-tab th { color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; background: #f5f5f5; }
+  .key-tab th.lbl, .key-tab td.lbl { text-align: left; }
+  .practitioner-box { background: var(--accent-tint); border-left: 3px solid var(--accent); padding: 14px 18px; margin: 24px 0; border-radius: 0 4px 4px 0; }
+  .practitioner-box .pl-label { font-family: var(--mono); font-size: 10.5px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 5px; }
+  .practitioner-box .pl-text { font-size: 14px; color: var(--ink); line-height: 1.55; }
+  .source-line { font-family: var(--mono); font-size: 11.5px; color: var(--muted); padding: 10px 0; border-top: 1px solid var(--rule); margin-top: 22px; }
+  .source-line a { color: var(--accent); }
+  .body-text { font-size: 14.5px; line-height: 1.65; color: var(--ink); }
+  .body-text p { margin: 0 0 14px 0; }
+  .comments { margin-top: 36px; padding: 18px 22px; background: #f7f7f7; border: 1px dashed var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">home</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/oracle/">oracle</a>
+    <a href="/mpc/">MPC</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/" class="active">shorts</a>
+    <a href="/movies/">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+  <p class="short-meta">Short 07 &middot; 2026-07-15 &middot; Term premium &middot; Strategy</p>
+  <h1 class="short-title">There is no simple recipe to beat the bond benchmark</h1>
+  <p class="short-sub">Can a Polish bond fund beat the TBSP total-return benchmark by timing its duration on the term premium? With a term premium fitted over the whole sample, a textbook carry rule, long duration when the premium is high, beats the index at an information ratio near 0.3. Re-estimate that same premium in real time and the identical rule loses money. The edge was look-ahead. The only honest signal left standing, a contrarian fade of the premium, fails a multiple-testing correction, loses two thirds of its return to trading costs, vanishes at monthly frequency, and does not replicate in the US or the euro area.</p>
+
+  <div class="body-text">
+    <p>A Polish open-end bond fund is measured against the TBSP total-return index, so the manager's job is to beat a portfolio of fixed duration. The textbook way to try is to lean on the term premium, the expected reward for holding interest-rate duration. When the premium is high, hold more duration. When it is low or negative, hold less. We tested exactly this on twenty years of Polish sovereign bonds, with a real, security-level portfolio benchmarked to TBSP and the term premium estimated from the fitted zero-coupon curve with the Adrian-Crump-Moench model. The result is a clean lesson in how a backtest fools you.</p>
+
+    <p>The trap is in the premium itself. An affine term-structure model is normally estimated once over the entire sample, so the premium it reports for, say, March 2014 already embeds what rates did afterwards. A rule conditioned on that number is quietly trading on the future. When we do what a careless backtest does, estimate the premium over the whole sample and go long duration when it is high, the strategy looks good, with an information ratio of 0.28 over our common window. When we re-estimate the premium recursively, refitting the model each month on past data only, the identical rule earns an information ratio of minus 0.07. The profitable direction reverses. The carry recipe was an artefact of look-ahead, and the figure below shows the two paths, the same rule on the same days, pulling apart.</p>
+  </div>
+
+  <div class="key-fig">
+    <h3 style="font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin:0 0 12px 0">Figure &middot; The same duration rule, full-sample premium versus real-time premium</h3>
+    <svg viewBox="0 0 660 300" width="100%" style="background:#fff">
+    <line x1="60" y1="230.9" x2="600" y2="230.9" stroke="#eeeeee" stroke-dasharray="2,3"/>
+    <text x="55" y="233.9" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">-20</text>
+    <line x1="60" y1="192.7" x2="600" y2="192.7" stroke="#eeeeee" stroke-dasharray="2,3"/>
+    <text x="55" y="195.7" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">-10</text>
+    <line x1="60" y1="154.5" x2="600" y2="154.5" stroke="#cfcfcf" stroke-dasharray="2,3"/>
+    <text x="55" y="157.5" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">+0</text>
+    <line x1="60" y1="116.4" x2="600" y2="116.4" stroke="#eeeeee" stroke-dasharray="2,3"/>
+    <text x="55" y="119.4" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">+10</text>
+    <line x1="60" y1="78.2" x2="600" y2="78.2" stroke="#eeeeee" stroke-dasharray="2,3"/>
+    <text x="55" y="81.2" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">+20</text>
+    <line x1="60" y1="40.0" x2="600" y2="40.0" stroke="#eeeeee" stroke-dasharray="2,3"/>
+    <text x="55" y="43.0" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">+30</text>
+    <line x1="60" y1="40" x2="60" y2="250" stroke="#999"/><line x1="60" y1="250" x2="600" y2="250" stroke="#999"/>
+    <text x="20" y="145" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a" transform="rotate(-90 20 145)">Cumulative return vs TBSP (%)</text>
+    <line x1="54.2" y1="250" x2="54.2" y2="254" stroke="#999"/><text x="54.2" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">2011</text>
+    <line x1="161.6" y1="250" x2="161.6" y2="254" stroke="#999"/><text x="161.6" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">2014</text>
+    <line x1="269.0" y1="250" x2="269.0" y2="254" stroke="#999"/><text x="269.0" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">2017</text>
+    <line x1="376.4" y1="250" x2="376.4" y2="254" stroke="#999"/><text x="376.4" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">2020</text>
+    <line x1="483.8" y1="250" x2="483.8" y2="254" stroke="#999"/><text x="483.8" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">2023</text>
+    <line x1="591.2" y1="250" x2="591.2" y2="254" stroke="#999"/><text x="591.2" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#6a6a6a">2026</text>
+    <path d="M60.0 154.8 L60.0 154.8 L63.0 152.1 L66.0 150.3 L69.0 147.0 L72.0 147.3 L75.0 143.6 L78.0 146.7 L81.0 142.9 L84.0 144.2 L87.0 143.1 L90.0 139.8 L93.0 139.5 L95.9 139.7 L98.9 139.5 L101.8 139.1 L104.9 139.8 L107.8 142.2 L110.9 142.4 L113.9 143.1 L116.8 144.7 L119.9 151.0 L122.8 154.6 L125.9 152.2 L128.9 150.5 L131.6 152.5 L134.7 160.3 L137.6 157.1 L140.7 149.7 L143.6 153.0 L146.6 149.2 L149.7 148.1 L152.6 151.6 L155.7 149.7 L158.6 150.6 L161.6 148.1 L164.7 149.8 L167.4 150.9 L170.5 153.1 L173.4 156.3 L176.4 159.2 L179.4 159.7 L182.4 163.0 L185.4 164.9 L188.4 169.7 L191.4 170.7 L194.4 169.5 L197.4 174.7 L200.4 173.0 L203.2 172.5 L206.2 170.2 L209.2 168.0 L212.2 165.4 L215.1 169.0 L218.2 169.2 L221.2 170.4 L224.2 173.2 L227.2 173.4 L230.1 171.8 L233.2 172.1 L236.2 174.0 L239.1 174.9 L242.1 173.5 L245.0 173.0 L248.1 174.7 L251.0 174.7 L254.0 176.0 L257.1 174.8 L260.0 173.3 L263.1 170.2 L266.0 169.9 L269.0 169.6 L272.1 169.8 L274.8 171.5 L277.9 172.0 L280.8 173.8 L283.8 173.9 L286.8 173.9 L289.8 174.7 L292.9 174.5 L295.8 174.7 L298.8 175.1 L301.8 175.5 L304.8 175.4 L307.9 176.1 L310.6 177.2 L313.6 177.5 L316.6 176.8 L319.6 177.1 L322.6 177.4 L325.6 177.7 L328.6 177.7 L331.6 178.2 L334.6 179.2 L337.5 181.1 L340.6 181.9 L343.6 180.5 L346.4 181.6 L349.4 180.5 L352.3 183.1 L355.4 184.7 L358.3 186.7 L361.4 189.1 L364.4 188.2 L367.3 188.9 L370.4 188.7 L373.3 187.9 L376.4 187.7 L379.4 190.8 L382.2 193.7 L385.3 196.6 L388.2 200.5 L391.3 199.8 L394.2 201.1 L397.2 200.3 L400.3 201.6 L403.2 203.5 L406.2 203.5 L409.2 203.7 L412.2 204.5 L415.3 201.8 L418.0 201.9 L421.0 201.5 L424.0 199.8 L427.0 200.5 L430.0 202.0 L433.0 201.5 L436.0 199.1 L439.0 191.8 L442.0 185.4 L445.0 182.4 L448.0 181.1 L451.0 180.6 L453.8 177.9 L456.8 181.9 L459.8 183.8 L462.8 181.2 L465.7 167.1 L468.8 168.4 L471.8 179.0 L474.8 187.4 L477.8 167.5 L480.7 169.9 L483.8 158.9 L486.8 164.2 L489.5 155.6 L492.6 152.9 L495.5 152.5 L498.6 148.1 L501.5 143.7 L504.5 144.9 L507.6 148.0 L510.5 142.8 L513.6 138.9 L516.5 135.2 L519.5 134.1 L522.6 134.4 L525.4 134.5 L528.5 136.0 L531.4 135.3 L534.4 134.0 L537.4 129.5 L540.4 129.0 L543.5 125.5 L546.4 132.7 L549.4 127.0 L552.4 129.3 L555.4 127.4 L558.4 125.2 L561.2 123.9 L564.2 116.7 L567.2 117.5 L570.2 117.4 L573.1 116.1 L576.2 116.2 L579.2 114.9 L582.2 113.1 L585.2 110.6 L588.1 110.2 L591.2 109.7 L594.2 107.3 L597.0 114.3 L600.0 110.4" fill="none" stroke="#c2522d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5,4"/>
+    <text x="604" y="113.4" font-family="JetBrains Mono, monospace" font-size="11" fill="#c2522d" font-weight="600">+12%</text>
+    <path d="M60.0 154.6 L60.0 154.6 L63.0 152.8 L66.0 151.9 L69.0 152.2 L72.0 152.2 L75.0 153.6 L78.0 151.3 L81.0 151.8 L84.0 149.5 L87.0 149.5 L90.0 151.1 L93.0 152.0 L95.9 152.1 L98.9 152.5 L101.8 151.8 L104.9 154.6 L107.8 157.8 L110.9 158.3 L113.9 159.6 L116.8 161.3 L119.9 167.3 L122.8 170.7 L125.9 168.4 L128.9 166.8 L131.6 168.7 L134.7 176.2 L137.6 173.1 L140.7 166.5 L143.6 168.5 L146.6 166.7 L149.7 166.3 L152.6 168.6 L155.7 167.7 L158.6 168.3 L161.6 167.8 L164.7 168.5 L167.4 168.9 L170.5 169.9 L173.4 171.5 L176.4 173.1 L179.4 173.4 L182.4 175.3 L185.4 176.3 L188.4 179.0 L191.4 179.6 L194.4 179.6 L197.4 182.2 L200.4 182.6 L203.2 182.6 L206.2 183.1 L209.2 183.0 L212.2 183.0 L215.1 184.2 L218.2 184.5 L221.2 185.0 L224.2 186.2 L227.2 186.5 L230.1 186.4 L233.2 186.6 L236.2 187.1 L239.1 187.7 L242.1 188.0 L245.0 188.2 L248.1 188.5 L251.0 188.8 L254.0 189.2 L257.1 189.4 L260.0 189.5 L263.1 190.2 L266.0 189.9 L269.0 190.2 L272.1 189.9 L274.8 189.3 L277.9 189.5 L280.8 189.2 L283.8 189.6 L286.8 189.8 L289.8 189.7 L292.9 190.3 L295.8 190.8 L298.8 190.1 L301.8 189.7 L304.8 190.3 L307.9 189.7 L310.6 189.2 L313.6 188.9 L316.6 189.4 L319.6 189.3 L322.6 189.2 L325.6 189.4 L328.6 189.6 L331.6 189.4 L334.6 189.0 L337.5 189.3 L340.6 189.4 L343.6 189.8 L346.4 189.9 L349.4 190.2 L352.3 190.3 L355.4 190.7 L358.3 191.0 L361.4 191.8 L364.4 191.6 L367.3 192.0 L370.4 192.2 L373.3 192.4 L376.4 192.3 L379.4 193.2 L382.2 192.8 L385.3 193.5 L388.2 193.9 L391.3 194.7 L394.2 194.5 L397.2 195.4 L400.3 195.6 L403.2 195.8 L406.2 196.1 L409.2 196.6 L412.2 197.1 L415.3 198.6 L418.0 198.7 L421.0 199.3 L424.0 199.8 L427.0 199.2 L430.0 198.8 L433.0 199.6 L436.0 201.4 L439.0 203.5 L442.0 204.0 L445.0 209.9 L448.0 211.0 L451.0 210.5 L453.8 217.0 L456.8 224.4 L459.8 225.7 L462.8 223.4 L465.7 209.1 L468.8 213.9 L471.8 223.5 L474.8 230.9 L477.8 213.5 L480.7 215.7 L483.8 206.2 L486.8 211.4 L489.5 204.0 L492.6 201.7 L495.5 201.5 L498.6 197.6 L501.5 194.0 L504.5 195.7 L507.6 198.5 L510.5 194.3 L513.6 191.0 L516.5 186.8 L519.5 186.7 L522.6 187.4 L525.4 187.7 L528.5 189.1 L531.4 188.7 L534.4 187.5 L537.4 183.5 L540.4 183.4 L543.5 180.3 L546.4 186.6 L549.4 181.7 L552.4 183.7 L555.4 182.0 L558.4 180.1 L561.2 178.9 L564.2 172.8 L567.2 173.6 L570.2 173.8 L573.1 172.7 L576.2 172.7 L579.2 171.6 L582.2 170.1 L585.2 167.8 L588.1 167.4 L591.2 167.0 L594.2 164.9 L597.0 171.2 L600.0 167.8" fill="none" stroke="#1f4e79" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="604" y="170.8" font-family="JetBrains Mono, monospace" font-size="11" fill="#1f4e79" font-weight="600">-3%</text>
+    <path d="M60.0 154.8 L60.0 154.8 L63.0 151.8 L66.0 149.7 L69.0 144.6 L72.0 146.0 L75.0 145.4 L78.0 150.3 L81.0 152.2 L84.0 152.7 L87.0 154.5 L90.0 149.0 L93.0 147.2 L95.9 148.4 L98.9 150.2 L101.8 151.8 L104.9 149.0 L107.8 145.5 L110.9 146.4 L113.9 143.5 L116.8 141.3 L119.9 133.4 L122.8 129.5 L125.9 136.1 L128.9 134.4 L131.6 137.3 L134.7 132.5 L137.6 131.2 L140.7 123.7 L143.6 130.1 L146.6 126.5 L149.7 127.2 L152.6 125.8 L155.7 126.3 L158.6 128.8 L161.6 127.9 L164.7 131.5 L167.4 133.6 L170.5 132.2 L173.4 126.7 L176.4 124.6 L179.4 128.5 L182.4 129.5 L185.4 131.3 L188.4 137.0 L191.4 138.5 L194.4 135.0 L197.4 128.5 L200.4 127.2 L203.2 123.7 L206.2 120.5 L209.2 123.6 L212.2 126.6 L215.1 127.3 L218.2 125.0 L221.2 124.0 L224.2 126.6 L227.2 126.7 L230.1 125.6 L233.2 125.2 L236.2 126.2 L239.1 127.7 L242.1 127.2 L245.0 127.0 L248.1 131.1 L251.0 131.1 L254.0 129.9 L257.1 130.7 L260.0 130.6 L263.1 125.9 L266.0 129.9 L269.0 131.9 L272.1 132.7 L274.8 129.4 L277.9 128.9 L280.8 129.6 L283.8 130.5 L286.8 130.4 L289.8 131.2 L292.9 132.1 L295.8 132.9 L298.8 133.2 L301.8 135.0 L304.8 135.8 L307.9 136.4 L310.6 137.5 L313.6 137.8 L316.6 138.5 L319.6 139.6 L322.6 140.3 L325.6 141.1 L328.6 141.1 L331.6 141.6 L334.6 138.8 L337.5 135.8 L340.6 135.9 L343.6 135.4 L346.4 135.9 L349.4 135.8 L352.3 135.2 L355.4 132.3 L358.3 128.8 L361.4 124.2 L364.4 126.1 L367.3 125.9 L370.4 127.3 L373.3 128.9 L376.4 130.3 L379.4 126.6 L382.2 140.2 L385.3 145.2 L388.2 149.6 L391.3 148.9 L394.2 149.0 L397.2 149.8 L400.3 149.9 L403.2 149.4 L406.2 149.3 L409.2 148.4 L412.2 148.0 L415.3 148.7 L418.0 150.0 L421.0 149.3 L424.0 148.2 L427.0 147.6 L430.0 149.1 L433.0 150.7 L436.0 149.1 L439.0 143.6 L442.0 136.7 L445.0 132.3 L448.0 133.3 L451.0 133.4 L453.8 125.2 L456.8 115.7 L459.8 122.2 L462.8 112.2 L465.7 100.7 L468.8 91.8 L471.8 82.9 L474.8 68.6 L477.8 56.4 L480.7 52.7 L483.8 65.2 L486.8 72.8 L489.5 73.7 L492.6 70.3 L495.5 69.6 L498.6 68.4 L501.5 63.5 L504.5 65.3 L507.6 65.6 L510.5 67.3 L513.6 62.8 L516.5 57.1 L519.5 60.4 L522.6 58.7 L525.4 58.9 L528.5 58.7 L531.4 58.6 L534.4 59.6 L537.4 53.3 L540.4 54.3 L543.5 51.9 L546.4 46.8 L549.4 51.0 L552.4 51.7 L555.4 52.6 L558.4 50.0 L561.2 54.7 L564.2 52.2 L567.2 56.4 L570.2 59.5 L573.1 58.7 L576.2 56.9 L579.2 57.1 L582.2 56.0 L585.2 52.9 L588.1 54.2 L591.2 54.8 L594.2 56.5 L597.0 59.8 L600.0 64.5" fill="none" stroke="#2e7d32" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="604" y="67.5" font-family="JetBrains Mono, monospace" font-size="11" fill="#2e7d32" font-weight="600">+24%</text>
+    <g font-family="-apple-system,sans-serif" font-size="10.5" fill="#3a3a3a">
+    <line x1="74" y1="20" x2="96" y2="20" stroke="#c2522d" stroke-width="2.2" stroke-dasharray="4,3"/><text x="102" y="23">Full-sample premium, value rule</text>
+    <line x1="74" y1="35" x2="96" y2="35" stroke="#1f4e79" stroke-width="2.2"/><text x="102" y="38">Real-time premium, value rule</text>
+    <line x1="74" y1="50" x2="96" y2="50" stroke="#2e7d32" stroke-width="2.2"/><text x="102" y="53">Real-time momentum-contrarian</text>
+    </g></svg>
+    <p class="cap">Cumulative return relative to TBSP, common window March 2011 to April 2026. The full-sample and real-time value lines are the identical rule, long duration when the term premium is high, differing only in the information set used to estimate the premium. The full-sample version drifts up, the honest real-time version drifts down. The real-time momentum-contrarian rule is the best honest configuration we could find.</p>
+  </div>
+
+  <table class="key-tab">
+    <thead><tr><th class="lbl">Duration rule (same days, before costs)</th><th>Full-sample premium</th><th>Real-time premium</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">Value: long duration when premium high</td><td>IR +0.28</td><td>IR &minus;0.07</td></tr>
+      <tr><td class="lbl">Momentum-contrarian: fade recent change</td><td>IR +0.45</td><td>IR +0.52</td></tr>
+    </tbody>
+  </table>
+
+  <div class="body-text">
+    <p>One signal does survive the honesty test. A contrarian rule that fades the recent change in the premium, shortening duration after it has risen and lengthening after it has fallen, earns a positive real-time information ratio of about 0.5 before costs, and its sign does not depend on look-ahead. This is the economically sensible survivor, consistent with mean reversion in the premium. But calling it a recipe would be the second mistake, because it fails on every count that matters once we stop flattering it.</p>
+  </div>
+
+  <table class="key-tab">
+    <thead><tr><th class="lbl">The honest survivor, put through four checks</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">Best of 54 pre-registered rules, gross information ratio</td><td>0.53</td></tr>
+      <tr><td class="lbl">Significance after the search (Hansen SPA <em>p</em>)</td><td>0.47</td></tr>
+      <tr><td class="lbl">Information ratio after bid-ask trading costs</td><td>0.21</td></tr>
+      <tr><td class="lbl">Same idea at monthly frequency (Poland)</td><td>&asymp; 0</td></tr>
+      <tr><td class="lbl">Same idea in the United States / euro area</td><td>negative / &asymp; 0</td></tr>
+    </tbody>
+  </table>
+
+  <div class="body-text">
+    <p>Read down that table and the case dissolves. The rule is the best of fifty-four configurations we searched, and once a Superior Predictive Ability correction charges for that search its p-value is 0.47, indistinguishable from luck. It turns the book over about thirty-eight times a year, so the observed bid-ask spread eats two thirds of the gross return and the information ratio falls to 0.21. Run the same idea at monthly rather than daily frequency and the Polish edge collapses to zero, which already says the daily result was a high-frequency quirk rather than a risk premium. And when we carry the rule to the United States and euro-area curves, the contrarian sign is absent or reversed. A genuine source of return would travel across frequency and across markets. This one does neither.</p>
+  </div>
+
+  <div class="practitioner-box">
+    <div class="pl-label">What this means for practitioners</div>
+    <div class="pl-text">There is no simple term-premium recipe for beating TBSP. The clean carry backtest that seems to work is built on a full-sample premium that knows the future, and it reverses the instant you estimate the premium honestly. The one signal that survives that test still does not survive the breadth of the search, realistic trading costs, a change of frequency, or a change of market. Treat any duration-timing rule that leans on a published, full-sample term premium as guilty until proven innocent, and demand to see the real-time estimate, the cost drag and the out-of-sample replication before believing it.</div>
+  </div>
+
+  <div class="source-line">
+    Underlying analysis &middot; Dec, M. (2026). <em>Term-premium duration timing and the look-ahead trap: real-time evidence from the Polish sovereign bond market</em>. Working draft. Recursive ACM term premia on the fitted Polish zero curve, a security-level TBSP-benchmarked book, a stationary block bootstrap with a Hansen (2005) SPA correction, and US and euro-area curve corroboration.
+  </div>
+
+  <h3 style="font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);margin:40px 0 4px 0">Comments</h3>
+  <p style="font-family:var(--mono);font-size:11px;color:var(--muted);margin:0 0 16px 0">Comments are GitHub Discussions on the public yieldcartography/yield-cartography_site repo. Sign in with GitHub to post.</p>
+  <script src="https://giscus.app/client.js"
+          data-repo="yieldcartography/yield-cartography_site"
+          data-repo-id="R_kgDOSZHQ8w"
+          data-category="General"
+          data-category-id="DIC_kwDOSZHQ884C8wQa"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="preferred_color_scheme"
+          data-lang="en"
+          crossorigin="anonymous"
+          async>
+  </script>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright">yieldcartography.com &middot; Marcin Dec &middot; all data and code released for academic and personal use &middot; last build 2026-07-15</div>
+</footer>
+
+</body>
+</html>
