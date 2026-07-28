@@ -1,5 +1,5 @@
 /*
-  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: frame-ancestors 'self'
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Cache-Control: public, max-age=600
@@ -10,3 +10,18 @@
 /data/*
   Cache-Control: public, max-age=60
   Content-Type: application/json; charset=utf-8
+
+# --- Embeddable charts: allow framing from GRAPE only ---
+# GRAPE domain confirmed 2026-06-26: grape.org.pl (www kept as alias).
+/curves/*
+  Content-Security-Policy: frame-ancestors 'self' https://grape.org.pl https://www.grape.org.pl
+
+/term-premia/*
+  Content-Security-Policy: frame-ancestors 'self' https://grape.org.pl https://www.grape.org.pl
+
+/oracle/*
+  Content-Security-Policy: frame-ancestors 'self' https://grape.org.pl https://www.grape.org.pl
+
+/embed.js
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: public, max-age=300

@@ -534,5 +534,27 @@ function drawCorrHeatmap(divId, c, low, high){
 }
 </script>
 
+<!-- YC embed mode (activated by ?embed=1) -->
+<style>
+  body.yc-embed .site-header,
+  body.yc-embed .site-footer,
+  body.yc-embed details.intro { display:none !important; }
+  body.yc-embed { background:#fff; }
+  body.yc-embed main { max-width:none; margin:0; padding:10px 14px 16px; }
+</style>
+<script>
+(function(){
+  if (new URLSearchParams(location.search).get('embed') !== '1') return;
+  var b = document.body; b.classList.add('yc-embed');
+  function postH(){
+    var h = Math.ceil(b.getBoundingClientRect().height);
+    if (window.parent !== window) parent.postMessage({ type:'yc-embed-height', height:h }, '*');
+  }
+  window.addEventListener('load', postH);
+  if (window.ResizeObserver) new ResizeObserver(postH).observe(b);
+  setInterval(postH, 1200);
+})();
+</script>
+
 </body>
 </html>
