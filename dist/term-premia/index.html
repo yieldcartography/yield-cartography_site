@@ -56,6 +56,9 @@
   details.intro > summary { cursor: pointer; font-family: var(--mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
   details.intro p, details.intro li { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0; }
   details.intro h4 { margin: 12px 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); font-family: var(--mono); }
+  .stat .lrer { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 6px; display: flex; align-items: center; gap: 5px; }
+  .stat .lrer svg { flex: 0 0 auto; }
+  .stat .lrer b { color: var(--ink); font-weight: 600; }
   details.intro table.glossary { border-collapse: collapse; width: 100%; margin: 4px 0 6px 0; }
   details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
   details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 110px; white-space: nowrap; }
@@ -89,9 +92,9 @@
 
   <div class="stats" style="margin-top:18px">
     <div class="stat"><div class="label">Sample period</div><div class="value" id="stat-period">—</div><div class="delta">21 years, weekly</div></div>
-    <div class="stat"><div class="label">Latest 10y TP (BRW PL)</div><div class="value" id="stat-tp10-brw">—</div><div class="delta" id="stat-tp10-brw-d">basis points</div></div>
-    <div class="stat"><div class="label">Latest 10y TP (US ACM)</div><div class="value" id="stat-tp10-us">—</div><div class="delta" id="stat-tp10-us-d">cross-country benchmark</div></div>
-    <div class="stat"><div class="label">Latest 10y TP (EA ACM)</div><div class="value" id="stat-tp10-ea">—</div><div class="delta" id="stat-tp10-ea-d">cross-country benchmark</div></div>
+    <div class="stat"><div class="label">Latest 10y TP (BRW PL)</div><div class="value" id="stat-tp10-brw">—</div><div class="delta" id="stat-tp10-brw-d">basis points</div><div class="lrer" id="lrer-pl" style="display:none"><svg viewBox="0 0 15 11" width="15" height="11"><rect width="15" height="5.5" fill="#f5f5f5" stroke="#d0d0d0" stroke-width="0.5"/><rect y="5.5" width="15" height="5.5" fill="#dc143c"/></svg> long-run E[r]: <b id="lrer-pl-v"></b></div></div>
+    <div class="stat"><div class="label">Latest 10y TP (US ACM)</div><div class="value" id="stat-tp10-us">—</div><div class="delta" id="stat-tp10-us-d">cross-country benchmark</div><div class="lrer" id="lrer-us" style="display:none"><svg viewBox="0 0 15 11" width="15" height="11"><rect width="15" height="11" fill="#b22234"/><g fill="#fff"><rect y="1.6" width="15" height="1.6"/><rect y="4.7" width="15" height="1.6"/><rect y="7.9" width="15" height="1.6"/></g><rect width="6.5" height="5.5" fill="#3c3b6e"/></svg> long-run E[r]: <b id="lrer-us-v"></b></div></div>
+    <div class="stat"><div class="label">Latest 10y TP (EA ACM)</div><div class="value" id="stat-tp10-ea">—</div><div class="delta" id="stat-tp10-ea-d">cross-country benchmark</div><div class="lrer" id="lrer-ea" style="display:none"><svg viewBox="0 0 15 11" width="15" height="11"><rect width="15" height="11" fill="#003399"/><g fill="#ffcc00"><circle cx="7.5" cy="2.6" r="0.6"/><circle cx="10.1" cy="3.7" r="0.6"/><circle cx="11.2" cy="5.5" r="0.6"/><circle cx="10.1" cy="7.3" r="0.6"/><circle cx="7.5" cy="8.4" r="0.6"/><circle cx="4.9" cy="7.3" r="0.6"/><circle cx="3.8" cy="5.5" r="0.6"/><circle cx="4.9" cy="3.7" r="0.6"/></g></svg> long-run E[r]: <b id="lrer-ea-v"></b></div></div>
     <div class="stat"><div class="label">Latest 10y nominal PL</div><div class="value" id="stat-y10">—</div><div class="delta">NSS-fitted</div></div>
   </div>
 
@@ -104,6 +107,7 @@
       <tr><td class="code">ACM</td><td>Adrian-Crump-Moench five-factor model. Pricing factors are the first five NSS principal components.</td></tr>
       <tr><td class="code">BRW</td><td>ACM with the Bauer-Rudebusch-Wu bias correction; iterated bootstrap with common random numbers and Kilian shrinkage on the risky-recursion VAR.</td></tr>
       <tr><td class="code">rf path</td><td>Expected average short-rate path E<sub>t</sub>[(1/n)&sum;r<sub>t+i</sub>] implied by the affine model.</td></tr>
+      <tr><td class="code">long-run E[r]</td><td>VAR-implied long-run short rate: the level the expected short-rate path converges to as the horizon grows. With demeaned pricing factors and a VAR(1) without intercept this equals the annualized &delta;<sub>0</sub>, the unconditional mean of the model short rate over the estimation window. Common to ACM and BRW (the bias correction changes the speed of convergence, not the limit), nominal and continuously compounded, so not an r-star estimate. Refreshed with each model re-estimation.</td></tr>
       <tr><td class="code">% rank</td><td>Where the latest observation sits in the windowed distribution: 0% = historical minimum, 50% = median, 100% = historical maximum.</td></tr>
       <tr><td class="code">HAC</td><td>Heteroskedasticity- and autocorrelation-consistent (Newey-West) standard errors used for any t-statistics on this page.</td></tr>
       <tr><td class="code">PCA</td><td>Principal-components decomposition of the NSS curve cross-section; the first three loadings recover level, slope and curvature.</td></tr>
@@ -374,6 +378,16 @@ function initStats(){
   const y10Prev = yip >= 0 ? y10series.y10[yip] : null;
   const y10PrevDate = yip >= 0 ? y10series.dates[yip] : '';
   document.getElementById('stat-y10').innerHTML = pctTileHtml(y10series.y10[yi], y10Prev, y10PrevDate);
+
+  // VAR-implied long-run short rate lines (annualized delta0 per market).
+  // Rendered only when the build exported the value, no placeholders.
+  const lrer = (DATA.meta && DATA.meta.long_run_er) ? DATA.meta.long_run_er : {};
+  [['pl','lrer-pl'],['us','lrer-us'],['ea','lrer-ea']].forEach(([k, id])=>{
+    if (lrer[k] !== undefined && lrer[k] !== null){
+      document.getElementById(id + '-v').textContent = lrer[k].toFixed(2) + '%';
+      document.getElementById(id).style.display = 'flex';
+    }
+  });
 }
 
 function bindWinPills(){

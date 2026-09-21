@@ -326,6 +326,7 @@ def build():
             'n_isins_in_history':  int(len(all_isins)),
             'build_ts':            dt.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
             'schema_version':      'v7',
+            'long_run_er':         _long_run_er_meta(),
         },
         'tenor_labels':  TENOR_LABELS,
         'tenor_years':   SNAP_TENORS_FULL,
@@ -1505,7 +1506,32 @@ def _eh_macro_r2_by_h():
     }
 
 
-def _fit_xcountry_acm(zero_csv, cadence='monthly'):
+def _long_run_er_meta():
+    """PL delta0 from the persisted acm_model.npz, US/EA from LONG_RUN_ER
+    (filled during the cross-country fits). Values in pct per annum, cc.
+    Any market whose source is unavailable is simply absent from the dict
+    and the page hides its line, no placeholder values ever."""
+    out = {}
+    npz = YIELDS_DIR / 'acm_model.npz'
+    if npz.exists():
+        try:
+            m = np.load(npz, allow_pickle=True)
+            out['pl'] = round(float(m['delta0']) * 12.0 * 100.0, 2)
+        except Exception as e:
+            print(f'  WARN long_run_er: could not read acm_model.npz ({e})', file=__import__("sys").stderr)
+    out.update(LONG_RUN_ER)
+    return out
+
+
+# VAR-implied long-run short rate (annualized delta0, pct) per market.
+# Filled by _fit_xcountry_acm for US/EA and by the meta builder for PL.
+# With demeaned PC factors and a VAR(1) without intercept, delta0 is the
+# level the expected short-rate path converges to (the unconditional mean
+# of the model short rate over the estimation window).
+LONG_RUN_ER = {}
+
+
+def _fit_xcountry_acm(zero_csv, cadence='monthly', country=None):
     """Fit ACM 5-factor model on a daily/monthly zero panel, return DataFrame with
     term-premia at 1y, 2y, 3y, 5y, 7y, 10y. Reuses acm_tp.estimate_acm
     and acm_tp.project_daily so the methodology matches the PL fit.
@@ -1541,6 +1567,8 @@ def _fit_xcountry_acm(zero_csv, cadence='monthly'):
 
     model = acm_tp.estimate_acm(Y_monthly, TTM, K=5, min_pca_tenor_months=3,
                                 dates_monthly=monthly_df.index)
+    if country is not None:
+        LONG_RUN_ER[country] = round(float(model.delta0) * 12.0 * 100.0, 2)
     daily_out = acm_tp.project_daily(Y_full, model)
     tp = daily_out['term_premia_cc']  # cc, decimal
 
@@ -1573,8 +1601,8 @@ def _build_xcountry_tp(us_csv, ea_csv, brw):
     pl_m['date'] = pl_m['m'].astype(str)
 
     # US / EA ACM fits
-    us_m = _fit_xcountry_acm(us_csv) if us_csv.exists() else None
-    ea_m = _fit_xcountry_acm(ea_csv) if ea_csv.exists() else None
+    us_m = _fit_xcountry_acm(us_csv, country='us') if us_csv.exists() else None
+    ea_m = _fit_xcountry_acm(ea_csv, country='ea') if ea_csv.exists() else None
     if us_m is not None: print(f'  US ACM fit: {len(us_m)} months')
     if ea_m is not None: print(f'  EA ACM fit: {len(ea_m)} months')
 
