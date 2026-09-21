@@ -450,6 +450,16 @@ def _build_liquidity(bond):
 def _build_eh():
     """Bundle EH-test outputs into a JSON-friendly structure."""
     out = {}
+    # Live sample vintage written by eh_refresh.py (monthly). Absent on a
+    # box that has never run the refresh, in which case the page keeps
+    # its static paper-sample label.
+    state = YIELDS_DIR / 'eh_refresh_state.json'
+    if state.exists():
+        try:
+            import json as _json
+            out['sample_end'] = _json.loads(state.read_text()).get('last_run_month')
+        except Exception:
+            pass
     # FB1 / FB2 — main results (PL)
     for tag, fn in (('fb1', 'eh_fb1_results.csv'), ('fb2', 'eh_fb2_results.csv')):
         df = _try_read(fn)

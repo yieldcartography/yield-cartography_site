@@ -81,12 +81,12 @@
 <main>
 
   <h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Expectations hypothesis — cross-market evidence</h1>
-  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">The pure expectations hypothesis (PEH) of the term structure fails on the Polish sovereign curve, but the way it fails is very different from the US and euro-area benchmarks. The figures below reproduce the headline empirical results of the EH paper.</p>
+  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">The pure expectations hypothesis (PEH) of the term structure fails on the Polish sovereign curve, but the way it fails is very different from the US and euro-area benchmarks. The figures below run the EH paper's tests, extended monthly to the current sample.</p>
   <a class="short-link" href="/shorts/eh-three-ways/">Read the short — "The PEH dies in three different ways"</a>
 
   <div class="stats" style="margin-top:18px">
     <div class="stat"><div class="label">Markets</div><div class="value">PL · US · EA</div><div class="delta">three sovereign panels</div></div>
-    <div class="stat"><div class="label">Sample</div><div class="value">2005-01 → 2026-04</div><div class="delta">monthly data</div></div>
+    <div class="stat"><div class="label">Sample</div><div class="value" id="stat-eh-sample">2005-01 → 2026-04</div><div class="delta">monthly data</div></div>
     <div class="stat"><div class="label">FB1 (h,n) pairs / mkt</div><div class="value">90</div><div class="delta">9 horizons × 10 maturities</div></div>
     <div class="stat"><div class="label">EA NW rejections (FB1)</div><div class="value" id="stat-ea-rej">—</div><div class="delta">asymptotic NW, FB1</div></div>
     <div class="stat"><div class="label">EA bootstrap rejections</div><div class="value" id="stat-ea-rej-boot">—</div><div class="delta">wild block bootstrap, FB1</div></div>
@@ -94,6 +94,7 @@
 
   <details class="intro">
     <summary>How to read this page (methodology and glossary)</summary>
+    <p><b>Live sample conventions.</b> The tests re-run once each month as a new month closes in the fitted-curve panel, so coefficients, p-values and the rejection-count tiles drift legitimately as the sample grows. The IREF paper's frozen sample is 2005-01 to 2026-04 and its result files are archived unchanged; running any test script standalone reproduces the paper exactly. Bootstrap inference uses fixed per-cell seeds, so identical data always yields identical p-values. The newest month enters as its latest available observation until the month closes.</p>
     <p>The pure expectations hypothesis (PEH) says that long yields are unbiased averages of expected future short rates, so any term premium is zero in expectation. Three classical regression batteries test this on a common monthly panel: the Fama-Bliss type-1 cross-sectional slope, the Campbell-Shiller log-yield-spread slope, and the Cochrane-Piazzesi forward-rate single-factor projection. We run each one on PL, US and EA on the same nine forecast horizons by ten maturities grid so the cross-market comparison is on identical footing. Inference is reported under both asymptotic Newey-West HAC and a wild block bootstrap (Bauer-Hamilton 2018) so the reader can see how much each rejection rests on the asymptotic approximation.</p>
     <h4>Glossary</h4>
     <table class="glossary">
@@ -226,6 +227,9 @@ async function load(){
   const r = await fetch('/data/yields.json?v=7');
   DATA = await r.json();
   showBuildBadge();
+  if (DATA.eh && DATA.eh.sample_end){
+    document.getElementById('stat-eh-sample').textContent = '2005-01 → ' + DATA.eh.sample_end;
+  }
   initStats();
   bindCsvButtons();
   drawAll();
