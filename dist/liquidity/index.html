@@ -724,7 +724,7 @@ function drawBasChart(liq){
   const tB = provTail(liq, dates, med, PALETTE.accent); if (tB) traces.push(tB);
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:'bid-ask spread (bp)', font:FONT_MONO };
-  lay.legend = { orientation:'h', y:1.08, x:0, font:FONT_MONO };
+  lay.showlegend = false;
   Plotly.react('basChart', traces, lay, CFG);
 }
 
@@ -736,6 +736,7 @@ function drawZtdChart(liq){
   const tZ = provTail(liq, dates, ztd, PALETTE.salmon); if (tZ) traces.push(tZ);
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:'zero-trading-day share (%)', font:FONT_MONO };
+  lay.showlegend = false;
   Plotly.react('ztdChart', traces, lay, CFG);
 }
 
@@ -747,6 +748,7 @@ function drawCzChart(liq){
   const tC = provTail(liq, dates, cz, PALETTE.accent); if (tC) traces.push(tC);
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:'composite liquidity z-score', font:FONT_MONO };
+  lay.showlegend = false;
   lay.shapes = [{ type:'line', xref:'paper', x0:0, x1:1, y0:0, y1:0, line:{color:'#bbb',width:1,dash:'dot'} }];
   Plotly.react('czChart', traces, lay, CFG);
 }
@@ -759,6 +761,7 @@ function drawSimple(divId, liq, key, label, color){
   const t = provTail(liq, dates, vals, color); if (t) traces.push(t);
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:label, font:FONT_MONO };
+  lay.showlegend = false;
   Plotly.react(divId, traces, lay, CFG);
 }
 
