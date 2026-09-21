@@ -1166,6 +1166,27 @@ def _build_freshness(bases, nss, acm, brw):
         except Exception:
             pass
 
+    # ---- NBP MPC minutes corpus (feeds the MPC tab + Oracle tone leg) ---
+    # Latest meeting date from the extract-maintained MPC_NBP/index.csv.
+    # Minutes publish roughly three weeks after each decision meeting,
+    # refreshed by nbp_minutes_autofetch (Step -1.4) or a manual PDF drop.
+    mpc_idx = YIELDS_DIR / 'MPC_NBP' / 'index.csv'
+    if mpc_idx.exists():
+        try:
+            mpc_df = pd.read_csv(mpc_idx, parse_dates=['date'])
+            mpc_df = mpc_df.dropna(subset=['date'])
+            if not mpc_df.empty:
+                fresh['mpc_minutes'] = {
+                    'last_obs': mpc_df['date'].max().strftime('%Y-%m-%d'),
+                    'source':   'MPC_NBP corpus (nbp.pl PDFs, autofetch + manual drop)',
+                    'detail':   (f'{len(mpc_df):,} minutes since '
+                                 f'{mpc_df["date"].min().strftime("%Y-%m")}, tone and topic '
+                                 f'series behind the MPC tab and the Oracle tone leg; '
+                                 f'published about three weeks after each decision meeting'),
+                }
+        except Exception:
+            pass
+
     # ---- FRB GSW (United States) ---------------------------------------
     # Reads the last data row of feds200628.csv (header narrative on
     # lines 1-9, real CSV header on line 10). Refreshed daily by
