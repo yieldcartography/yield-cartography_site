@@ -150,7 +150,10 @@ def build():
 
     ts = {
         'dates': nss_w['tradedate'].dt.strftime('%Y-%m-%d').tolist(),
+        'y1': safe_list(nss_w['y1']),
         'y2': safe_list(nss_w['y2']), 'y5': safe_list(nss_w['y5']), 'y10': safe_list(nss_w['y10']),
+        'rf1_brw_pct': safe_list(brw_w['y_rf_bc_1y_pct']),
+        'rf2_brw_pct': safe_list(brw_w['y_rf_bc_2y_pct']),
         'tp10_acm_bp': safe_list(acm_w['tp_10y_bp']), 'tp10_brw_bp': safe_list(brw_w['tp_bc_10y_bp']),
         'tp7_acm_bp':  safe_list(acm_w['tp_7y_bp']),  'tp7_brw_bp':  safe_list(brw_w['tp_bc_7y_bp']),
         'tp5_acm_bp':  safe_list(acm_w['tp_5y_bp']),  'tp5_brw_bp':  safe_list(brw_w['tp_bc_5y_bp']),
@@ -174,6 +177,7 @@ def build():
     nss_d = nss.sort_values('tradedate').reset_index(drop=True)
     ts_daily = {
         'dates': nss_d['tradedate'].dt.strftime('%Y-%m-%d').tolist(),
+        'y1':    safe_list(nss_d['y1']),
         'y2':    safe_list(nss_d['y2']),
         'y5':    safe_list(nss_d['y5']),
         'y10':   safe_list(nss_d['y10']),

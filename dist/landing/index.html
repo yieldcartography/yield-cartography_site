@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yieldcartography — mapping less-liquid sovereign bond markets</title>
+<meta name="description" content="Interactive yield-curve, term-premium, liquidity, and expectations-hypothesis dashboards for less-liquid sovereign bond markets, with a focus on Polish sovereigns and a comparative international view.">
+<link rel="stylesheet" href="/assets/style.css?v=7">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://yieldcartography.com/landing/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yieldcartography — mapping less-liquid sovereign bond markets">
+<meta property="og:description" content="Open daily-refreshed yield curves, term premia, microstructure liquidity, and expectations-hypothesis tests for less-liquid sovereign bond markets, anchored on the Polish PLN curve.">
+<meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yieldcartography.com/">
+<meta property="og:site_name" content="yieldcartography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="yieldcartography — mapping less-liquid sovereign bond markets">
+<meta name="twitter:description" content="Open daily-refreshed yield curves, term premia, microstructure liquidity, and expectations-hypothesis tests for less-liquid sovereign bond markets, anchored on the Polish PLN curve.">
+<meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<style>
+  .card { position: relative; }
+  .card .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+  .card .card-label { margin: 0; }
+  .card .card-icon { flex-shrink: 0; opacity: 0.92; }
+  .card:hover .card-icon { opacity: 1; }
+</style>
+<script src="/assets/promo.js?v=2" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/landing/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <nav>
+    <a href="/">board</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/oracle/">oracle</a>
+    <a href="/mpc/">MPC</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/total-return/">total return</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/">shorts</a>
+    <a href="/movies/">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main class="narrow">
+
+  <section class="hero">
+    <h1>Mapping <span class="accent">less-liquid</span> sovereign bond markets.</h1>
+    <p class="lede">Interactive yield-curve, term-premium, liquidity, and expectations-hypothesis dashboards built on a 21-year daily panel of Polish sovereigns, with comparative views against US and euro-area benchmarks. Open methodology, publicly available data, frequent refreshes.</p>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">Explore</h2>
+    <div class="cards">
+      <a class="card" href="/curves/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <line x1="4" y1="32" x2="36" y2="32" stroke="#d8d8d8" stroke-width="1"/>
+            <path d="M 4 28 Q 12 18 20 14 T 36 8" fill="none" stroke="#1f4e79" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="8" cy="25" r="2" fill="#888"/>
+            <circle cx="15" cy="18" r="3" fill="#1f4e79"/>
+            <circle cx="24" cy="12" r="3.5" fill="#c2522d"/>
+            <circle cx="33" cy="9" r="2.5" fill="#c2522d"/>
+          </svg>
+        </div>
+        <h3>Yield curves</h3>
+        <p>Daily NSS-fitted zero-coupon yield curves on the Polish sovereign panel from 2005 to today. Interactive snapshot viewer, bond bubbles, 1y forwards, NBP forecasters, US and euro-area comparison, and PCA loadings.</p>
+      </a>
+      <a class="card" href="/term-premia/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <path d="M 4 24 Q 14 14 36 10 L 36 22 Q 14 22 4 24 Z" fill="#1f4e79" fill-opacity="0.13"/>
+            <path d="M 4 24 Q 14 14 36 10" fill="none" stroke="#1f4e79" stroke-width="2" stroke-linecap="round"/>
+            <path d="M 4 24 Q 14 22 36 22" fill="none" stroke="#c2522d" stroke-width="1.7" stroke-linecap="round" stroke-dasharray="2.2,2.2"/>
+          </svg>
+        </div>
+        <h3>Term premia</h3>
+        <p>Adrian-Crump-Moench and Bauer-Rudebusch-Wu decompositions across 1y, 2y, 5y, 10y horizons. Cross-country term-spread comparison and full ACM-vs-BRW correlation heatmap.</p>
+      </a>
+      <a class="card" href="/oracle/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <path d="M 14 33 Q 20 30.5 26 33 L 24.5 35.5 L 15.5 35.5 Z" fill="#1f4e79" fill-opacity="0.30"/>
+            <circle cx="20" cy="18" r="12" fill="#1f4e79" fill-opacity="0.10" stroke="#1f4e79" stroke-width="1.8"/>
+            <path d="M 20 6 A 12 12 0 0 1 20 30 A 8 12 0 0 0 20 6 Z" fill="#1f4e79" fill-opacity="0.15"/>
+            <circle cx="15.5" cy="13" r="2.3" fill="#c2522d" stroke="#fff" stroke-width="0.8"/>
+          </svg>
+        </div>
+        <h3>Oracle</h3>
+        <p>The next NBP move, priced and parsed: the ACM and BRW bias-corrected market path, the professional-forecaster survey, and the lexical tone of the MPC minutes, blended into one next-move gauge with two decades of monthly history behind a slider.</p>
+      </a>
+      <a class="card" href="/mpc/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <line x1="4"  y1="22" x2="9"  y2="22" stroke="#1f4e79" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="4"  y1="25" x2="8"  y2="25" stroke="#888"    stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="4"  y1="28" x2="10" y2="28" stroke="#2e7d32" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="14" y1="19" x2="20" y2="19" stroke="#1f4e79" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="14" y1="22" x2="18" y2="22" stroke="#888"    stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="14" y1="25" x2="21" y2="25" stroke="#2e7d32" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="14" y1="28" x2="17" y2="28" stroke="#888"    stroke-width="1.0" stroke-linecap="round"/>
+            <line x1="25" y1="14" x2="33" y2="14" stroke="#c2522d" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="25" y1="17" x2="31" y2="17" stroke="#c2522d" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="25" y1="20" x2="34" y2="20" stroke="#1f4e79" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="25" y1="23" x2="29" y2="23" stroke="#888"    stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="25" y1="26" x2="32" y2="26" stroke="#1f4e79" stroke-width="1.3" stroke-linecap="round"/>
+            <line x1="3"   y1="33" x2="37"  y2="33" stroke="#d8d8d8" stroke-width="1"/>
+            <line x1="6.5" y1="33" x2="6.5" y2="35.5" stroke="#aaa"  stroke-width="0.6"/>
+            <line x1="17"  y1="33" x2="17"  y2="35.5" stroke="#aaa"  stroke-width="0.6"/>
+            <line x1="29"  y1="33" x2="29"  y2="35.5" stroke="#aaa"  stroke-width="0.6"/>
+          </svg>
+        </div>
+        <h3>MPC minutes</h3>
+        <p>Text-mining of every NBP MPC decision-making meeting minute since April 2007. Hawkish-dovish tone with rate path, eight macro topics, year-by-year word clouds, pairwise meeting similarity, and an interactive term tracker.</p>
+      </a>
+      <a class="card" href="/liquidity/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <circle cx="8"  cy="30" r="2"   fill="#1f4e79" opacity="0.45"/>
+            <circle cx="14" cy="22" r="2.5" fill="#1f4e79" opacity="0.65"/>
+            <circle cx="20" cy="28" r="2"   fill="#1f4e79" opacity="0.55"/>
+            <circle cx="26" cy="18" r="3"   fill="#c2522d" opacity="0.75"/>
+            <circle cx="32" cy="24" r="2"   fill="#1f4e79" opacity="0.55"/>
+            <circle cx="22" cy="12" r="2.5" fill="#c2522d" opacity="0.65"/>
+            <circle cx="12" cy="14" r="2"   fill="#1f4e79" opacity="0.55"/>
+            <circle cx="30" cy="11" r="2"   fill="#c2522d" opacity="0.7"/>
+          </svg>
+        </div>
+        <h3>Liquidity measures</h3>
+        <p>Bid-ask spreads, zero-trading-day frequency, Amihud illiquidity, Roll, Corwin-Schultz and a composite index across the BondSpot panel — monthly aggregates from 2005 to today.</p>
+      </a>
+      <a class="card" href="/total-return/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <line x1="4" y1="34" x2="36" y2="34" stroke="#d8d8d8" stroke-width="1"/>
+            <line x1="8"    y1="14" x2="9.5"  y2="14" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <line x1="12.5" y1="12" x2="14"   y2="12" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <line x1="17"   y1="10" x2="18.5" y2="10" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <line x1="21.5" y1="16" x2="23"   y2="16" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <line x1="26"   y1="26" x2="27.5" y2="26" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <line x1="30.5" y1="24" x2="32"   y2="24" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <rect x="5"    y="14" width="3" height="20" fill="#1f4e79"/>
+            <rect x="9.5"  y="12" width="3" height="2"  fill="#2e75b6"/>
+            <rect x="14"   y="10" width="3" height="2"  fill="#1f4e79"/>
+            <rect x="18.5" y="10" width="3" height="6"  fill="#c2522d" opacity="0.55"/>
+            <rect x="23"   y="16" width="3" height="10" fill="#c2522d"/>
+            <rect x="27.5" y="24" width="3" height="2"  fill="#2e75b6" opacity="0.65"/>
+            <rect x="32"   y="24" width="3" height="10" fill="#1a1a1a"/>
+          </svg>
+        </div>
+        <h3>Total return</h3>
+        <p>Seven-component decomposition (coupon, reinvestment, roll-down, expected-rate change, term-premium change, convexity, residual) of every Polish Treasury bond's quarterly total return. TBSP-level cards and per-bond explorer over 2006-2026.</p>
+      </a>
+      <a class="card" href="/eh-tests/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <rect x="6"  y="6"  width="9" height="9" fill="#1f4e79" opacity="0.75"/>
+            <rect x="16" y="6"  width="9" height="9" fill="#1f4e79" opacity="0.32"/>
+            <rect x="26" y="6"  width="9" height="9" fill="#fff"   stroke="#d8d8d8" stroke-width="0.6"/>
+            <rect x="6"  y="16" width="9" height="9" fill="#1f4e79" opacity="0.32"/>
+            <rect x="16" y="16" width="9" height="9" fill="#fff"   stroke="#d8d8d8" stroke-width="0.6"/>
+            <rect x="26" y="16" width="9" height="9" fill="#c2522d" opacity="0.45"/>
+            <rect x="6"  y="26" width="9" height="9" fill="#fff"   stroke="#d8d8d8" stroke-width="0.6"/>
+            <rect x="16" y="26" width="9" height="9" fill="#c2522d" opacity="0.55"/>
+            <rect x="26" y="26" width="9" height="9" fill="#c2522d" opacity="0.85"/>
+          </svg>
+        </div>
+        <h3>Expectations hypothesis tests</h3>
+        <p>Fama-Bliss FB1 cross-market β heatmaps for Poland, the US and the euro area, macro-spanning regressions, Cochrane-Piazzesi factor and out-of-sample STV — all from the EH paper.</p>
+      </a>
+      <a class="card" href="/shorts/">
+        <div class="card-head">
+          <div class="card-label">Reading</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <rect x="11" y="9"  width="20" height="26" rx="1.5" fill="#fff" stroke="#1f4e79" stroke-width="1.5"/>
+            <rect x="7"  y="6"  width="20" height="26" rx="1.5" fill="#fff" stroke="#1f4e79" stroke-width="1.5"/>
+            <line x1="11" y1="12" x2="22" y2="12" stroke="#1f4e79" stroke-width="1.4"/>
+            <line x1="11" y1="16" x2="24" y2="16" stroke="#888"    stroke-width="0.9"/>
+            <line x1="11" y1="19" x2="23" y2="19" stroke="#888"    stroke-width="0.9"/>
+            <line x1="11" y1="22" x2="21" y2="22" stroke="#888"    stroke-width="0.9"/>
+            <rect x="11" y="25" width="10" height="3.5" fill="#c2522d" opacity="0.7"/>
+          </svg>
+        </div>
+        <h3>Shorts</h3>
+        <p>Two-page summaries of the four working papers behind these dashboards. Each short carries one headline figure, one key table, and a "what this means for practitioners" line. Comments open at the bottom of every short.</p>
+      </a>
+      <a class="card" href="/movies/">
+        <div class="card-head">
+          <div class="card-label">Watch</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <circle cx="20" cy="20" r="14" fill="none" stroke="#1f4e79" stroke-width="1.8"/>
+            <polygon points="16.5,12 16.5,28 28,20" fill="#c2522d"/>
+          </svg>
+        </div>
+        <h3>Movies</h3>
+        <p>4K daily time-lapses of the Polish sovereign curve, term premia, fit diagnostics and forecast family — full 21-year version plus the last-5-years zoom. Embedded YouTube, full resolution available on the channel.</p>
+      </a>
+      <a class="card" href="/about/">
+        <div class="card-head">
+          <div class="card-label">Background</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <path d="M 4 30 C 10 27 16 23 22 21 S 32 19 36 18" fill="none" stroke="#1f4e79" stroke-width="1.6" opacity="0.30"/>
+            <path d="M 4 26 C 10 22 16 16 22 14 S 32 11 36 10" fill="none" stroke="#1f4e79" stroke-width="2.0" opacity="0.55"/>
+            <path d="M 4 22 C 10 16 16 10 22  8 S 32  5 36  4" fill="none" stroke="#c2522d" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="32" cy="6" r="2.1" fill="#c2522d" stroke="#fff" stroke-width="0.6"/>
+          </svg>
+        </div>
+        <h3>About the project</h3>
+        <p>Author bio, methodology, data sources, full publications list with DOIs, and a contact form for collaboration enquiries.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">What this is</h2>
+    <p>This site publishes daily-refreshed sovereign yield-curve estimates, term-premium decompositions, liquidity diagnostics, and expectations-hypothesis test outputs for less-liquid sovereign bond markets. The Polish curve is the running empirical case, with the methodology general enough to extend to other Central and Eastern European sovereigns. The underlying methods follow the published research programme on liquidity-weighted Nelson-Siegel-Svensson curve fitting, Adrian-Crump-Moench affine term-structure modelling, the Bauer-Rudebusch-Wu small-sample bias correction, and the Fama-Bliss / Cochrane-Piazzesi family of expectations-hypothesis tests.</p>
+    <p>Everything is built from publicly-available data: BondSpot venue closing fixings, Polish Ministry of Finance disclosures of outstanding amounts and turnover, NBP monetary-policy rates, the NBP Survey of Professional Forecasters, the GSW US Treasury zero-coupon panel, and the ECB AAA spot-rate database.</p>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">Latest</h2>
+    <p>Daily snapshots refreshed continuously. Curves and cross-country comparison panels refreshed daily. Term-premia dashboard refreshed weekly. Liquidity and EH-tests dashboards refreshed monthly. Working papers and publications listed on the about page.</p>
+  </section>
+
+  <section class="section" id="freshness">
+    <h2 class="with-rule">Data lineage &amp; freshness</h2>
+    <p style="color:var(--muted);margin:0 0 14px 0;font-size:13px">Most recent observation timestamp and source file for every upstream input feeding this site, refreshed on every build. The Polish-side feeds (BondSpot, Min-Fin, NBP) are scraped daily by the pipeline. The US (FRB GSW) and euro-area (ECB AAA) Svensson-parameter feeds are pulled daily from the Federal Reserve Board and the ECB Data Portal and then re-fitted onto the canonical zero-coupon grid.</p>
+    <div class="panel" style="background:#fafafa">
+      <div style="overflow-x:auto">
+        <table id="freshTable" style="width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11.5px"></table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(async function(){
+  try {
+    const r = await fetch('/data/yields.json', {cache:'no-store'});
+    if (!r.ok) return;
+    const DATA = await r.json();
+    const f = DATA.freshness;
+    const el = document.getElementById('freshTable');
+    if (!el || !f) return;
+    const rows = [
+      ['bondspot_fixings',         'BondSpot fixings (price / bid / ask)'],
+      ['bondspot_turnover',        'BondSpot daily turnover (venue)'],
+      ['minfin_turnover',          'Min-Fin monthly turnover (Transakcje_po_seriach)'],
+      ['minfin_obligacje_hurtowe', 'Min-Fin auctions & outstanding (Obligacje_Hurtowe)'],
+      ['minfin_coupon_schedules',  'Min-Fin coupon schedules (kalkulatorodsetek)'],
+      ['nbp_reference_rate',       'NBP MPC reference rate'],
+      ['mpc_minutes',              'NBP MPC minutes (tone corpus)'],
+      ['fed_gsw_curve',            'FRB GSW US Treasury Svensson curve'],
+      ['ecb_aaa_curve',            'ECB AAA euro-area Svensson curve'],
+      ['tbsp_published_index',     'TBSP published index (Treasury BondSpot Poland)'],
+      ['nss_curves',               'LW-NSS fitted Polish zero-coupon curves'],
+      ['acm_term_premia',          'ACM term-premia panel'],
+      ['brw_term_premia',          'BRW bias-corrected term premia'],
+    ];
+    let html = '<thead><tr style="background:#f0f0f0">'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Series</th>'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Latest observation</th>'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Source</th>'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Notes</th>'
+      + '</tr></thead><tbody>';
+    for (const [k, label] of rows){
+      const e = f[k]; if (!e) continue;
+      const latest = e.last_obs || e.last_change || e.last_auction || e.last_updated || e.last_ref_month || e.last_file || '';
+      const valStr = e.value ? ' (' + e.value + ')' : '';
+      html += '<tr>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#1a1a1a">' + label + '</td>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#1f4e79;font-weight:600">' + latest + valStr + '</td>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#6a6a6a">' + (e.source||'') + '</td>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#6a6a6a">' + (e.detail||'') + '</td>'
+        + '</tr>';
+    }
+    html += '</tbody>';
+    el.innerHTML = html;
+  } catch(_) { /* silent */ }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <h4>Dashboards</h4>
+      <ul>
+        <li><a href="/curves/">Yield curves</a></li>
+        <li><a href="/term-premia/">Term premia</a></li>
+        <li><a href="/liquidity/">Liquidity measures</a></li>
+        <li><a href="/total-return/">Total return</a></li>
+        <li><a href="/eh-tests/">EH tests</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Project</h4>
+      <ul>
+        <li><a href="/about/">About</a></li>
+        <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li>
+        
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-inner copyright">
+    yieldcartography.com · Marcin Dec · all data and code released for academic and personal use · last build 2026-05-10
+  </div>
+</footer>
+
+</body>
+</html>
