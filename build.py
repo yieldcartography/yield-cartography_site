@@ -427,7 +427,12 @@ def _build_liquidity(bond):
         composite_z_mean=('composite_z','mean'),
     ).reset_index()
     agg['date'] = agg['m'].astype(str)
+    # G5b: flag when the newest month is still in progress (panel end date
+    # before that month's last calendar day) so the page can style the
+    # final point as provisional.
+    last_partial = bool(bond['date'].max() < agg['m'].iloc[-1].to_timestamp('M'))
     return {
+        'last_month_partial': last_partial,
         'dates':            agg['date'].tolist(),
         'n_bonds':          [int(x) for x in agg['n_bonds']],
         'bas_bp_med':       safe_round(agg['bas_bp_med'], 3),

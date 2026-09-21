@@ -86,6 +86,7 @@
 
   <details class="intro">
     <summary>How to read this page (methodology and glossary)</summary>
+    <p><b>Daily refresh conventions.</b> The panel extends every day with the BondSpot fixings. The composite z-score is normalized with constants frozen on the 2005-01 to 2026-04 sample of the published Borsa Istanbul Review paper, so history never drifts and new observations are measured on the same yardstick. Monthly Ministry of Finance turnover carries its publication lag of up to two months and is forward-filled per bond in the meantime, the same convention the curve-fitting weights use. The newest month is a month-to-date reading until it closes, drawn as a dotted tail with an open marker.</p>
     <p>Microstructure liquidity measures computed at the bond-day level on the BondSpot mid- and quote panel and aggregated to monthly cross-sections from January 2005 onward. Each measure is computed under the original author's definition and then aligned on a common monthly grid so they can be combined into a single composite z-score. The composite is the equal-weight mean of within-measure z-scores (after sign-flipping the measures where lower = less liquid), so a positive composite reads as "less liquid than the sample mean".</p>
     <h4>Glossary</h4>
     <table class="glossary">
@@ -455,8 +456,16 @@ function lastTwoValid(arr, dates){
 function initStats(){
   const liq = DATA.liquidity;
   if (!liq){ return; }
-  document.getElementById('stat-period').textContent = liq.dates[0] + ' to ' + liq.dates[liq.dates.length-1];
+  document.getElementById('stat-period').textContent = liq.dates[0] + ' to ' + liq.dates[liq.dates.length-1]
+    + (liq.last_month_partial ? ' (in progress)' : '');
   document.getElementById('stat-n').textContent = liq.dates.length;
+  if (liq.last_month_partial){
+    ['stat-bas','stat-ztd','stat-cz'].forEach(id=>{
+      const el = document.getElementById(id);
+      if (el && el.nextElementSibling)
+        el.nextElementSibling.textContent += ' · month to date';
+    });
+  }
 
   const [iB, ipB] = lastTwoValid(liq.bas_bp_med, liq.dates);
   if (iB !== null){
@@ -712,6 +721,7 @@ function drawBasChart(liq){
     { x:dates.concat([...dates].reverse()), y:p75.concat([...p25].reverse()), fill:'toself', fillcolor:'rgba(31,78,121,0.12)', line:{color:'transparent'}, hoverinfo:'skip', showlegend:false },
     { x:dates, y:med, mode:'lines', line:{color:PALETTE.accent,width:2}, name:'BAS median (bp)', hovertemplate:'%{x} · %{y:.1f} bp<extra></extra>' }
   ];
+  const tB = provTail(liq, dates, med, PALETTE.accent); if (tB) traces.push(tB);
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:'bid-ask spread (bp)', font:FONT_MONO };
   lay.legend = { orientation:'h', y:1.08, x:0, font:FONT_MONO };
@@ -723,6 +733,7 @@ function drawZtdChart(liq){
   const traces = [
     { x:dates, y:ztd, mode:'lines', line:{color:PALETTE.salmon,width:1.8}, name:'ZTD share (%)', fill:'tozeroy', fillcolor:'rgba(194,82,45,0.10)', hovertemplate:'%{x} · %{y:.1f}%<extra></extra>' }
   ];
+  const tZ = provTail(liq, dates, ztd, PALETTE.salmon); if (tZ) traces.push(tZ);
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:'zero-trading-day share (%)', font:FONT_MONO };
   Plotly.react('ztdChart', traces, lay, CFG);
@@ -733,6 +744,7 @@ function drawCzChart(liq){
   const traces = [
     { x:dates, y:cz, mode:'lines', line:{color:PALETTE.accent,width:1.8}, name:'composite z', hovertemplate:'%{x} · %{y:.2f}<extra></extra>' }
   ];
+  const tC = provTail(liq, dates, cz, PALETTE.accent); if (tC) traces.push(tC);
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:'composite liquidity z-score', font:FONT_MONO };
   lay.shapes = [{ type:'line', xref:'paper', x0:0, x1:1, y0:0, y1:0, line:{color:'#bbb',width:1,dash:'dot'} }];
@@ -744,9 +756,22 @@ function drawSimple(divId, liq, key, label, color){
   const traces = [
     { x:dates, y:vals, mode:'lines', line:{color:color,width:1.6}, name:label, hovertemplate:'%{x} · %{y}<extra></extra>' }
   ];
+  const t = provTail(liq, dates, vals, color); if (t) traces.push(t);
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
   lay.yaxis.title = { text:label, font:FONT_MONO };
   Plotly.react(divId, traces, lay, CFG);
+}
+
+// Provisional tail (G5b): when the newest month is still in progress the
+// last chart point is a month-to-date reading, drawn as a dotted tail
+// with an open marker instead of pretending the month is closed.
+function provTail(liq, dates, vals, color){
+  if (!liq.last_month_partial || dates.length < 2) return null;
+  const n = dates.length;
+  return { x:[dates[n-2], dates[n-1]], y:[vals[n-2], vals[n-1]], mode:'lines+markers',
+           line:{color:color, width:1.6, dash:'dot'},
+           marker:{size:[0,7], symbol:'circle-open', color:color},
+           showlegend:false, hovertemplate:'%{x} · %{y} (month to date)<extra></extra>' };
 }
 </script>
 
