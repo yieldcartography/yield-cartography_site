@@ -249,20 +249,29 @@ function rowPolicy(){
     (toneVal === null ? '—' : (toneVal > 0 ? '+' : '') + toneVal.toFixed(2)) +
     (tone.class ? `<span class="badge">${tone.class}</span>` : ''),
     tone.date ? 'meeting ' + tone.date : '');
-  h += tile('/mpc/', 'hawk vs dove',
-    (tone.hawk !== undefined && tone.dove !== undefined)
-      ? `${tone.hawk.toFixed(1)} / ${tone.dove.toFixed(1)}` : '—',
-    'per 1,000 words');
-  h += tile('/mpc/', 'policy regime',
-    t.regime && t.regime.class ? t.regime.class : '—',
-    t.regime && t.regime.since ? 'since ' + t.regime.since : '');
+  // tone index double tile (same design as the oracle page), in place of hawk vs dove
+  if (toneVal !== null){
+    const T = toneVal * 100;
+    const lean = T < -40 ? 'dovish' : T > 40 ? 'hawkish' : 'neutral';
+    const lcol = T < -40 ? '#2e75b6' : T > 40 ? '#d11b1b' : 'var(--muted)';
+    const pd = Math.round(Math.max(-toneVal, 0) * 100),
+          pn = Math.round((1 - Math.abs(toneVal)) * 100),
+          pk = Math.round(Math.max(toneVal, 0) * 100);
+    const seg = (cls, p, lab) => p > 0
+      ? `<div class="${cls}" style="width:${p}%">${p > 15 ? lab + ' ' + p + '%' : ''}</div>` : '';
+    const hd = (tone.hawk !== undefined && tone.dove !== undefined)
+      ? ` · hawk ${tone.hawk.toFixed(1)} / dove ${tone.dove.toFixed(1)} per 1,000 words` : '';
+    h += `<a class="btile wide" href="/mpc/">
+      <div class="bt-label">MPC minutes tone index</div>
+      <div class="bt-value" style="color:${lcol};font-size:16px;text-transform:uppercase">${lean}
+        <span style="font-size:11px;color:var(--muted);font-weight:400">score ${T >= 0 ? '+' : ''}${T.toFixed(0)} / 100</span></div>
+      <div class="obar">${seg('cut', pd, 'dovish')}${seg('hold', pn, 'neutral')}${seg('hike', pk, 'hawkish')}</div>
+      <div class="bt-sub">net hawkish minus dovish${tone.date ? ', latest minutes ' + tone.date : ''}${hd}</div>
+    </a>`;
+  }
   h += tile('/mpc/', 'trending term',
     t.trending && t.trending.term ? '“' + t.trending.term + '”' : '—',
     t.trending && t.trending.since ? 'rising since ' + t.trending.since : '');
-  const fresh = (DATA.freshness && DATA.freshness.mpc_minutes) || null;
-  h += tile('/mpc/', 'minutes corpus',
-    fresh ? fresh.last_obs : (tone.date || '—'),
-    'latest meeting analysed');
 
   // oracle-page tiles: implied moves in 25 bp steps and the oracle gauge
   if (ORC && ORC.moves){
@@ -285,6 +294,9 @@ function rowPolicy(){
     h += tile('/oracle/', '3m implied move', v3, s3 + (ORC.date ? ' · ' + ORC.date : ''));
     const [v6, s6] = mv(addl, c6, byH[6]);
     h += tile('/oracle/', '6m additional move', v6, s6);
+    h += tile('/mpc/', 'policy regime',
+      t.regime && t.regime.class ? t.regime.class : '—',
+      t.regime && t.regime.since ? 'since ' + t.regime.since : '');
     const O = ORC.oracle || {};
     if (O.score !== undefined){
       const S = O.score * 100;
@@ -375,10 +387,14 @@ function rowMeta(){
   const [nb]  = lastTwo(ts.n_bonds);
   const [mae] = lastTwo(ts.mae_bp);
   h += tile('/curves/', 'NSS panel', m.last_date || '—',
-    (m.n_dates_total ? m.n_dates_total.toLocaleString() + ' trading days since 2005' : ''), true);
+    (m.n_dates_total ? m.n_dates_total.toLocaleString() + ' trading days since 2005' : ''));
   h += tile('/curves/', 'latest fit',
     (nb !== null ? nb + ' bonds' : '—'),
     (mae !== null ? 'MAE ' + mae.toFixed(1) + ' bp' : ''));
+  const mfresh = (DATA.freshness && DATA.freshness.mpc_minutes) || null;
+  h += tile('/mpc/', 'minutes corpus',
+    mfresh ? mfresh.last_obs : '—',
+    'latest meeting analysed');
   h += tile('/shorts/', 'research shorts', '7 published', 'two-page findings');
   h += tile('/movies/', '4K curve movies', '2005 → today', 'daily frames');
   el.innerHTML = h;
