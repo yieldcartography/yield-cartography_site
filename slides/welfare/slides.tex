@@ -63,34 +63,40 @@
 \end{frame}
 
 % 4 ---------------------------------------------------------------------------
-\begin{frame}{Main result}
-  \kicker{Near-additivity under patience}
+\begin{frame}{Main results}
+  \kicker{Existence, uniqueness and the additive limit}
+  \small
   \begin{itemize}
-    \item For arbitrary heterogeneous von Neumann--Morgenstern preferences
-          sharing a common discount factor, the equivalent (or compensating)
-          variation is nearly additive and aggregates effectively as long as
-          consumers are patient.
-    \item The approximation error of treating the index as additive vanishes
-          as the discount factor approaches one, so for short-lived policies
-          the money metric behaves as a consistent quantitative welfare
-          index.
-    \item Consequently, the index delivers consistent welfare predictions
-          for the wide variety of short-lived policies studied in the
-          macroeconomic and finance literature.
+    \item \textbf{Well-posedness.} For any pair of policies and discount
+          factor $\beta<1$, the equivalent variation exists and is unique
+          (Proposition 1).
+    \item \textbf{Additive limit (Theorem 1).} As consumers become patient,
+          aggregate equivalent variation converges to a surplus
+          representation,
+          \[ \lim_{\beta\to 1} EV_{p,p'} \;=\;
+             \frac{S(\Delta q^{0},\,\Delta Y)}{\bar v_x}, \]
+          which is additive on the set of policies and measurable with
+          respect to aggregate income. The surplus consists of a
+          terms-of-trade component and an aggregate-income component.
+    \item Near-additivity for $\beta$ close to one delivers consistent
+          rankings for transient policies.
   \end{itemize}
 \end{frame}
 
 % 5 ---------------------------------------------------------------------------
-\begin{frame}{Structure of the argument}
-  \kicker{From example to general framework}
+\begin{frame}{Application: stimulus variants in the Polish economy}
+  \kicker{Quantifying the approximation error}
   \begin{itemize}
-    \item A motivating example isolates the non-additivity of the money
-          metric in the simplest heterogeneous-agent setting.
-    \item The general framework is a small open economy with heterogeneous
-          vNM consumers; the near-additivity result is established there.
-    \item An approximation-in-practice section quantifies the error terms and
-          shows how the index is operationalised in applied policy
-          evaluation.
+    \item Preference and income distributions are extracted from Polish
+          micro-econometric data; welfare effects of variants of a stimulus
+          package are computed exactly and via the additive approximation.
+    \item For policies affecting the economy within the first four quarters
+          the approximation error is no greater than 1.5\% of the total
+          welfare effect; within twelve quarters, no greater than 5\%.
+    \item As a byproduct the paper contributes to the aggregation
+          literature: exact aggregation of money-metric welfare classically
+          requires Gorman polar form; the patient-consumer limit provides an
+          alternative route for transient policies.
   \end{itemize}
 \end{frame}
 

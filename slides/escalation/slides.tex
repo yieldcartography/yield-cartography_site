@@ -28,70 +28,74 @@
 
 % 2 ---------------------------------------------------------------------------
 \begin{frame}{Motivation}
-  \kicker{Round numbers as risk governance}
+  \kicker{NII forecasting and IRRBB governance}
   \begin{itemize}
-    \item Bank-internal governance frameworks escalate when a forecasting
-          error, of a balance-sheet item, of net interest income, of a
-          stress-test projection, exceeds a threshold. In practice the
-          threshold is a round number, commonly three percent, imposed
-          uniformly across institutions and portfolios.
-    \item A fixed threshold has no distributional content: whether a 3\%
-          error is routine noise or a genuine signal depends entirely on the
-          institution's own forecasting error distribution.
-    \item The paper proposes and evaluates calibrating escalation limits to
-          that distribution.
+    \item Forecast accuracy for net interest income (NII) and interest-rate
+          risk in the banking book (IRRBB) is central to earnings stability,
+          balance-sheet management and supervisory credibility.
+    \item Many institutions govern forecast performance with fixed deviation
+          thresholds (3/4/5\%), even though forecast uncertainty widens with
+          the horizon and the error process may be heavy-tailed. A flat limit
+          therefore carries no consistent probabilistic interpretation.
+    \item The paper develops an integrated, probability-coherent framework
+          for monitoring NII forecast errors and assessing IRRBB limit
+          breaches.
   \end{itemize}
 \end{frame}
 
 % 3 ---------------------------------------------------------------------------
-\begin{frame}{The calibration rule}
-  \kicker{Thresholds as quantiles}
-  \small For institution $i$ with empirical forecasting-error distribution
-  $F_i$ of the monitored quantity, the escalation limit at tolerance
-  $\alpha$ is the quantile
-  \[ c_{i,\alpha} \;=\; F_{|e|,i}^{-1}\!\left(1-\alpha\right),
-     \qquad \text{so that} \qquad
-     \Pr\!\left(|e_{it}| > c_{i,\alpha}\right) \;=\; \alpha . \]
+\begin{frame}{Horizon-specific, quantile-anchored thresholds}
+  \kicker{The SEP fan-chart logic applied to escalation limits}
+  \small Following the Federal Reserve's RMSE-based communication of forecast
+  uncertainty, thresholds are anchored to the horizon-specific error scale:
+  \[ c_{h,q} \;=\; z_q \cdot RMSE(h),
+     \qquad z_{80}=0.84,\; z_{90}=1.28,\; z_{95}=1.64,\; z_{99}=2.33 \]
+  under the Normal/RMSE mapping used for communication, with empirical
+  quantiles replacing $z_q\,RMSE(h)$ where the error history warrants it.
   \begin{itemize}
-    \item Under the quantile rule, the escalation frequency is equalised
-          across institutions by construction; under a uniform fixed
-          threshold it is whatever the institution's error dispersion makes
-          it.
-    \item The rule requires only the institution's own forecasting track
-          record, an input every supervised bank already possesses.
+    \item A standardized exceedance score expresses each realized error as a
+          proportion of the 95\% boundary, giving dashboards one common unit
+          across horizons.
+    \item Validation: unconditional and conditional coverage tests on the
+          resulting interval forecasts, quantile elicitability, and a
+          bias-dispersion decomposition separating structural misspecification
+          from random variation.
   \end{itemize}
 \end{frame}
 
 % 4 ---------------------------------------------------------------------------
-\begin{frame}{Evidence}
-  \kicker{Polish bank stress-test data}
+\begin{frame}{The outer tier: extreme value theory}
+  \kicker{POT-GPD calibration of rare misses}
   \begin{itemize}
-    \item The calibration is developed on Polish bank stress-test forecast
-          data across institutions of different size and macroeconomic
-          exposure.
-    \item A uniform 3\% threshold either grossly under-triggers or
-          over-triggers depending on the institution: for a large,
-          diversified balance sheet it fires on routine noise, for a small
-          or macro-exposed institution it misses genuinely informative
-          errors.
-    \item The quantile-calibrated limits restore a common escalation
-          probability and make threshold breaches comparable across the
-          system.
+    \item Because NII forecast errors may be heavy-tailed, the outer
+          escalation tier is calibrated by peaks-over-threshold: by the
+          Pickands--Balkema--de Haan theorem, excesses over a high threshold
+          converge to a Generalized Pareto Distribution.
+    \item POT-GPD modelling stabilises the outer tier against rare but severe
+          misses, in analogy to Expected-Shortfall extensions of the VaR
+          traffic-light backtest.
+    \item The IRRBB extension quantifies the probability that limits on
+          $\Delta$NII are breached solely due to forecast or model
+          uncertainty, mapping model risk into risk-appetite language.
   \end{itemize}
 \end{frame}
 
 % 5 ---------------------------------------------------------------------------
-\begin{frame}{Implications}
-  \kicker{For risk governance and supervision}
+\begin{frame}{Empirical illustration and implications}
+  \kicker{Simulation, N=120 per horizon at 3m/6m/12m/24m}
   \begin{itemize}
-    \item Escalation frameworks gain statistical content: a breach carries a
-          known and uniform surprise probability, so it is informative by
-          design.
-    \item Supervisory comparability improves, since breach counts across
-          institutions measure the same tail event.
-    \item The rule composes with the existing governance apparatus; it
-          replaces only the number, an institution-specific quantile in place
-          of a system-wide constant.
+    \item A transparent simulation reports empirical 90\%/95\% thresholds and
+          EVT-based 97.5\% outer-tier limits per horizon, demonstrates their
+          stability, and contrasts them with flat limits, which over-penalise
+          long-horizon errors and under-weight short-horizon ones.
+    \item Comparability is restored across horizons because dispersion growth
+          is embedded in the limit definition; conditional-coverage testing
+          detects clustering of exceptions; breach probabilities for
+          $\Delta$NII are suitable for ALCO reporting.
+    \item Limits of the approach: calibration is data-hungry at long
+          horizons, and regime or model changes can break stationarity,
+          requiring re-baselining, shadow backtests and, at adoption, wider
+          bands or pooled-horizon estimation.
   \end{itemize}
 \end{frame}
 

@@ -45,53 +45,60 @@
 \end{frame}
 
 % 3 ---------------------------------------------------------------------------
-\begin{frame}{The HJM framework and the Markovian restriction}
+\begin{frame}{The HJM framework and the Cheyette subclass}
   \kicker{Model class}
   \small Under the risk-neutral measure the instantaneous forward curve
   follows
   \[ df(t,T) \;=\; \alpha(t,T)\,dt + \sigma(t,T)\,dW_t,
      \qquad
      \alpha(t,T) \;=\; \sigma(t,T)\!\int_t^{T}\!\sigma(t,s)\,ds, \]
-  the drift pinned down by no-arbitrage. A separable volatility structure,
-  \( \sigma(t,T) = g(t)\,h(T) \), collapses the curve dynamics onto a
-  finite-dimensional Markovian state.
+  with the drift pinned down by no-arbitrage.
   \begin{itemize}
-    \item The paper works out a parametrisation in this class rich enough to
-          fit the observed swap and OIS curve data while keeping the state
-          vector small.
+    \item The paper demonstrates the importance of the Cheyette subclass,
+          separable volatility structures that collapse the curve dynamics
+          onto a finite-dimensional Markovian state, and derives the
+          instantaneous forward-rate dynamics of that form generically.
+    \item Markovianity is what makes the specification implementable inside
+          an XVA engine, where the whole curve system is simulated over long
+          horizons.
   \end{itemize}
 \end{frame}
 
 % 4 ---------------------------------------------------------------------------
-\begin{frame}{Multi-curve consistency}
-  \kicker{Discounting and projection after the crisis}
+\begin{frame}{Multi-curve toolkit}
+  \kicker{Post-crisis market structure}
   \begin{itemize}
-    \item Post-2008 markets separate the discounting curve (OIS,
-          collateral-rate based) from tenor-specific projection curves, with
-          non-negligible basis between them.
-    \item The parametrisation is built to be multi-curve friendly: the
-          discount and projection layers are modelled consistently, so
-          collateralised and uncollateralised trades are valued within one
-          engine.
-    \item The result is a state-space small enough for the nested
-          simulations of XVA while preserving the fit to the swap-curve and
-          OIS-curve data.
+    \item After the financial crisis, IBOR-based deposit rates and OIS rates
+          diverged abruptly, from a plateau of a few basis points to more
+          than 200 bp at the peak, and FRA par rates detached from the
+          corresponding forwards: discounting and projection require separate
+          curves.
+    \item The paper develops the multi-curve construction and its XVA
+          integration, with pricing formulae for the vanilla non-linear
+          building blocks (swaptions, caplets and floorlets) in the
+          multi-curve setting.
+    \item The focus is a relatively less liquid market, the Polish PLN curve
+          system, and the calibration problems that illiquidity creates.
   \end{itemize}
 \end{frame}
 
 % 5 ---------------------------------------------------------------------------
-\begin{frame}{Implications}
-  \kicker{For XVA practice}
+\begin{frame}{Calibration results and implications}
+  \kicker{One-factor Cheyette models on PLN data}
   \begin{itemize}
-    \item Dimensionality reduction is obtained by parametric structure
-          instead of ad-hoc factor truncation, so the no-arbitrage
-          consistency of HJM is retained inside the XVA engine.
-    \item The framework covers collateralised and uncollateralised
-          interest-rate derivatives in one model, which is precisely the
-          portfolio mix on which valuation adjustments are computed.
-    \item The construction predates and complements the later LLM
-          yield-curve programme: the same discipline of explicit
-          parametrisation over convention.
+    \item Data availability disciplines the model choice: with swaption
+          volatilities only, and no active caps and floors market, a
+          three-factor exponential specification cannot be calibrated on the
+          PLN market.
+    \item Calibrations of several one-factor Cheyette-class models show that
+          a relatively simple specification, Hull--White with two summands,
+          achieves satisfactory calibration quality and computation time.
+    \item Practical guidance for the XVA engine: the calibration step can be
+          scheduled ahead of scenario generation, and the XVA integral should
+          be discretised no finer than the simulation's horizon steps;
+          overall performance depends on many degrees of freedom beyond the
+          model choice (time-scale granularity, interpolation, minimisation
+          method).
   \end{itemize}
 \end{frame}
 
