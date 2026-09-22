@@ -3,6 +3,7 @@
 %% (Bank i Kredyt, 2019). House style, academic register.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{beamerthemeyc}
+\usepackage{booktabs}
 \renewcommand{\deckfootertitle}{Dec (2019) · Markovian multi-curve HJM for valuation adjustments · Bank i Kredyt}
 
 \begin{document}
@@ -30,79 +31,191 @@
 \begin{frame}{Motivation}
   \kicker{XVA needs a joint, simulable curve model}
   \begin{itemize}
-    \item Valuation adjustments (CVA, DVA, FVA and related XVA terms) on
-          interest-rate derivative portfolios require simulating the entire
-          curve system, discounting and projection curves jointly, over long
-          horizons and across collateralised and uncollateralised netting
-          sets.
+    \item Valuation adjustments on interest-rate derivative portfolios
+          require simulating the entire curve system, discounting and
+          projection curves jointly, over long horizons and across
+          collateralised and uncollateralised netting sets.
     \item The Heath--Jarrow--Morton framework prices consistently by
           construction, but a generic HJM volatility makes the forward-curve
-          state non-Markovian, which is computationally prohibitive in an
-          XVA engine.
+          state infinite-dimensional and non-Markovian, which is
+          computationally prohibitive in an XVA engine.
     \item The paper constructs a parametrisation that is simultaneously
-          Markovian and consistent with the post-crisis multi-curve setting.
+          Markovian and consistent with the post-crisis multi-curve setting,
+          and calibrates it on the relatively less liquid PLN market.
   \end{itemize}
 \end{frame}
 
 % 3 ---------------------------------------------------------------------------
-\begin{frame}{The HJM framework and the Cheyette subclass}
-  \kicker{Model class}
-  \small Under the risk-neutral measure the instantaneous forward curve
-  follows
-  \[ df(t,T) \;=\; \alpha(t,T)\,dt + \sigma(t,T)\,dW_t,
-     \qquad
-     \alpha(t,T) \;=\; \sigma(t,T)\!\int_t^{T}\!\sigma(t,s)\,ds, \]
-  with the drift pinned down by no-arbitrage.
+\begin{frame}{The XVA family and the CVA cube}
+  \kicker{What the engine must produce}
+  \small XVA adjusts a risk-free valuation for risks the primary valuation
+  ignores: CVA (counterparty risk), DVA (own credit), FVA (funding,
+  including liquidity buffers), ColVA (collateral effects), MVA (initial
+  margin funding), KVA (regulatory capital), TVA (tax).
   \begin{itemize}
-    \item The paper demonstrates the importance of the Cheyette subclass,
-          separable volatility structures that collapse the curve dynamics
-          onto a finite-dimensional Markovian state, and derives the
-          instantaneous forward-rate dynamics of that form generically.
-    \item Markovianity is what makes the specification implementable inside
-          an XVA engine, where the whole curve system is simulated over long
-          horizons.
+    \item The interest-rate model must generate the CVA cube, the
+          three-dimensional array
+          \[ \Xi \;=\; \left\{\,(V_i,\,S_j,\,t_k):\;
+             i=1,\dots,I;\; j=1,\dots,J;\; k=1,\dots,K \,\right\}, \]
+          portfolio values by scenario by time node, for every netting set.
+    \item Counterparty and own hazard rates are taken as given or
+          bootstrapped from market data; collateralisation under CSA
+          annexes now dominates derivative trading.
   \end{itemize}
 \end{frame}
 
 % 4 ---------------------------------------------------------------------------
-\begin{frame}{Multi-curve toolkit}
-  \kicker{Post-crisis market structure}
+\begin{frame}{The general HJM framework}
+  \kicker{No-arbitrage dynamics and their cost}
+  \small Under the risk-neutral measure the instantaneous forward curve of
+  an $m$-factor model follows
+  \[ f(t,T) \;=\; f(0,T)
+     + \sum_{i=1}^{m}\int_0^{t}\!\sigma_i(u,T)\!\int_u^{T}\!\sigma_i(u,s)\,ds\,du
+     + \sum_{i=1}^{m}\int_0^{t}\!\sigma_i(u,T)\,dW^{Q}_i(u), \]
+  with the drift pinned down by the volatility structure alone.
   \begin{itemize}
-    \item After the financial crisis, IBOR-based deposit rates and OIS rates
-          diverged abruptly, from a plateau of a few basis points to more
-          than 200 bp at the peak, and FRA par rates detached from the
-          corresponding forwards: discounting and projection require separate
-          curves.
-    \item The paper develops the multi-curve construction and its XVA
-          integration, with pricing formulae for the vanilla non-linear
-          building blocks (swaptions, caplets and floorlets) in the
-          multi-curve setting.
-    \item The focus is a relatively less liquid market, the Polish PLN curve
-          system, and the calibration problems that illiquidity creates.
+    \item The current term structure is an input by construction, so no
+          initial-curve calibration is needed.
+    \item The cost: the state space of a general volatility function is
+          infinite-dimensional, and instantaneous forwards are not observed
+          in the market.
   \end{itemize}
 \end{frame}
 
 % 5 ---------------------------------------------------------------------------
-\begin{frame}{Calibration results and implications}
-  \kicker{One-factor Cheyette models on PLN data}
+\begin{frame}{The Cheyette subclass}
+  \kicker{Separable volatility collapses the state}
+  \small \textbf{Lemma (Cheyette).} In an $M$-factor HJM model with
+  volatility of the separable form
+  \[ \sigma_k(t,T) \;=\; \sum_{i=1}^{N_k}
+        \frac{\alpha_i^{k}(T)}{\alpha_i^{k}(t)}\;\beta_i^{k}(t),
+     \qquad k=1,\dots,M, \]
+  the forward-rate dynamics are determined by $n=\sum_{k=1}^{M} N_k$ state
+  variables which are Markov processes, and the short rate is the initial
+  forward rate plus the sum of the state variables.
   \begin{itemize}
-    \item Data availability disciplines the model choice: with swaption
-          volatilities only, and no active caps and floors market, a
-          three-factor exponential specification cannot be calibrated on the
-          PLN market.
-    \item Calibrations of several one-factor Cheyette-class models show that
-          a relatively simple specification, Hull--White with two summands,
-          achieves satisfactory calibration quality and computation time.
-    \item Practical guidance for the XVA engine: the calibration step can be
-          scheduled ahead of scenario generation, and the XVA integral should
-          be discretised no finer than the simulation's horizon steps;
-          overall performance depends on many degrees of freedom beyond the
-          model choice (time-scale granularity, interpolation, minimisation
-          method).
+    \item Markovianity makes the specification implementable inside an XVA
+          engine and opens the way to analytic or semi-analytic pricing of
+          swaptions, caplets and floorlets, the calibration instruments.
+    \item Accuracy and speed depend on the number of parameters in the
+          elementary functions $\alpha_i(\cdot)$ and $\beta_i(\cdot)$.
   \end{itemize}
 \end{frame}
 
 % 6 ---------------------------------------------------------------------------
+\begin{frame}{Familiar models as special cases}
+  \kicker{Volatility function forms within the Cheyette class}
+  \small
+  \begin{center}
+  \begin{tabular}{lll}
+    \toprule
+    Volatility form & Summands & Name \\
+    \midrule
+    $\sigma(t,T)=c$ & $N_1=1$ & Ho--Lee \\
+    $\sigma(t,T)=c\,e^{-a(T-t)}$ & $N_1=1$ & Hull--White \\
+    $\sigma(t,T)=\beta(t)\,e^{-\int_t^{T}\lambda(u)\,du}$ & general & General exponential Cheyette \\
+    $\sigma(t,T)=\sum_i \beta_i(t)\,(T-t)^{\,i-1}$ & $N_1\ge 2$ & General Hull--White \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{2mm}
+  The paper works inside this menu, combining exponential decay,
+  polynomial-in-$t$ scaling and piecewise-constant mean-reversion to trade
+  off flexibility against parameter count.
+\end{frame}
+
+% 7 ---------------------------------------------------------------------------
+\begin{frame}{The multi-curve reality}
+  \kicker{Post-crisis market structure}
+  \begin{itemize}
+    \item After the financial crisis, IBOR-based deposit rates and OIS
+          rates diverged abruptly, from a plateau of a few basis points to
+          more than 200 bp at the peak, and FRA par rates detached from the
+          corresponding forwards: discounting and projection require
+          separate curves.
+    \item The parametrisation accommodates the multi-curve extension via a
+          multiplicative spread between the discount and projection curves,
+          preserving fast discount-factor generation at each simulation
+          node.
+    \item Desired model characteristics also include replicating rich curve
+          shapes and incorporating negative rates reasonably.
+  \end{itemize}
+\end{frame}
+
+% 8 ---------------------------------------------------------------------------
+\begin{frame}{Candidate specifications}
+  \kicker{Five one-factor Cheyette models on PLN data}
+  \small
+  \begin{center}
+  \begin{tabular}{llc}
+    \toprule
+    & Volatility form & Parameters \\
+    \midrule
+    Mod1 & $(c+bt)\,e^{-a(T-t)}$ & 3 \\
+    Mod2 & $c\,e^{-a(T-t)}$ (classic Hull--White) & 2 \\
+    Mod3 & $c_1 e^{-a_1(T-t)} + c_2 e^{-a_2(T-t)}$ & 4 \\
+    Mod4 & $(c+bt)\,e^{-\int_t^{T}\lambda(u)du}$, piecewise-const.\ $\lambda$, node at 4 & 5 \\
+    Mod5 & Mod4 $+$ constant summand $d$ & 6 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{2mm}
+  Mod4 follows Beyna and Wystup; Mod3 stays within two summands of the
+  classic Hull--White form.
+\end{frame}
+
+% 9 ---------------------------------------------------------------------------
+\begin{frame}{Calibration design}
+  \kicker{Swaption volatilities, Nelder-Mead, explicit quality gates}
+  \begin{itemize}
+    \item Calibration targets the market swaption volatility surface
+          (log-normal Black quotes) on selected dates of the 2014--17
+          period, with quality checked both in volatilities and in nominal
+          prices per unit notional.
+    \item The optimiser is brute force with a Nelder--Mead finish:
+          derivative-based and Brent or Powell methods scale poorly in this
+          dimension, and simulated annealing requires lengthy tuning.
+    \item Each calibration passes through eight checks, four core (M1--M4)
+          and four secondary (M5--M8), and is classified Good (all met),
+          Passed (core met, at most one secondary breached) or Failed.
+  \end{itemize}
+\end{frame}
+
+% 10 --------------------------------------------------------------------------
+\begin{frame}{Calibration results}
+  \kicker{What the PLN market can and cannot identify}
+  \begin{itemize}
+    \item Data availability disciplines the model choice: with swaption
+          volatilities only, and no active caps and floors market, a
+          three-factor exponential specification cannot be calibrated on
+          the PLN market.
+    \item Hull--White with two summands (Mod3) achieves satisfactory
+          calibration quality and computation time, with Good outcomes on
+          the reported 2014--17 calibration dates.
+    \item A caveat on the data: with rates near zero, log-normal Black
+          volatilities are distorted close to negative strikes, which the
+          quality checks in prices are designed to catch.
+  \end{itemize}
+\end{frame}
+
+% 11 --------------------------------------------------------------------------
+\begin{frame}{Guidance for the XVA engine}
+  \kicker{Conclusions for implementation}
+  \begin{itemize}
+    \item The calibration step can be scheduled ahead of scenario
+          generation, and the XVA integral should be discretised no finer
+          than the simulation's horizon steps.
+    \item Overall performance depends on many degrees of freedom beyond the
+          model choice: time-scale granularity, interpolation, and the
+          minimisation method.
+    \item For a less liquid market the recommended compromise is a
+          low-parameter Markovian Cheyette specification with a
+          multiplicative multi-curve spread, rather than a richer model the
+          data cannot identify.
+  \end{itemize}
+\end{frame}
+
+% 12 --------------------------------------------------------------------------
 \begin{frame}[plain]
   \vspace{12mm}
   {\fontsize{27}{31}\selectfont\bfseries\color{ycink}Thank you.\par}

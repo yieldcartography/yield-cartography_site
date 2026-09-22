@@ -1,8 +1,8 @@
 %% Seminar deck: Welfare measurements with heterogeneous agents (JEDC, 2026)
-%% House style, academic register. Built from the published article's
-%% abstract and structure; co-authored with Marek Weretka.
+%% House style, academic register. Built from the published article.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{beamerthemeyc}
+\usepackage{booktabs}
 \renewcommand{\deckfootertitle}{Weretka \& Dec (2026) · Welfare measurements with heterogeneous agents · JEDC}
 
 \begin{document}
@@ -30,77 +30,192 @@
 \begin{frame}{Motivation}
   \kicker{The missing index}
   \begin{itemize}
-    \item The canonical infinite-horizon framework with heterogeneous
-          consumers, standard in macroeconomics and finance, lacks a
-          preference-based index that consistently quantifies the welfare
-          impact of economic policies.
-    \item The classic money-metric indices, equivalent and compensating
-          variation, fail two consistency requirements in this setting: they
-          are non-additive across sets of policies, and their predictions can
-          depend on the assumed status quo or on the order in which
-          alternatives are implemented.
-    \item The paper delivers a positive result on when these failures become
-          quantitatively negligible.
+    \item A policymaker designing a stimulus package chooses among variants
+          differing in size, duration and targeted consumers, evaluated in
+          a stochastic infinite-horizon model with heterogeneous consumers.
+    \item There the classic money-metric indices generate ambiguous
+          predictions: recommendations may depend on the assumed status quo
+          or on the order in which alternatives are implemented. Formally,
+          the index is not additive on a set of policies (Roberts 1980,
+          Slesnick 1991).
+    \item The paper offers a positive result: in a small open economy with
+          heterogeneous consumers, money-metric welfare is nearly additive
+          for transient policies when consumers are patient.
   \end{itemize}
 \end{frame}
 
 % 3 ---------------------------------------------------------------------------
 \begin{frame}{Money-metric welfare indices}
-  \kicker{Definitions}
-  \small For consumer $i$ with lifetime utility $V_i$, wealth $w_i$ and a
-  policy moving the environment from $\vartheta^0$ to $\vartheta^1$, the
-  equivalent and compensating variations solve
-  \[ V_i\!\left(w_i + EV_i;\,\vartheta^0\right) = V_i\!\left(w_i;\,\vartheta^1\right),
+  \kicker{Definitions and the consistency failures}
+  \small Following Hicks (1939) and McKenzie (1983), fix a consumption flow
+  $x$ as numeraire. For consumer $i$ with lifetime utility $V_i$, wealth
+  $w_i$ and a policy experiment $p \to p'$, the equivalent and compensating
+  variations solve
+  \[ V_i\!\left(w_i + EV_i;\,p\right) = V_i\!\left(w_i;\,p'\right),
      \qquad
-     V_i\!\left(w_i;\,\vartheta^0\right) = V_i\!\left(w_i - CV_i;\,\vartheta^1\right). \]
+     V_i\!\left(w_i;\,p\right) = V_i\!\left(w_i - CV_i;\,p'\right). \]
   \begin{itemize}
-    \item Additivity would require the index of a bundle of policies to equal
-          the sum of the indices of its elements; exact additivity fails for
-          general preferences, and with it order-independence.
-    \item The question is under what restrictions the money metric becomes
-          approximately additive, so that policy rankings aggregate.
+    \item Additivity would require the index of a bundle of policies to
+          equal the sum of the indices of its elements. It fails for general
+          preferences, and with it order-independence of rankings.
+    \item A policy-relevant index must also respect the existing consumers'
+          heterogeneity, which makes interpersonal aggregation the second
+          obstacle.
   \end{itemize}
 \end{frame}
 
 % 4 ---------------------------------------------------------------------------
-\begin{frame}{Main results}
-  \kicker{Existence, uniqueness and the additive limit}
-  \small
+\begin{frame}{Motivating example}
+  \kicker{Open economy, two CRRA consumers}
+  \small Each consumer $i=1,2$ maximizes utility over deterministic
+  consumption streams subject to a sequence of budget constraints,
+  \[ \max \;\sum_{t=0}^{\infty} \beta^{t}\,
+        \frac{\left(c^{i}_{t}\right)^{1-\theta_i}-1}{1-\theta_i}
+     \qquad \text{s.t.}\qquad
+     c^{i}_{t} + q_{t+1} w^{i}_{t+1} \;=\; w^{i}_{t} + A^{i}_{t} l^{i}_{t}, \]
+  with bond prices $q_{t+1}$ determined exogenously in international
+  markets, inelastic unit labor supply $l^i_t=1$ and labor productivity
+  $A^i_t$.
   \begin{itemize}
-    \item \textbf{Well-posedness.} For any pair of policies and discount
-          factor $\beta<1$, the equivalent variation exists and is unique
-          (Proposition 1).
-    \item \textbf{Additive limit (Theorem 1).} As consumers become patient,
-          aggregate equivalent variation converges to a surplus
-          representation,
-          \[ \lim_{\beta\to 1} EV_{p,p'} \;=\;
-             \frac{S(\Delta q^{0},\,\Delta Y)}{\bar v_x}, \]
-          which is additive on the set of policies and measurable with
-          respect to aggregate income. The surplus consists of a
-          terms-of-trade component and an aggregate-income component.
-    \item Near-additivity for $\beta$ close to one delivers consistent
-          rankings for transient policies.
+    \item Policies perturb fundamentals, prices and productivities, in the
+          initial periods. The question is how the aggregate equivalent
+          variation of such perturbations behaves as $\beta \to 1$.
   \end{itemize}
 \end{frame}
 
 % 5 ---------------------------------------------------------------------------
-\begin{frame}{Application: stimulus variants in the Polish economy}
-  \kicker{Quantifying the approximation error}
+\begin{frame}{Example: the surplus formula}
+  \kicker{Limit welfare from one closed form}
+  \small For policies affecting fundamentals in period zero, the limit
+  welfare effects follow from a closed-form surplus function (eq.\ 1 of the
+  paper),
+  \[ S_p \;=\; S\!\left(Y_0,\,q_1;\,\theta_1,\theta_2\right), \]
+  a function of aggregate income $Y_0$ and the price $q_1$ of the bond
+  paying in period one, both under the assumed policy, and of the two
+  risk-aversion coefficients.
   \begin{itemize}
-    \item Preference and income distributions are extracted from Polish
-          micro-econometric data; welfare effects of variants of a stimulus
-          package are computed exactly and via the additive approximation.
-    \item For policies affecting the economy within the first four quarters
-          the approximation error is no greater than 1.5\% of the total
-          welfare effect; within twelve quarters, no greater than 5\%.
-    \item As a byproduct the paper contributes to the aggregation
-          literature: exact aggregation of money-metric welfare classically
-          requires Gorman polar form; the patient-consumer limit provides an
-          alternative route for transient policies.
+    \item For any experiment $p \to p'$ the limit equivalent variation is
+          the difference $S_{p'}-S_p$.
+    \item The surplus consists of a terms-of-trade component and an
+          aggregate-income component, so the index in the patient-consumer
+          economy is nearly additive: bundles can be evaluated
+          component-wise.
   \end{itemize}
 \end{frame}
 
 % 6 ---------------------------------------------------------------------------
+\begin{frame}{Admissible policies}
+  \kicker{Assumption 1 · vanishing perturbations}
+  \small The general framework restricts admissible policies to transient
+  ones.
+  \begin{itemize}
+    \item \textbf{Assumption 1.} For policy $p$ there exist constants $C>0$
+          and $\Delta\in(0,1)$ such that
+          \[ \left|\Delta q_{h^{t}}\right| \;\le\; C\,\Delta^{t},
+             \qquad
+             \left|\Delta A^{i}_{h^{t}}\right| \;\le\; C\,\Delta^{t} \]
+          for all periods $t$, histories $h^{t}$ and consumers $i$. The
+          collection of all such policies is denoted $\mathcal{P}$.
+    \item The class covers technological and income shocks, sales and
+          service taxes, lump-sum transfers, subsidies, public spending and
+          social safety-net programs, provided their effects die out
+          geometrically.
+  \end{itemize}
+\end{frame}
+
+% 7 ---------------------------------------------------------------------------
+\begin{frame}{Well-posedness and the main theorem}
+  \kicker{Proposition 1 and Theorem 1}
+  \small
+  \begin{itemize}
+    \item \textbf{Proposition 1.} For any pair $p, p' \in \mathcal{P}$ and
+          discount factor $\beta<1$, the equivalent variation $EV_{p,p'}$
+          exists and is unique.
+    \item \textbf{Theorem 1.} Aggregate equivalent variation has an additive
+          limit, measurable with respect to aggregate income:
+          \[ \lim_{\beta\to 1} EV_{p,p'} \;=\;
+             \frac{S\!\left(\Delta q^{0},\,\Delta Y\right)
+                   - S\!\left(\Delta q^{0\prime},\,\Delta Y'\right)}
+                  {\bar v_{x}} . \]
+    \item Utilities become unbounded as $\beta\to1$, yet the equivalent
+          variations have well-defined limits, and the limits satisfy
+          $|\lim EV_{p,p'}| = |\lim EV_{p',p}|$: status-quo dependence
+          vanishes.
+  \end{itemize}
+\end{frame}
+
+% 8 ---------------------------------------------------------------------------
+\begin{frame}{Aggregation without Gorman}
+  \kicker{A byproduct for the aggregation literature}
+  \begin{itemize}
+    \item Classically, average equivalent variation depends on the
+          distribution of endowments only through the aggregate endowment if
+          and only if preferences are in Gorman polar form (Gorman 1953),
+          a restriction strongly rejected empirically (Blundell et al.\ 2007,
+          Lewbel and Pendakur 2009).
+    \item In the patient-consumer limit the surplus, and hence the limit
+          equivalent variation, is unaffected by the income distribution:
+          aggregation holds for arbitrary preferences when policies are
+          transient.
+    \item In the example, two counterfactuals with identical aggregate
+          output $Y_0=6$ but different allocations across consumers generate
+          the same normative predictions, and the aggregation gap
+          $Ag_{\%}$ converges to zero as $\beta\to1$.
+  \end{itemize}
+\end{frame}
+
+% 9 ---------------------------------------------------------------------------
+\begin{frame}{Application: the Polish economy}
+  \kicker{Calibration from micro-econometric data}
+  \begin{itemize}
+    \item Preference and income distributions are extracted from Polish
+          micro-econometric data: the productivity distribution from
+          household-level sources and risk-aversion heterogeneity based on
+          the Polish risk-taking preference micro-data of Falk et al.\
+          (2018), with the two distributed independently.
+    \item The quarterly discount factor is $\beta=0.9924$, corresponding to
+          the annual value $0.97$ typically assumed for Poland.
+    \item Uncertainty enters through global and idiosyncratic shocks: labor
+          markets are in a normal state or a slowdown, consumers are
+          employed or unemployed, and the calibrated transition matrices
+          yield an unconditional employment rate of $0.9161$, matching
+          average BAEL rates.
+  \end{itemize}
+\end{frame}
+
+% 10 --------------------------------------------------------------------------
+\begin{frame}{Experiment: recovery paths from the pandemic slowdown}
+  \kicker{Factual vs stimulus variants}
+  \begin{itemize}
+    \item The experiment compares recovery paths from the slowdown triggered
+          by the COVID-19 pandemic. The labor market starts in recession,
+          with the period-zero employment rate set to $0.94$, the empirical
+          value for January 2021, and initial beliefs determined accordingly.
+    \item The factual policy is a recovery path without intervention;
+          counterfactual variants of a stimulus package differ in how and
+          when they perturb productivities.
+    \item For each variant the welfare effect is computed exactly and via
+          the additive surplus approximation, so the approximation error is
+          observable by construction.
+  \end{itemize}
+\end{frame}
+
+% 11 --------------------------------------------------------------------------
+\begin{frame}{Accuracy of the additive approximation}
+  \kicker{Quantified error bounds}
+  \begin{itemize}
+    \item For policies affecting the economy within the first four quarters
+          the approximation error is no greater than $1.5\%$ of the total
+          welfare effect.
+    \item For policies affecting the economy within twelve quarters the
+          error is no greater than $5\%$.
+    \item Accuracy improves with the discount factor and with shorter policy
+          duration, so a decision-maker can reach arbitrary accuracy by
+          restricting attention to sufficiently short-lived policies.
+  \end{itemize}
+\end{frame}
+
+% 12 --------------------------------------------------------------------------
 \begin{frame}{Implications}
   \kicker{For applied policy evaluation}
   \begin{itemize}
@@ -112,11 +227,11 @@
           quantified approximation error.
     \item The result connects the applied macro practice of reporting
           consumption-equivalent welfare numbers to an explicit preference
-          foundation.
+          foundation, without imposing Gorman polar form.
   \end{itemize}
 \end{frame}
 
-% 7 ---------------------------------------------------------------------------
+% 13 --------------------------------------------------------------------------
 \begin{frame}[plain]
   \vspace{12mm}
   {\fontsize{27}{31}\selectfont\bfseries\color{ycink}Thank you.\par}
