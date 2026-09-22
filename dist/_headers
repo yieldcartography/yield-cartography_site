@@ -26,7 +26,7 @@
   Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=300
 
-# --- Cockpit embed: root page frameable by approved partners only.
+# --- Cockpit embed: frameable by approved partners only.
 # To approve a new partner after they contact you, append their origin here.
-/
+/cockpit/*
   Content-Security-Policy: frame-ancestors 'self' https://grape.org.pl https://www.grape.org.pl

@@ -13,7 +13,7 @@
     'yield-curve': '/curves/',
     'term-premia': '/term-premia/',
     'oracle': '/oracle/',
-    'cockpit': '/'
+    'cockpit': '/cockpit/'
   };
 
   var self = document.currentScript;

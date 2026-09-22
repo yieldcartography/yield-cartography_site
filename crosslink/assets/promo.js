@@ -154,7 +154,7 @@ var FA_CARDS = (function () {
   }
 
   function init() {
-    if (location.pathname === '/' || location.pathname === '/index.html') return;   /* the cockpit stays clean */
+    if (location.pathname.indexOf('/cockpit') === 0) return;   /* the cockpit stays clean */
     if (!document.querySelector('main') || document.getElementById('fa-promo-css')) return;
     var st = document.createElement('style'); st.id = 'fa-promo-css'; st.textContent = FA_CARDS.CSS + '\n' + CSS; document.head.appendChild(st);
     if (!isOff()) build();

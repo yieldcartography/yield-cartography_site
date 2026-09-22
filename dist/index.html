@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cockpit — yieldcartography</title>
-<meta name="description" content="The yield cartography cockpit: the Polish sovereign curve, its BRW decomposition into expected rates and term premia, monetary-policy text signals, cross-market benchmarks and liquidity, one screen, every number linked to its dashboard.">
+<title>yieldcartography — mapping less-liquid sovereign bond markets</title>
+<meta name="description" content="Interactive yield-curve, term-premium, liquidity, and expectations-hypothesis dashboards for less-liquid sovereign bond markets, with a focus on Polish sovereigns and a comparative international view.">
 <link rel="stylesheet" href="/assets/style.css?v=9">
 <link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
@@ -13,89 +13,33 @@
 <link rel="shortcut icon" href="/assets/favicon.ico">
 <link rel="canonical" href="https://yieldcartography.com/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Cockpit — yieldcartography">
-<meta property="og:description" content="One screen for the Polish sovereign curve: yields, expected rates, term premia, policy text, cross-market and liquidity.">
+<meta property="og:title" content="yieldcartography — mapping less-liquid sovereign bond markets">
+<meta property="og:description" content="Open daily-refreshed yield curves, term premia, microstructure liquidity, and expectations-hypothesis tests for less-liquid sovereign bond markets, anchored on the Polish PLN curve.">
 <meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:url" content="https://yieldcartography.com/">
 <meta property="og:site_name" content="yieldcartography">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="yieldcartography — mapping less-liquid sovereign bond markets">
+<meta name="twitter:description" content="Open daily-refreshed yield curves, term premia, microstructure liquidity, and expectations-hypothesis tests for less-liquid sovereign bond markets, anchored on the Polish PLN curve.">
+<meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
 <style>
-  main.board { max-width: 1180px; }
-  .board-frame { border: 1px solid var(--rule); border-radius: 8px;
-                 background: #fcfcfb; padding: 16px 10px 10px 10px; }
-  .brow { position: relative; display: grid; grid-template-columns: repeat(5, 1fr);
-          gap: 10px; padding: 12px 10px 8px 10px; border-radius: 4px; margin: 0 0 12px 0;
-          border: 1px solid rgba(0,0,0,0.07); }
-  .brow:last-child { margin-bottom: 0; }
-  .brow-head { position: absolute; top: -8px; left: 10px; right: 10px;
-               display: flex; justify-content: space-between; align-items: baseline;
-               pointer-events: none; }
-  .brow-head > * { pointer-events: auto; background: #fcfcfb; padding: 0 7px; }
-  .brow-title { font-family: var(--mono); font-size: 10px; font-weight: 600;
-                text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
-  .brow-link { font-family: var(--mono); font-size: 10px; color: var(--muted);
-               text-decoration: none; letter-spacing: 0.4px; }
-  .brow-link:hover { color: var(--accent); }
-  .g-curve   { background: rgba(31,78,121,0.045); }
-  .g-rf      { background: rgba(46,117,182,0.04); }
-  .g-tp      { background: rgba(194,82,45,0.045); }
-  .g-policy  { background: rgba(90,90,90,0.05); }
-  .g-xm      { background: rgba(46,125,50,0.04); }
-  .g-tr      { background: rgba(31,78,121,0.03); }
-  .g-liq     { background: rgba(194,82,45,0.03); }
-  .g-meta    { background: rgba(90,90,90,0.03); }
-  a.btile { display: block; background: #fff; border: 1px solid var(--rule);
-            border-radius: 4px; padding: 8px 10px; text-decoration: none;
-            color: inherit; min-height: 58px; transition: border-color .12s, box-shadow .12s; }
-  a.btile:hover { border-color: var(--accent); box-shadow: 0 1px 6px rgba(31,78,121,0.12); }
-  a.btile.wide { grid-column: span 2; }
-  .bt-label { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase;
-              letter-spacing: 0.6px; color: var(--muted); margin-bottom: 3px; white-space: nowrap; }
-  .bt-value { font-size: 20px; font-weight: 700; color: var(--ink); letter-spacing: -0.3px;
-              line-height: 1.15; }
-  .bt-sub   { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top: 2px; }
-  .bt-arrow { font-size: 12px; font-weight: 600; margin-left: 6px; font-family: var(--mono); }
-  .up  { color: var(--green, #2e7d32); }
-  .dn  { color: var(--salmon, #c2522d); }
-  .flat{ color: var(--muted); }
-  .bt-line { display: flex; align-items: center; gap: 6px; font-family: var(--mono);
-             font-size: 11px; color: var(--ink); margin-top: 3px; }
-  .bt-line b { font-weight: 600; }
-  .badge { display: inline-block; font-family: var(--mono); font-size: 8.5px;
-           text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent);
-           border: 1px solid var(--accent-soft, var(--accent)); border-radius: 3px;
-           padding: 1px 5px; margin-left: 6px; vertical-align: middle; }
-  .g-meta a.btile { min-height: 46px; }
-  .g-meta .bt-value { font-size: 15px; }
-  .obar { display: flex; height: 14px; border-radius: 3px; overflow: hidden;
-          margin-top: 5px; font-family: var(--mono); font-size: 8.5px; color: #fff; }
-  .obar > div { display: flex; align-items: center; justify-content: center;
-                white-space: nowrap; overflow: hidden; }
-  a.btile { position: relative; }
-  a.btile[data-tip]:hover::after { content: attr(data-tip); position: absolute;
-    left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%);
-    width: 260px; background: #1d2733; color: #f2f2f2; border-radius: 5px;
-    padding: 8px 10px; font-family: var(--sans, -apple-system, sans-serif);
-    font-size: 11.5px; line-height: 1.45; font-weight: 400; letter-spacing: 0;
-    text-transform: none; white-space: normal; z-index: 30; pointer-events: none;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.25); }
-  a.btile[data-tip]:hover::before { content: ''; position: absolute; left: 50%;
-    bottom: calc(100% + 2px); transform: translateX(-50%);
-    border: 6px solid transparent; border-top-color: #1d2733; z-index: 30; }
-  .obar .cut  { background: #2e75b6; }
-  .obar .hold { background: #9aa3ab; }
-  .obar .hike { background: #d11b1b; }
-  @media (max-width: 900px){ .brow { grid-template-columns: repeat(2, 1fr); }
-                             a.btile.wide { grid-column: span 2; } }
+  .card { position: relative; }
+  .card .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+  .card .card-label { margin: 0; }
+  .card .card-icon { flex-shrink: 0; opacity: 0.92; }
+  .card:hover .card-icon { opacity: 1; }
 </style>
+<script src="/assets/promo.js?v=5" defer></script>
 <script src="/assets/search.js?v=1" defer></script>
 </head>
 <body>
 
 <header class="site-header">
-  <a href="/landing/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
   <nav>
-    <a href="/" class="active">cockpit</a>
+    <a href="/cockpit/">cockpit</a>
     <a href="/curves/">curves</a>
     <a href="/term-premia/">term premia</a>
     <a href="/oracle/">oracle</a>
@@ -109,451 +53,281 @@
   </nav>
 </header>
 
-<main class="board" style="padding-top:24px">
+<main>
 
-  <div class="board-frame">
+  <section class="hero">
+    <h1>Mapping <span class="accent">less-liquid</span> sovereign bond markets.</h1>
+    <p class="lede">Interactive yield-curve, term-premium, liquidity, and expectations-hypothesis dashboards built on a 21-year daily panel of Polish sovereigns, with comparative views against US and euro-area benchmarks. Open methodology, publicly available data, frequent refreshes.</p>
+  </section>
 
-  <div class="brow g-curve" id="row-curve">
-    <div class="brow-head"><span class="brow-title">Yield curve · NSS zero rates</span><a class="brow-link" href="/curves/">curves →</a></div>
-  </div>
 
-  <div class="brow g-rf" id="row-rf">
-    <div class="brow-head"><span class="brow-title">Expected rate path · BRW risk-free leg</span><a class="brow-link" href="/term-premia/">term premia →</a></div>
-  </div>
+  <section class="section">
+    <div class="cards">
+      <a class="card" href="/curves/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <line x1="4" y1="32" x2="36" y2="32" stroke="#d8d8d8" stroke-width="1"/>
+            <path d="M 4 28 Q 12 18 20 14 T 36 8" fill="none" stroke="#1f4e79" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="8" cy="25" r="2" fill="#888"/>
+            <circle cx="15" cy="18" r="3" fill="#1f4e79"/>
+            <circle cx="24" cy="12" r="3.5" fill="#c2522d"/>
+            <circle cx="33" cy="9" r="2.5" fill="#c2522d"/>
+          </svg>
+        </div>
+        <h3>Yield curves</h3>
+        <p>Daily NSS-fitted zero-coupon yield curves on the Polish sovereign panel from 2005 to today. Interactive snapshot viewer, bond bubbles, 1y forwards, NBP forecasters, US and euro-area comparison, and PCA loadings.</p>
+      </a>
+      <a class="card" href="/term-premia/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <path d="M 4 24 Q 14 14 36 10 L 36 22 Q 14 22 4 24 Z" fill="#1f4e79" fill-opacity="0.13"/>
+            <path d="M 4 24 Q 14 14 36 10" fill="none" stroke="#1f4e79" stroke-width="2" stroke-linecap="round"/>
+            <path d="M 4 24 Q 14 22 36 22" fill="none" stroke="#c2522d" stroke-width="1.7" stroke-linecap="round" stroke-dasharray="2.2,2.2"/>
+          </svg>
+        </div>
+        <h3>Term premia</h3>
+        <p>Adrian-Crump-Moench and Bauer-Rudebusch-Wu decompositions across 1y, 2y, 5y, 10y horizons. Cross-country term-spread comparison and full ACM-vs-BRW correlation heatmap.</p>
+      </a>
+      <a class="card" href="/oracle/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <path d="M 14 33 Q 20 30.5 26 33 L 24.5 35.5 L 15.5 35.5 Z" fill="#1f4e79" fill-opacity="0.30"/>
+            <circle cx="20" cy="18" r="12" fill="#1f4e79" fill-opacity="0.10" stroke="#1f4e79" stroke-width="1.8"/>
+            <path d="M 20 6 A 12 12 0 0 1 20 30 A 8 12 0 0 0 20 6 Z" fill="#1f4e79" fill-opacity="0.15"/>
+            <circle cx="15.5" cy="13" r="2.3" fill="#c2522d" stroke="#fff" stroke-width="0.8"/>
+          </svg>
+        </div>
+        <h3>Oracle</h3>
+        <p>The next NBP move, priced and parsed: the ACM and BRW bias-corrected market path, the professional-forecaster survey, and the lexical tone of the MPC minutes, blended into one next-move gauge with two decades of monthly history behind a slider.</p>
+      </a>
+      <a class="card" href="/mpc/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <line x1="4"  y1="22" x2="9"  y2="22" stroke="#1f4e79" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="4"  y1="25" x2="8"  y2="25" stroke="#888"    stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="4"  y1="28" x2="10" y2="28" stroke="#2e7d32" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="14" y1="19" x2="20" y2="19" stroke="#1f4e79" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="14" y1="22" x2="18" y2="22" stroke="#888"    stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="14" y1="25" x2="21" y2="25" stroke="#2e7d32" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="14" y1="28" x2="17" y2="28" stroke="#888"    stroke-width="1.0" stroke-linecap="round"/>
+            <line x1="25" y1="14" x2="33" y2="14" stroke="#c2522d" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="25" y1="17" x2="31" y2="17" stroke="#c2522d" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="25" y1="20" x2="34" y2="20" stroke="#1f4e79" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="25" y1="23" x2="29" y2="23" stroke="#888"    stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="25" y1="26" x2="32" y2="26" stroke="#1f4e79" stroke-width="1.3" stroke-linecap="round"/>
+            <line x1="3"   y1="33" x2="37"  y2="33" stroke="#d8d8d8" stroke-width="1"/>
+            <line x1="6.5" y1="33" x2="6.5" y2="35.5" stroke="#aaa"  stroke-width="0.6"/>
+            <line x1="17"  y1="33" x2="17"  y2="35.5" stroke="#aaa"  stroke-width="0.6"/>
+            <line x1="29"  y1="33" x2="29"  y2="35.5" stroke="#aaa"  stroke-width="0.6"/>
+          </svg>
+        </div>
+        <h3>MPC minutes</h3>
+        <p>Text-mining of every NBP MPC decision-making meeting minute since April 2007. Hawkish-dovish tone with rate path, eight macro topics, year-by-year word clouds, pairwise meeting similarity, and an interactive term tracker.</p>
+      </a>
+      <a class="card" href="/liquidity/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <circle cx="8"  cy="30" r="2"   fill="#1f4e79" opacity="0.45"/>
+            <circle cx="14" cy="22" r="2.5" fill="#1f4e79" opacity="0.65"/>
+            <circle cx="20" cy="28" r="2"   fill="#1f4e79" opacity="0.55"/>
+            <circle cx="26" cy="18" r="3"   fill="#c2522d" opacity="0.75"/>
+            <circle cx="32" cy="24" r="2"   fill="#1f4e79" opacity="0.55"/>
+            <circle cx="22" cy="12" r="2.5" fill="#c2522d" opacity="0.65"/>
+            <circle cx="12" cy="14" r="2"   fill="#1f4e79" opacity="0.55"/>
+            <circle cx="30" cy="11" r="2"   fill="#c2522d" opacity="0.7"/>
+          </svg>
+        </div>
+        <h3>Liquidity measures</h3>
+        <p>Bid-ask spreads, zero-trading-day frequency, Amihud illiquidity, Roll, Corwin-Schultz and a composite index across the BondSpot panel — monthly aggregates from 2005 to today.</p>
+      </a>
+      <a class="card" href="/total-return/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <line x1="4" y1="34" x2="36" y2="34" stroke="#d8d8d8" stroke-width="1"/>
+            <line x1="8"    y1="14" x2="9.5"  y2="14" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <line x1="12.5" y1="12" x2="14"   y2="12" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <line x1="17"   y1="10" x2="18.5" y2="10" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <line x1="21.5" y1="16" x2="23"   y2="16" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <line x1="26"   y1="26" x2="27.5" y2="26" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <line x1="30.5" y1="24" x2="32"   y2="24" stroke="#aaa" stroke-width="0.55" stroke-dasharray="1.1,1.2"/>
+            <rect x="5"    y="14" width="3" height="20" fill="#1f4e79"/>
+            <rect x="9.5"  y="12" width="3" height="2"  fill="#2e75b6"/>
+            <rect x="14"   y="10" width="3" height="2"  fill="#1f4e79"/>
+            <rect x="18.5" y="10" width="3" height="6"  fill="#c2522d" opacity="0.55"/>
+            <rect x="23"   y="16" width="3" height="10" fill="#c2522d"/>
+            <rect x="27.5" y="24" width="3" height="2"  fill="#2e75b6" opacity="0.65"/>
+            <rect x="32"   y="24" width="3" height="10" fill="#1a1a1a"/>
+          </svg>
+        </div>
+        <h3>Total return</h3>
+        <p>Seven-component decomposition (coupon, reinvestment, roll-down, expected-rate change, term-premium change, convexity, residual) of every Polish Treasury bond's quarterly total return. TBSP-level cards and per-bond explorer over 2006-2026.</p>
+      </a>
+      <a class="card" href="/eh-tests/">
+        <div class="card-head">
+          <div class="card-label">Dashboard</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <rect x="6"  y="6"  width="9" height="9" fill="#1f4e79" opacity="0.75"/>
+            <rect x="16" y="6"  width="9" height="9" fill="#1f4e79" opacity="0.32"/>
+            <rect x="26" y="6"  width="9" height="9" fill="#fff"   stroke="#d8d8d8" stroke-width="0.6"/>
+            <rect x="6"  y="16" width="9" height="9" fill="#1f4e79" opacity="0.32"/>
+            <rect x="16" y="16" width="9" height="9" fill="#fff"   stroke="#d8d8d8" stroke-width="0.6"/>
+            <rect x="26" y="16" width="9" height="9" fill="#c2522d" opacity="0.45"/>
+            <rect x="6"  y="26" width="9" height="9" fill="#fff"   stroke="#d8d8d8" stroke-width="0.6"/>
+            <rect x="16" y="26" width="9" height="9" fill="#c2522d" opacity="0.55"/>
+            <rect x="26" y="26" width="9" height="9" fill="#c2522d" opacity="0.85"/>
+          </svg>
+        </div>
+        <h3>Expectations hypothesis tests</h3>
+        <p>Fama-Bliss FB1 cross-market β heatmaps for Poland, the US and the euro area, macro-spanning regressions, Cochrane-Piazzesi factor and out-of-sample STV — all from the EH paper.</p>
+      </a>
+      <a class="card" href="/shorts/">
+        <div class="card-head">
+          <div class="card-label">Reading</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <rect x="11" y="9"  width="20" height="26" rx="1.5" fill="#fff" stroke="#1f4e79" stroke-width="1.5"/>
+            <rect x="7"  y="6"  width="20" height="26" rx="1.5" fill="#fff" stroke="#1f4e79" stroke-width="1.5"/>
+            <line x1="11" y1="12" x2="22" y2="12" stroke="#1f4e79" stroke-width="1.4"/>
+            <line x1="11" y1="16" x2="24" y2="16" stroke="#888"    stroke-width="0.9"/>
+            <line x1="11" y1="19" x2="23" y2="19" stroke="#888"    stroke-width="0.9"/>
+            <line x1="11" y1="22" x2="21" y2="22" stroke="#888"    stroke-width="0.9"/>
+            <rect x="11" y="25" width="10" height="3.5" fill="#c2522d" opacity="0.7"/>
+          </svg>
+        </div>
+        <h3>Shorts</h3>
+        <p>Two-page summaries of the four working papers behind these dashboards. Each short carries one headline figure, one key table, and a "what this means for practitioners" line. Comments open at the bottom of every short.</p>
+      </a>
+      <a class="card" href="/movies/">
+        <div class="card-head">
+          <div class="card-label">Watch</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <circle cx="20" cy="20" r="14" fill="none" stroke="#1f4e79" stroke-width="1.8"/>
+            <polygon points="16.5,12 16.5,28 28,20" fill="#c2522d"/>
+          </svg>
+        </div>
+        <h3>Movies</h3>
+        <p>4K daily time-lapses of the Polish sovereign curve, term premia, fit diagnostics and forecast family — full 21-year version plus the last-5-years zoom. Embedded YouTube, full resolution available on the channel.</p>
+      </a>
+      <a class="card" href="/about/">
+        <div class="card-head">
+          <div class="card-label">Background</div>
+          <svg class="card-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <path d="M 4 30 C 10 27 16 23 22 21 S 32 19 36 18" fill="none" stroke="#1f4e79" stroke-width="1.6" opacity="0.30"/>
+            <path d="M 4 26 C 10 22 16 16 22 14 S 32 11 36 10" fill="none" stroke="#1f4e79" stroke-width="2.0" opacity="0.55"/>
+            <path d="M 4 22 C 10 16 16 10 22  8 S 32  5 36  4" fill="none" stroke="#c2522d" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="32" cy="6" r="2.1" fill="#c2522d" stroke="#fff" stroke-width="0.6"/>
+          </svg>
+        </div>
+        <h3>About the project</h3>
+        <p>Author bio, methodology, data sources, full publications list with DOIs, and a contact form for collaboration enquiries.</p>
+      </a>
+    </div>
+  </section>
 
-  <div class="brow g-tp" id="row-tp">
-    <div class="brow-head"><span class="brow-title">Term premia · BRW bias-corrected</span><a class="brow-link" href="/term-premia/">term premia →</a></div>
-  </div>
+  <section class="section">
+    <h2 class="with-rule">What this is</h2>
+    <p>This site publishes daily-refreshed sovereign yield-curve estimates, term-premium decompositions, liquidity diagnostics, and expectations-hypothesis test outputs for less-liquid sovereign bond markets. The Polish curve is the running empirical case, with the methodology general enough to extend to other Central and Eastern European sovereigns. The underlying methods follow the published research programme on liquidity-weighted Nelson-Siegel-Svensson curve fitting, Adrian-Crump-Moench affine term-structure modelling, the Bauer-Rudebusch-Wu small-sample bias correction, and the Fama-Bliss / Cochrane-Piazzesi family of expectations-hypothesis tests.</p>
+    <p>Everything is built from publicly-available data: BondSpot venue closing fixings, Polish Ministry of Finance disclosures of outstanding amounts and turnover, NBP monetary-policy rates, the NBP Survey of Professional Forecasters, the GSW US Treasury zero-coupon panel, and the ECB AAA spot-rate database.</p>
+  </section>
 
-  <div class="brow g-policy" id="row-policy">
-    <div class="brow-head"><span class="brow-title">Monetary policy · text and market signals</span><a class="brow-link" href="/mpc/">MPC →</a></div>
-  </div>
+  <section class="section">
+    <h2 class="with-rule">Latest</h2>
+    <p>Daily snapshots refreshed continuously. Curves and cross-country comparison panels refreshed daily. Term-premia dashboard refreshed weekly. Liquidity and EH-tests dashboards refreshed monthly. Working papers and publications listed on the about page.</p>
+  </section>
 
-  <div class="brow g-xm" id="row-xm">
-    <div class="brow-head"><span class="brow-title">Cross-market · US and euro-area benchmarks</span><a class="brow-link" href="/eh-tests/">EH tests →</a></div>
-  </div>
-
-  <div class="brow g-tr" id="row-tr">
-    <div class="brow-head"><span class="brow-title">Total return · TBSP decomposition, quarterly</span><a class="brow-link" href="/total-return/">total return →</a></div>
-  </div>
-
-  <div class="brow g-liq" id="row-liq">
-    <div class="brow-head"><span class="brow-title">Liquidity · BondSpot panel, monthly</span><a class="brow-link" href="/liquidity/">liquidity →</a></div>
-  </div>
-
-  <div class="brow g-meta" id="row-meta">
-    <div class="brow-head"><span class="brow-title">Vintage &amp; explore</span><a class="brow-link" href="/landing/#freshness">full data lineage →</a></div>
-  </div>
-
-  </div>
+  <section class="section" id="freshness">
+    <h2 class="with-rule">Data lineage &amp; freshness</h2>
+    <p style="color:var(--muted);margin:0 0 14px 0;font-size:13px">Most recent observation timestamp and source file for every upstream input feeding this site, refreshed on every build. The Polish-side feeds (BondSpot, Min-Fin, NBP) are scraped daily by the pipeline. The US (FRB GSW) and euro-area (ECB AAA) Svensson-parameter feeds are pulled daily from the Federal Reserve Board and the ECB Data Portal and then re-fitted onto the canonical zero-coupon grid.</p>
+    <div class="panel" style="background:#fafafa">
+      <div style="overflow-x:auto">
+        <table id="freshTable" style="width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11.5px"></table>
+      </div>
+    </div>
+  </section>
 
 </main>
 
+<script>
+(async function(){
+  try {
+    const r = await fetch('/data/yields.json', {cache:'no-store'});
+    if (!r.ok) return;
+    const DATA = await r.json();
+    const f = DATA.freshness;
+    const el = document.getElementById('freshTable');
+    if (!el || !f) return;
+    const rows = [
+      ['bondspot_fixings',         'BondSpot fixings (price / bid / ask)'],
+      ['bondspot_turnover',        'BondSpot daily turnover (venue)'],
+      ['minfin_turnover',          'Min-Fin monthly turnover (Transakcje_po_seriach)'],
+      ['minfin_obligacje_hurtowe', 'Min-Fin auctions & outstanding (Obligacje_Hurtowe)'],
+      ['minfin_coupon_schedules',  'Min-Fin coupon schedules (kalkulatorodsetek)'],
+      ['nbp_reference_rate',       'NBP MPC reference rate'],
+      ['mpc_minutes',              'NBP MPC minutes (tone corpus)'],
+      ['fed_gsw_curve',            'FRB GSW US Treasury Svensson curve'],
+      ['ecb_aaa_curve',            'ECB AAA euro-area Svensson curve'],
+      ['tbsp_published_index',     'TBSP published index (Treasury BondSpot Poland)'],
+      ['nss_curves',               'LW-NSS fitted Polish zero-coupon curves'],
+      ['acm_term_premia',          'ACM term-premia panel'],
+      ['brw_term_premia',          'BRW bias-corrected term premia'],
+    ];
+    let html = '<thead><tr style="background:#f0f0f0">'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Series</th>'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Latest observation</th>'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Source</th>'
+      + '<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #d8d8d8;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:#6a6a6a">Notes</th>'
+      + '</tr></thead><tbody>';
+    for (const [k, label] of rows){
+      const e = f[k]; if (!e) continue;
+      const latest = e.last_obs || e.last_change || e.last_auction || e.last_updated || e.last_ref_month || e.last_file || '';
+      const valStr = e.value ? ' (' + e.value + ')' : '';
+      html += '<tr>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#1a1a1a">' + label + '</td>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#1f4e79;font-weight:600">' + latest + valStr + '</td>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#6a6a6a">' + (e.source||'') + '</td>'
+        + '<td style="padding:6px 8px;border-bottom:1px solid #eee;color:#6a6a6a">' + (e.detail||'') + '</td>'
+        + '</tr>';
+    }
+    html += '</tbody>';
+    el.innerHTML = html;
+  } catch(_) { /* silent */ }
+})();
+</script>
+
 <footer class="site-footer">
   <div class="footer-inner">
-    <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
-    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
-        <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li></ul></div>
-    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+    <div>
+      <h4>Dashboards</h4>
+      <ul>
+        <li><a href="/curves/">Yield curves</a></li>
+        <li><a href="/term-premia/">Term premia</a></li>
+        <li><a href="/liquidity/">Liquidity measures</a></li>
+        <li><a href="/total-return/">Total return</a></li>
+        <li><a href="/eh-tests/">EH tests</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Project</h4>
+      <ul>
+        <li><a href="/about/">About</a></li>
+        <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li>
+        
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li>
+      </ul>
+    </div>
   </div>
   <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>
 </footer>
-
-<!-- YC embed mode (activated by ?embed=1): header, footer and frame chrome off,
-     tiles link out to the full site in a new tab, height posted to the parent
-     for the embed.js auto-resizer. Framing is gated by the frame-ancestors
-     allowlist in _headers, extended per partner on request. -->
-<style>
-  body.yc-embed .site-header,
-  body.yc-embed .site-footer { display:none !important; }
-  body.yc-embed { background:#fff; }
-  body.yc-embed main.board { max-width:none; margin:0; padding:8px 10px 12px; }
-  body.yc-embed .board-frame { border:none; padding:6px 0 0 0; background:#fff; }
-  body.yc-embed .brow-head > * { background:#fff; }
-</style>
-<script>
-(function(){
-  if (new URLSearchParams(location.search).get('embed') !== '1') return;
-  document.body.classList.add('yc-embed');
-  document.addEventListener('click', function(e){
-    var a = e.target.closest && e.target.closest('a');
-    if (a && a.host === location.host){ a.target = '_blank'; a.rel = 'noopener'; }
-  });
-  function postH(){
-    var h = Math.ceil(document.body.getBoundingClientRect().height);
-    if (window.parent !== window) parent.postMessage({ type:'yc-embed-height', height:h }, '*');
-  }
-  window.addEventListener('load', postH);
-  if (window.ResizeObserver) new ResizeObserver(postH).observe(document.body);
-  setInterval(postH, 1200);
-})();
-</script>
-<script>
-let DATA = null, MPC = null, ORC = null, TR = null;
-
-const FLAGS = {
-  pl: '<svg viewBox="0 0 15 11" width="14" height="10"><rect width="15" height="5.5" fill="#f5f5f5" stroke="#d0d0d0" stroke-width="0.5"/><rect y="5.5" width="15" height="5.5" fill="#dc143c"/></svg>',
-  us: '<svg viewBox="0 0 15 11" width="14" height="10"><rect width="15" height="11" fill="#b22234"/><g fill="#fff"><rect y="1.6" width="15" height="1.6"/><rect y="4.7" width="15" height="1.6"/><rect y="7.9" width="15" height="1.6"/></g><rect width="6.5" height="5.5" fill="#3c3b6e"/></svg>',
-  ea: '<svg viewBox="0 0 15 11" width="14" height="10"><rect width="15" height="11" fill="#003399"/><g fill="#ffcc00"><circle cx="7.5" cy="2.6" r="0.6"/><circle cx="10.1" cy="3.7" r="0.6"/><circle cx="11.2" cy="5.5" r="0.6"/><circle cx="10.1" cy="7.3" r="0.6"/><circle cx="7.5" cy="8.4" r="0.6"/><circle cx="4.9" cy="7.3" r="0.6"/><circle cx="3.8" cy="5.5" r="0.6"/><circle cx="4.9" cy="3.7" r="0.6"/></g></svg>',
-};
-
-function lastTwo(arr){
-  if (!arr) return [null, null];
-  let i = arr.length - 1;
-  while (i >= 0 && (arr[i] === null || arr[i] === undefined)) i--;
-  if (i < 0) return [null, null];
-  let j = i - 1;
-  while (j >= 0 && (arr[j] === null || arr[j] === undefined)) j--;
-  return [arr[i], j >= 0 ? arr[j] : null];
-}
-
-function arrow(cur, prev, dec, unit, thr){
-  if (cur === null || prev === null) return '';
-  const d = cur - prev;
-  if (Math.abs(d) < (thr || 0.0001)) return '<span class="bt-arrow flat">·</span>';
-  const cls = d > 0 ? 'up' : 'dn';
-  const sym = d > 0 ? '▲' : '▼';
-  return `<span class="bt-arrow ${cls}">${sym} ${d > 0 ? '+' : ''}${d.toFixed(dec)}${unit}</span>`;
-}
-
-const TIPS = [
-  [/^zero yield/, 'NSS-fitted zero-coupon spot rate at this tenor from the latest daily fit of the BondSpot bond panel, with the NBP bill rate anchoring the short end. The arrow is the day-over-day change in basis points.'],
-  [/^2s10s/, '10y minus 2y zero yield, the classic curve-steepness gauge. Positive means an upward-sloping curve.'],
-  [/^E\[avg short rate\]/, 'Expected average short rate over this horizon from the BRW bias-corrected decomposition: the risk-free leg of the yield once the term premium is stripped out. Weekly.'],
-  [/^NBP reference rate/, 'The NBP reference rate, with the size and date of the last MPC move.'],
-  [/^term premium/, 'BRW bias-corrected term premium at this tenor: the compensation demanded over expected short rates, in basis points. Weekly.'],
-  [/^long-run E\[r\]/, 'VAR-implied long-run expected short rate per market: the level the expected-rate path converges to in the ACM estimation (annualized delta0 with demeaned factors). Not an r-star estimate.'],
-  [/^policy regime/, 'Phase classification from the minutes text model, dated from the meeting where the stance flipped.'],
-  [/^3m implied move/, 'Cumulative policy move priced by the BRW risk-free path over the next 3 months, in 25 bp steps. A step registers only once 0.75 of it is priced, so small drifts read as none.'],
-  [/^6m additional move/, 'Steps priced beyond the 3m horizon. None here means the priced path is flat between 3m and 6m.'],
-  [/y1y forward$/, 'The 1y forward rate starting this many years ahead, read off the fitted NSS zero curve. The grey figure is the same forward off the BRW risk-free path, so the gap between the two is the forward term premium.'],
-  [/^US 10y TP/, 'Monthly ACM 10y term premium fitted on the FRB GSW zero-coupon panel with the same pipeline as the Polish curve.'],
-  [/^EA 10y TP/, 'Monthly ACM 10y term premium fitted on the ECB AAA spot-rate panel with the same pipeline as the Polish curve.'],
-  [/^corr PL/, 'Correlation of monthly PL BRW and US ACM 10y term-premium levels over the common sample.'],
-  [/^TBSP total return/, 'The published TBSP index total return over the current quarter, in basis points, marked q-t-d while the quarter is still open. The three tiles to the right decompose it.'],
-  [/^carry & roll leg/, 'The part of the quarterly TBSP return earned by standing still: coupon accrual, reinvestment and roll-down the curve.'],
-  [/^curve move leg/, 'The part of the quarterly TBSP return caused by the curve moving: revaluation from expected-rate changes plus term-premium changes.'],
-  [/^convexity & residual/, 'Second-order convexity gains plus whatever the linear decomposition leaves unexplained. The sub-line shows the gap between the replicated and the published index.'],
-  [/^TBSP index level/, 'The published TBSP total-return index level (base 1,000 at end-2006) and its compound annual growth rate over the full sample.'],
-  [/^BAS median/, 'Median bid-ask spread across BondSpot-quoted Treasury bonds in the month, in basis points. The tightest single gauge of dealer quoting costs.'],
-  [/^ZTD share/, 'Zero-trading-days: the share of bond-days in the month with no BondSpot trade. Higher means a thinner market.'],
-  [/^Amihud median/, 'Median Amihud price-impact measure: absolute return per unit of turnover. Higher means prices move more per zloty traded, i.e. less liquidity.'],
-  [/^composite z/, 'z-scored composite of the six liquidity measures, with normalization constants frozen on the paper window so the live reading stays comparable with the published series.'],
-  [/^liquidity sample/, 'Coverage of the monthly liquidity panel. The newest month is computed month-to-date and marked in progress until it closes.'],
-  [/^NSS panel/, 'The daily NSS fitting history behind every curve on this site: one fitted curve per trading day since 2005.'],
-  [/^latest fit/, 'Bonds in the latest fitting panel and the median absolute fit error across them.'],
-  [/^minutes corpus/, 'The most recent MPC minutes ingested into the text corpus behind the tone index and the oracle text leg. Minutes publish about three weeks after each decision meeting.'],
-  [/^research shorts/, 'Two-page summaries of the working papers behind these dashboards.'],
-  [/^4K curve movies/, 'Daily 4K time-lapses of the curve history, on YouTube.'],
-];
-function tipFor(label){
-  const plain = String(label).replace(/<[^>]*>/g, '');
-  for (const pair of TIPS) if (pair[0].test(plain)) return pair[1];
-  return null;
-}
-function tile(href, label, valueHtml, sub, wide){
-  const tip = tipFor(label);
-  return `<a class="btile${wide ? ' wide' : ''}" href="${href}"${tip ? ` data-tip="${tip}"` : ''}>
-    <div class="bt-label">${label}</div>
-    <div class="bt-value">${valueHtml}</div>
-    ${sub ? `<div class="bt-sub">${sub}</div>` : ''}</a>`;
-}
-
-function fmt(v, dec, unit){ return v === null || v === undefined ? '—' : v.toFixed(dec) + (unit || ''); }
-
-function rowCurve(){
-  const td = DATA.ts_daily || {};
-  const el = document.getElementById('row-curve');
-  let h = el.innerHTML;
-  const date = td.dates ? td.dates[td.dates.length - 1] : '';
-  [['1y','y1'],['2y','y2'],['5y','y5'],['10y','y10']].forEach(([lab, k]) => {
-    const [c, p] = lastTwo(td[k]);
-    h += tile('/curves/', 'zero yield ' + lab,
-      fmt(c, 2, '%') + arrow(c !== null && p !== null ? c * 100 : null, p !== null ? p * 100 : null, 1, ' bp', 0.05),
-      date);
-  });
-  const [c10, p10] = lastTwo(td.y10), [c2, p2] = lastTwo(td.y2);
-  const s  = (c10 !== null && c2 !== null) ? (c10 - c2) * 100 : null;
-  const sp = (p10 !== null && p2 !== null) ? (p10 - p2) * 100 : null;
-  h += tile('/curves/', '2s10s slope', fmt(s, 0, ' bp') + arrow(s, sp, 0, ' bp', 0.5), 'y10 minus y2');
-  el.innerHTML = h;
-}
-
-function rowRf(){
-  const ts = DATA.ts || {};
-  const el = document.getElementById('row-rf');
-  let h = el.innerHTML;
-  const date = ts.dates ? ts.dates[ts.dates.length - 1] : '';
-  [['1y','rf1_brw_pct'],['2y','rf2_brw_pct'],['5y','rf5_brw_pct'],['10y','rf10_brw_pct']].forEach(([lab, k]) => {
-    const [c, p] = lastTwo(ts[k]);
-    h += tile('/term-premia/', 'E[avg short rate] ' + lab,
-      fmt(c, 2, '%') + arrow(c !== null ? c * 100 : null, p !== null ? p * 100 : null, 1, ' bp', 0.05),
-      'weekly · ' + date);
-  });
-  const lm = MPC && MPC.tiles ? MPC.tiles.last_move : null;
-  h += tile('/oracle/', 'NBP reference rate',
-    lm ? fmt(lm.rate_pct, 2, '%') : '—',
-    lm ? `last move ${lm.delta_bp > 0 ? '+' : ''}${lm.delta_bp} bp · ${lm.date}` : '');
-  el.innerHTML = h;
-}
-
-function rowTp(){
-  const ts = DATA.ts || {};
-  const el = document.getElementById('row-tp');
-  let h = el.innerHTML;
-  [['1y','tp1_brw_bp'],['2y','tp2_brw_bp'],['5y','tp5_brw_bp'],['10y','tp10_brw_bp']].forEach(([lab, k]) => {
-    const [c, p] = lastTwo(ts[k]);
-    h += tile('/term-premia/', 'term premium ' + lab,
-      fmt(c, 0, ' bp') + arrow(c, p, 0, ' bp', 0.5), 'weekly, BRW');
-  });
-  const lr = (DATA.meta && DATA.meta.long_run_er) || {};
-  const lrCell = k => (lr[k] !== undefined && lr[k] !== null)
-    ? `<span style="display:inline-flex;align-items:center;gap:5px">${FLAGS[k]} <b>${lr[k].toFixed(2)}%</b></span>` : '';
-  const lrTop = [lrCell('pl'), lrCell('ea')].filter(Boolean).join('');
-  h += `<a class="btile" href="/term-premia/" data-tip="${tipFor('long-run E[r]')}">
-    <div class="bt-label">long-run E[r]</div>
-    <div class="bt-line" style="justify-content:space-between">${lrTop || '—'}</div>
-    <div class="bt-line">${lrCell('us')}</div></a>`;
-  el.innerHTML = h;
-}
-
-function rowPolicy(){
-  const t = (MPC && MPC.tiles) || {};
-  const el = document.getElementById('row-policy');
-  let h = el.innerHTML;
-  const tone = t.tone || {};
-  const toneVal = tone.value !== undefined ? tone.value : null;
-
-  // 1. policy regime
-  h += tile('/mpc/', 'policy regime',
-    t.regime && t.regime.class ? t.regime.class : '—',
-    t.regime && t.regime.since ? 'since ' + t.regime.since : '');
-
-  // 2. MPC minutes tone index (double, oracle-page design)
-  if (toneVal !== null){
-    const T = toneVal * 100;
-    const lean = T < -40 ? 'dovish' : T > 40 ? 'hawkish' : 'neutral';
-    const lcol = T < -40 ? '#2e75b6' : T > 40 ? '#d11b1b' : 'var(--muted)';
-    const pd = Math.round(Math.max(-toneVal, 0) * 100),
-          pn = Math.round((1 - Math.abs(toneVal)) * 100),
-          pk = Math.round(Math.max(toneVal, 0) * 100);
-    const seg = (cls, p, lab) => p > 0
-      ? `<div class="${cls}" style="width:${p}%">${p > 15 ? lab + ' ' + p + '%' : ''}</div>` : '';
-    const hd = (tone.hawk !== undefined && tone.dove !== undefined)
-      ? ` · hawk ${tone.hawk.toFixed(1)} / dove ${tone.dove.toFixed(1)} per 1,000 words` : '';
-    h += `<a class="btile wide" href="/mpc/" data-tip="Net hawkish minus dovish term frequency in the latest MPC minutes, scaled to a ±100 score with bands at ±40 separating dovish, neutral and hawkish. The bar shows the same score as a probability-style split.">
-      <div class="bt-label">MPC minutes tone index</div>
-      <div class="bt-value" style="color:${lcol};font-size:16px;text-transform:uppercase">${lean}
-        <span style="font-size:11px;color:var(--muted);font-weight:400">score ${T >= 0 ? '+' : ''}${T.toFixed(0)} / 100</span></div>
-      <div class="obar">${seg('cut', pd, 'dovish')}${seg('hold', pn, 'neutral')}${seg('hike', pk, 'hawkish')}</div>
-      <div class="bt-sub">net hawkish minus dovish${hd}</div>
-    </a>`;
-  }
-
-  // 3. oracle index (double) and 4./5. implied move tiles
-  let mvTiles = '';
-  if (ORC && ORC.moves){
-    const byH = {};
-    ORC.moves.forEach(r => { byH[r.h_m] = r; });
-    const steps = m => (m === null || m === undefined) ? null
-                       : Math.sign(m) * Math.floor(Math.abs(m) + 0.25);
-    const c3 = steps(byH[3] ? byH[3].brw_moves : null);
-    const c6 = steps(byH[6] ? byH[6].brw_moves : null);
-    const addl = (c3 === null || c6 === null) ? null : c6 - c3;
-    const mv = (a, cum, r) => {
-      const val = a === null ? '—' : a === 0 ? 'none'
-        : `<span class="${a > 0 ? 'dn' : 'up'}">${a > 0 ? '+' : '−'}${Math.abs(a) * 25} bp</span>`;
-      const sub = (r && r.brw_dbp !== null)
-        ? `cum ${cum >= 0 ? '+' : '−'}${Math.abs(cum) * 25} bp · raw ${r.brw_dbp >= 0 ? '+' : ''}${r.brw_dbp.toFixed(0)} bp`
-        : '';
-      return [val, sub];
-    };
-    const O = ORC.oracle || {};
-    if (O.score !== undefined){
-      const S = O.score * 100;
-      const lean = S < -40 ? 'loosening' : S > 40 ? 'tightening' : 'neutral';
-      const lcol = S < -40 ? 'var(--green, #2e7d32)' : S > 40 ? '#d11b1b' : 'var(--muted)';
-      const pc = Math.round((O.p_cut || 0) * 100),
-            ph = Math.round((O.p_hold || 0) * 100),
-            pk = Math.round((O.p_hike || 0) * 100);
-      const seg = (cls, p, lab) => p > 0
-        ? `<div class="${cls}" style="width:${p}%">${p > 15 ? lab + ' ' + p + '%' : ''}</div>` : '';
-      h += `<a class="btile wide" href="/oracle/" data-tip="Blend of the market leg (BRW-implied 3m move) and the text leg (minutes tone), scaled to ±100 and mapped to cut, hold and hike odds for the next quarter. Above +40 reads tightening, below −40 loosening.">
-        <div class="bt-label">oracle index · next quarter</div>
-        <div class="bt-value" style="color:${lcol};font-size:16px;text-transform:uppercase">${lean}
-          <span style="font-size:11px;color:var(--muted);font-weight:400">score ${S >= 0 ? '+' : ''}${S.toFixed(0)} / 100</span></div>
-        <div class="obar">${seg('cut', pc, 'cut')}${seg('hold', ph, 'hold')}${seg('hike', pk, 'hike')}</div>
-      </a>`;
-    }
-    const [v3, s3] = mv(c3, c3, byH[3]);
-    mvTiles += tile('/oracle/', '3m implied move', v3, s3);
-    const [v6, s6] = mv(addl, c6, byH[6]);
-    mvTiles += tile('/oracle/', '6m additional move', v6, s6);
-  }
-  h += mvTiles;
-
-  // 6.-8. forward tiles: risky (fitted NSS zero curve) big, BRW risk-free small grey.
-  // Forwards read off the zero curves as f(t, t+1) = (t+1) y(t+1) − t y(t)
-  // (continuous compounding). The risk-free 4y point is the 3y/5y midpoint.
-  const ts = DATA.ts || {};
-  if (ts.beta0 && ts.beta0.length){
-    const P = {};
-    ['beta0','beta1','beta2','beta3','tau1','tau2'].forEach(k => {
-      const [c] = lastTwo(ts[k]); P[k] = c;
-    });
-    const nssy = tt => {
-      const x1 = tt / P.tau1, x2 = tt / P.tau2;
-      return P.beta0 + P.beta1 * (1 - Math.exp(-x1)) / x1 +
-             P.beta2 * ((1 - Math.exp(-x1)) / x1 - Math.exp(-x1)) +
-             P.beta3 * ((1 - Math.exp(-x2)) / x2 - Math.exp(-x2));
-    };
-    const [rf1] = lastTwo(ts.rf1_brw_pct), [rf2] = lastTwo(ts.rf2_brw_pct),
-          [rf3] = lastTwo(ts.rf3_brw_pct), [rf5] = lastTwo(ts.rf5_brw_pct);
-    const fRisky = t => (t + 1) * nssy(t + 1) - t * nssy(t);
-    const fRf = { 1: (rf1 !== null && rf2 !== null) ? 2 * rf2 - rf1 : null,
-                  2: (rf2 !== null && rf3 !== null) ? 3 * rf3 - 2 * rf2 : null,
-                  3: (rf3 !== null && rf5 !== null) ? 2 * rf5 - rf3 : null };
-    [1, 2, 3].forEach(t => {
-      const rf = fRf[t];
-      h += `<a class="btile" href="/term-premia/" data-tip="${tipFor(t + 'y1y forward')}">
-        <div class="bt-label">${t}y1y forward</div>
-        <div class="bt-value">${fRisky(t).toFixed(2)}%</div>
-        <div class="bt-sub">risk-free (BRW) ${rf === null ? '—' : rf.toFixed(2) + '%'}</div>
-      </a>`;
-    });
-  }
-  el.innerHTML = h;
-}
-
-function meanBeta(mat){
-  if (!mat) return null;
-  const flat = [].concat(...mat).filter(v => v !== null && v !== undefined && isFinite(v));
-  if (!flat.length) return null;
-  return flat.reduce((a, b) => a + b, 0) / flat.length;
-}
-
-function rowXm(){
-  const el = document.getElementById('row-xm');
-  let h = el.innerHTML;
-  const x = DATA.xcountry_tp_m || {};
-  const date = x.dates ? x.dates[x.dates.length - 1] : '';
-  [['US 10y TP','us_tp_10y_bp','us'],['EA 10y TP','ea_tp_10y_bp','ea']].forEach(([lab, k, fk]) => {
-    const [c, p] = lastTwo(x[k]);
-    h += tile('/term-premia/', lab,
-      `${FLAGS[fk]} ` + fmt(c, 0, ' bp') + arrow(c, p, 0, ' bp', 0.5),
-      'monthly ACM · ' + date);
-  });
-  let corr = null;
-  const cpu = DATA.corr_pl_us;
-  if (cpu && cpu.matrix && cpu.pl_labels){
-    const i = cpu.pl_labels.findIndex(s => s.includes('10y'));
-    const j = (cpu.x_labels || []).findIndex(s => s.includes('10y'));
-    if (i >= 0 && j >= 0 && cpu.matrix[i]) corr = cpu.matrix[i][j];
-  }
-  h += tile('/term-premia/', 'corr PL·US 10y TP', corr === null ? '—' : corr.toFixed(2), 'monthly levels');
-  const xm = (DATA.eh && DATA.eh.fb1_xm_heatmap) || {};
-  const bpl = meanBeta(xm.pl && xm.pl.matrix ? xm.pl.matrix : xm.pl);
-  const bus = meanBeta(xm.us && xm.us.matrix ? xm.us.matrix : xm.us);
-  const bea = meanBeta(xm.ea && xm.ea.matrix ? xm.ea.matrix : xm.ea);
-  h += `<a class="btile wide" href="/eh-tests/" data-tip="Mean Fama-Bliss FB1 slope coefficient across all horizon-by-tenor cells, per market. The pure expectations hypothesis predicts 1: Poland is contrarian (negative), the US sits in between, the euro area is closest.">
-    <div class="bt-label">expectations hypothesis · mean FB1 slope β</div>
-    <div class="bt-line">${FLAGS.pl} PL <b>${bpl === null ? '—' : bpl.toFixed(2)}</b>
-      &nbsp;${FLAGS.us} US <b>${bus === null ? '—' : bus.toFixed(2)}</b>
-      &nbsp;${FLAGS.ea} EA <b>${bea === null ? '—' : bea.toFixed(2)}</b></div>
-    <div class="bt-sub">PEH benchmark β = 1 · PL contrarian, US in between, EA closest</div></a>`;
-  el.innerHTML = h;
-}
-
-function rowTr(){
-  const el = document.getElementById('row-tr');
-  if (!TR || TR.last_r_pub_bp === undefined){ return; }
-  let h = el.innerHTML;
-  const qtd = TR.quarter_partial ? '<span class="badge">q-t-d</span>' : '';
-  const bp = v => v === null || v === undefined ? '—'
-    : `<span class="${v >= 0 ? 'up' : 'dn'}">${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(0)} bp</span>`;
-  h += tile('/total-return/', 'TBSP total return', bp(TR.last_r_pub_bp) + qtd,
-    'published index');
-  h += tile('/total-return/', 'carry & roll leg', bp(TR.last_carry_bp) + qtd,
-    'coupon, reinvestment, roll-down');
-  h += tile('/total-return/', 'curve move leg', bp(TR.last_curve_bp) + qtd,
-    'expected-rate and term-premium shifts');
-  h += tile('/total-return/', 'convexity & residual', bp(TR.last_cnvxres_bp),
-    'tracking gap ' + (TR.last_track_bp >= 0 ? '+' : '−') + Math.abs(TR.last_track_bp).toFixed(0) + ' bp');
-  h += tile('/total-return/', 'TBSP index level',
-    TR.tbsp_last_level ? TR.tbsp_last_level.toLocaleString('en-US', {maximumFractionDigits: 1}) : '—',
-    TR.tbsp_cagr_pct ? 'CAGR ' + TR.tbsp_cagr_pct.toFixed(2) + '% since ' + (TR.tbsp_base_date || '').slice(0, 7) : '');
-  el.innerHTML = h;
-}
-
-function rowLiq(){
-  const L = DATA.liquidity || {};
-  const el = document.getElementById('row-liq');
-  let h = el.innerHTML;
-  const mtd = L.last_month_partial ? '<span class="badge">m-t-d</span>' : '';
-  const date = L.dates ? L.dates[L.dates.length - 1] : '';
-  const items = [
-    ['BAS median', 'bas_bp_med', 1, ' bp', 0.05],
-    ['ZTD share', 'ztd_pct', 1, '%', 0.05],
-    ['Amihud median', 'amihud_med', 3, '', 0.0005],
-    ['composite z', 'composite_z', 2, '', 0.005],
-  ];
-  items.forEach(([lab, k, dec, unit, thr]) => {
-    const [c, p] = lastTwo(L[k]);
-    h += tile('/liquidity/', lab, fmt(c, dec, unit) + arrow(c, p, dec, unit, thr) + mtd, date);
-  });
-  h += tile('/liquidity/', 'liquidity sample',
-    L.dates ? `${L.dates[0].slice(0, 4)}–${date}` : '—',
-    'six measures, monthly');
-  el.innerHTML = h;
-}
-
-function rowMeta(){
-  const el = document.getElementById('row-meta');
-  let h = el.innerHTML;
-  const m = DATA.meta || {};
-  const ts = DATA.ts || {};
-  const [nb]  = lastTwo(ts.n_bonds);
-  const [mae] = lastTwo(ts.mae_bp);
-  h += tile('/curves/', 'NSS panel', m.last_date || '—',
-    (m.n_dates_total ? m.n_dates_total.toLocaleString() + ' trading days since 2005' : ''));
-  h += tile('/curves/', 'latest fit',
-    (nb !== null ? nb + ' bonds' : '—'),
-    (mae !== null ? 'MAE ' + mae.toFixed(1) + ' bp' : ''));
-  const mfresh = (DATA.freshness && DATA.freshness.mpc_minutes) || null;
-  h += tile('/mpc/', 'minutes corpus',
-    mfresh ? mfresh.last_obs : '—',
-    'latest meeting analysed');
-  h += tile('/shorts/', 'research shorts', '7 published', 'two-page findings');
-  h += tile('/movies/', '4K curve movies', '2005 → today', 'daily frames');
-  el.innerHTML = h;
-}
-
-function showBuildBadge(){
-  const el = document.getElementById('buildBadge');
-  if (el && DATA.meta && DATA.meta.build_ts)
-    el.textContent = 'data: ' + DATA.meta.build_ts.slice(0, 10) + ' build';
-}
-
-async function load(){
-  const r = await fetch('/data/yields.json?v=7');
-  DATA = await r.json();
-  try {
-    const r2 = await fetch('/data/mpc_data.json?v=7');
-    MPC = await r2.json();
-  } catch (e) { MPC = null; }
-  try {
-    const r3 = await fetch('/data/oracle_tiles.json?v=1');
-    ORC = await r3.json();
-  } catch (e) { ORC = null; }
-  try {
-    const r4 = await fetch('/data/tr_tiles.json?v=1');
-    TR = await r4.json();
-  } catch (e) { TR = null; }
-  showBuildBadge();
-  rowCurve(); rowRf(); rowTp(); rowPolicy(); rowXm(); rowTr(); rowLiq(); rowMeta();
-}
-load();
-</script>
 
 </body>
 </html>

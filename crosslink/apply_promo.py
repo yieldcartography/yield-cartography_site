@@ -16,7 +16,7 @@ DIST = os.path.join(ROOT, 'dist')
 if not os.path.isdir(DIST):
     sys.exit('run this from the yc_site folder (dist/ not found in ' + ROOT + ')')
 
-TAG = '<script src="/assets/promo.js?v=4" defer></script>'
+TAG = '<script src="/assets/promo.js?v=5" defer></script>'
 FOOT = '<li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li>'
 
 src = os.path.join(HERE, 'assets', 'promo.js')
@@ -32,7 +32,7 @@ for dp, dn, fn in os.walk(DIST):
         if f != 'index.html':
             continue
         path = os.path.join(dp, f)
-        if os.path.normpath(path) == os.path.normpath(os.path.join(DIST, 'index.html')):
+        if os.path.normpath(path) == os.path.normpath(os.path.join(DIST, 'cockpit', 'index.html')):
             continue                              # the cockpit stays free of the rail
         s = open(path, encoding='utf-8').read()
         orig = s
