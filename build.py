@@ -1776,6 +1776,13 @@ def main(argv=None):
     except Exception as e:
         print(f'  WARNING: Oracle tab not regenerated ({type(e).__name__}: {e})')
 
+    # Refresh the site search index over the final dist pages. Non-fatal.
+    try:
+        import make_search_index
+        make_search_index.main()
+    except Exception as e:
+        print(f'  WARNING: search index not rebuilt ({type(e).__name__}: {e})')
+
     print('done.')
     return 0
 
