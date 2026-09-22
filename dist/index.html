@@ -268,7 +268,7 @@ function rowPolicy(){
       <div class="bt-value" style="color:${lcol};font-size:16px;text-transform:uppercase">${lean}
         <span style="font-size:11px;color:var(--muted);font-weight:400">score ${T >= 0 ? '+' : ''}${T.toFixed(0)} / 100</span></div>
       <div class="obar">${seg('cut', pd, 'dovish')}${seg('hold', pn, 'neutral')}${seg('hike', pk, 'hawkish')}</div>
-      <div class="bt-sub">net hawkish minus dovish${tone.date ? ', latest minutes ' + tone.date : ''}${hd}</div>
+      <div class="bt-sub">net hawkish minus dovish${hd}</div>
     </a>`;
   }
 
