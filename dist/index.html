@@ -66,6 +66,13 @@
            padding: 1px 5px; margin-left: 6px; vertical-align: middle; }
   .g-meta a.btile { min-height: 46px; }
   .g-meta .bt-value { font-size: 15px; }
+  .obar { display: flex; height: 14px; border-radius: 3px; overflow: hidden;
+          margin-top: 5px; font-family: var(--mono); font-size: 8.5px; color: #fff; }
+  .obar > div { display: flex; align-items: center; justify-content: center;
+                white-space: nowrap; overflow: hidden; }
+  .obar .cut  { background: #2e75b6; }
+  .obar .hold { background: #9aa3ab; }
+  .obar .hike { background: #d11b1b; }
   @media (max-width: 900px){ .brow { grid-template-columns: repeat(2, 1fr); }
                              a.btile.wide { grid-column: span 2; } }
 </style>
@@ -109,7 +116,7 @@
   </div>
 
   <div class="brow g-policy" id="row-policy">
-    <div class="brow-head"><span class="brow-title">Monetary policy · minutes text signals</span><a class="brow-link" href="/mpc/">MPC →</a></div>
+    <div class="brow-head"><span class="brow-title">Monetary policy · text and market signals</span><a class="brow-link" href="/mpc/">MPC →</a></div>
   </div>
 
   <div class="brow g-xm" id="row-xm">
@@ -139,7 +146,7 @@
 </footer>
 
 <script>
-let DATA = null, MPC = null;
+let DATA = null, MPC = null, ORC = null;
 
 const FLAGS = {
   pl: '<svg viewBox="0 0 15 11" width="14" height="10"><rect width="15" height="5.5" fill="#f5f5f5" stroke="#d0d0d0" stroke-width="0.5"/><rect y="5.5" width="15" height="5.5" fill="#dc143c"/></svg>',
@@ -256,6 +263,46 @@ function rowPolicy(){
   h += tile('/mpc/', 'minutes corpus',
     fresh ? fresh.last_obs : (tone.date || '—'),
     'latest meeting analysed');
+
+  // oracle-page tiles: implied moves in 25 bp steps and the oracle gauge
+  if (ORC && ORC.moves){
+    const byH = {};
+    ORC.moves.forEach(r => { byH[r.h_m] = r; });
+    const steps = m => (m === null || m === undefined) ? null
+                       : Math.sign(m) * Math.floor(Math.abs(m) + 0.25);
+    const c3 = steps(byH[3] ? byH[3].brw_moves : null);
+    const c6 = steps(byH[6] ? byH[6].brw_moves : null);
+    const addl = (c3 === null || c6 === null) ? null : c6 - c3;
+    const mv = (a, cum, r) => {
+      const val = a === null ? '—' : a === 0 ? 'none'
+        : `<span class="${a > 0 ? 'dn' : 'up'}">${a > 0 ? '+' : '−'}${Math.abs(a) * 25} bp</span>`;
+      const sub = (r && r.brw_dbp !== null)
+        ? `cum ${cum >= 0 ? '+' : '−'}${Math.abs(cum) * 25} bp · raw ${r.brw_dbp >= 0 ? '+' : ''}${r.brw_dbp.toFixed(0)} bp`
+        : '';
+      return [val, sub];
+    };
+    const [v3, s3] = mv(c3, c3, byH[3]);
+    h += tile('/oracle/', '3m implied move', v3, s3 + (ORC.date ? ' · ' + ORC.date : ''));
+    const [v6, s6] = mv(addl, c6, byH[6]);
+    h += tile('/oracle/', '6m additional move', v6, s6);
+    const O = ORC.oracle || {};
+    if (O.score !== undefined){
+      const S = O.score * 100;
+      const lean = S < -40 ? 'loosening' : S > 40 ? 'tightening' : 'neutral';
+      const lcol = S < -40 ? 'var(--green, #2e7d32)' : S > 40 ? '#d11b1b' : 'var(--muted)';
+      const pc = Math.round((O.p_cut || 0) * 100),
+            ph = Math.round((O.p_hold || 0) * 100),
+            pk = Math.round((O.p_hike || 0) * 100);
+      const seg = (cls, p, lab) => p > 0
+        ? `<div class="${cls}" style="width:${p}%">${p > 15 ? lab + ' ' + p + '%' : ''}</div>` : '';
+      h += `<a class="btile wide" href="/oracle/">
+        <div class="bt-label">oracle index · next quarter</div>
+        <div class="bt-value" style="color:${lcol};font-size:16px;text-transform:uppercase">${lean}
+          <span style="font-size:11px;color:var(--muted);font-weight:400">score ${S >= 0 ? '+' : ''}${S.toFixed(0)} / 100</span></div>
+        <div class="obar">${seg('cut', pc, 'cut')}${seg('hold', ph, 'hold')}${seg('hike', pk, 'hike')}</div>
+      </a>`;
+    }
+  }
   el.innerHTML = h;
 }
 
@@ -350,6 +397,10 @@ async function load(){
     const r2 = await fetch('/data/mpc_data.json?v=7');
     MPC = await r2.json();
   } catch (e) { MPC = null; }
+  try {
+    const r3 = await fetch('/data/oracle_tiles.json?v=1');
+    ORC = await r3.json();
+  } catch (e) { ORC = null; }
   showBuildBadge();
   rowCurve(); rowRf(); rowTp(); rowPolicy(); rowXm(); rowLiq(); rowMeta();
 }
