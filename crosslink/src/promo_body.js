@@ -1,8 +1,8 @@
 
 /* ===== yieldcartography.com: the "from the same desk" rail =====
    Included on every page with  <script src="/assets/promo.js?v=2" defer></script>
-   A sticky right column on wide screens, a row of cards under the content
-   otherwise. To change copy, links or a card's status edit FA_CARDS above. */
+   Always a row of cards under the content, on every tab except the cockpit
+   (the root page). To change copy, links or a card's status edit FA_CARDS above. */
 (function () {
   'use strict';
   var RAIL = [['fa', 'yc-rail-free'], ['risk1', 'yc-rail-risk1'], ['risk2', 'yc-rail-risk2'], ['cfa1', 'yc-rail-cfa1']];
@@ -14,11 +14,6 @@
     '.fa-rail{margin:0 32px 8px;padding-top:8px}',
     '.fa-rail-k{font-family:var(--mono);font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);margin:0 0 10px}',
     '.fa-cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}',
-    '.fa-shell.side{display:grid;grid-template-columns:minmax(0,1fr) 268px;column-gap:8px;align-items:start;max-width:1456px}',
-    '.fa-shell.narrow.side{max-width:1180px}',
-    '.fa-shell.side>.fa-rail{position:sticky;top:104px;margin:32px 32px 32px 0;padding-top:0;max-height:calc(100vh - 120px);overflow-y:auto;scrollbar-width:none}',
-    '.fa-shell.side>.fa-rail::-webkit-scrollbar{display:none}',
-    '.fa-shell.side .fa-cards{grid-template-columns:1fr}',
     '@media (max-width:720px){.fa-rail{margin:0 20px 8px}}',
     '.fa-rail-toggle{color:#ccc;border:none;text-decoration:underline dotted;cursor:pointer}',
     '.fa-rail-toggle:hover{color:#fff}',
@@ -45,18 +40,7 @@
       '<p class="fa-cards-note">FinAcademy is built by the author of yieldcartography. ' + FA_CARDS.NOTE + '</p>';
     shell.appendChild(rail);
 
-    var narrow = shell.classList.contains('narrow');
-    function place() {
-      var side = window.innerWidth >= (narrow ? 1220 : 1480);
-      if (shell.classList.contains('side') !== side) {
-        shell.classList.toggle('side', side);
-        try { window.dispatchEvent(new Event('resize')); } catch (e) {}   /* Plotly relayout */
-      }
-    }
-    place();
-    window.addEventListener('resize', place);
     shell.__unbuild = function () {
-      window.removeEventListener('resize', place);
       shell.parentNode.insertBefore(main, shell); shell.parentNode.removeChild(shell);
       try { window.dispatchEvent(new Event('resize')); } catch (e) {}
     };
@@ -75,6 +59,7 @@
   }
 
   function init() {
+    if (location.pathname === '/' || location.pathname === '/index.html') return;   /* the cockpit stays clean */
     if (!document.querySelector('main') || document.getElementById('fa-promo-css')) return;
     var st = document.createElement('style'); st.id = 'fa-promo-css'; st.textContent = FA_CARDS.CSS + '\n' + CSS; document.head.appendChild(st);
     if (!isOff()) build();
