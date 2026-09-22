@@ -84,7 +84,6 @@ main.narrow { max-width: 880px; }
 .hero p.lede {
   font-size: 17px;
   color: var(--ink-soft);
-  max-width: 720px;
   margin: 0 0 20px 0;
 }
 .hero p.tagline {
@@ -146,7 +145,7 @@ main.narrow { max-width: 880px; }
   letter-spacing: 1.4px;
   color: var(--accent);
 }
-.section p { color: var(--ink-soft); max-width: 760px; }
+.section p { color: var(--ink-soft); }
 
 /* Dashboard (curves, term-premia) */
 .stats {
