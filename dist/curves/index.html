@@ -589,16 +589,33 @@ function drawSnapCurve(s){
     xmax = Math.max(12, maxTtm + 1);
   }
   lay.xaxis.title = { text:'maturity (years)', font:FONT_MONO }; lay.xaxis.range=[0, xmax];
-  lay.xaxis.dtick = 1;                       // one-year grid density
   lay.yaxis.title = { text:'yield (%)', font:FONT_MONO };
-  // big zero-rate labels above the fitted curve at the benchmark tenors
-  lay.annotations = [1, 2, 5, 7, 10].filter(t => t <= xmax).map(t => {
-    const z = nss_y(t, s.beta0, s.beta1, s.beta2, s.beta3, s.tau1, s.tau2) * 100;
-    return { x: t, y: z, text: '<b>' + z.toFixed(2) + '</b>', showarrow: false,
-             yshift: 22, font: {family: 'JetBrains Mono, Menlo, monospace', size: 14,
-                                color: PALETTE.accent},
-             bgcolor: 'rgba(255,255,255,0.75)' };
-  });
+  // benchmark tenors: big zero-rate labels above the curve, a marker dot on the
+  // curve, a dashed drop line to the axis, and the tenor's own tick drawn in the
+  // same accent bold (plain ticks stay grey, grid stays at 1y density).
+  const bench = [1, 2, 5, 7, 10].filter(t => t <= xmax);
+  const benchZ = {};
+  bench.forEach(t => { benchZ[t] = nss_y(t, s.beta0, s.beta1, s.beta2, s.beta3, s.tau1, s.tau2) * 100; });
+  // explicit y range so the drop lines can start at the floor
+  let allY = yfit.slice();
+  if (s.bonds) s.bonds.forEach(b => allY.push(b.ytm));
+  if (s.nbp != null) allY.push(s.nbp);
+  const yMin = Math.min.apply(null, allY) - 0.25, yMax = Math.max.apply(null, allY) + 0.4;
+  lay.yaxis.range = [yMin, yMax]; lay.yaxis.autorange = false;
+  const ints = []; for (let v = 0; v <= Math.floor(xmax); v++) ints.push(v);
+  lay.xaxis.tickvals = ints;
+  lay.xaxis.ticktext = ints.map(v => bench.indexOf(v) >= 0 ? '' : String(v));
+  lay.shapes = bench.map(t => ({ type: 'line', x0: t, x1: t, y0: yMin, y1: benchZ[t],
+    line: { color: PALETTE.accent, width: 1, dash: 'dash' }, opacity: 0.45 }));
+  lay.annotations = bench.map(t => ({
+    x: t, y: benchZ[t], text: '<b>' + benchZ[t].toFixed(2) + '</b>', showarrow: false,
+    yshift: 22, font: {family: 'JetBrains Mono, Menlo, monospace', size: 14, color: PALETTE.accent},
+    bgcolor: 'rgba(255,255,255,0.75)' })).concat(bench.map(t => ({
+    x: t, y: yMin, yshift: -12, text: '<b>' + t + '</b>', showarrow: false,
+    font: {family: 'JetBrains Mono, Menlo, monospace', size: 13, color: PALETTE.accent} })));
+  traces.push({ x: bench, y: bench.map(t => benchZ[t]), mode: 'markers',
+    marker: { size: 7, color: PALETTE.accent, line: { color: '#fff', width: 1.4 } },
+    hovertemplate: '%{x}y zero · %{y:.2f}%<extra></extra>', showlegend: false });
   Plotly.react('snapCurve', traces, lay, CFG);
 }
 
