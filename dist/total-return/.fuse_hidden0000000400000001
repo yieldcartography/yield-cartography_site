@@ -636,8 +636,6 @@ main .card:hover { transform: none !important; }
     <a href="/">cockpit</a>
     <a href="/curves/">curves</a>
     <a href="/term-premia/">term premia</a>
-    <a href="/oracle/">oracle</a>
-    <a href="/mpc/">MPC</a>
     <a href="/liquidity/">liquidity</a>
     <a href="/total-return/" class="active">total return</a>
     <a href="/eh-tests/">EH tests</a>
