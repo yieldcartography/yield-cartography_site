@@ -143,7 +143,8 @@ var FA_CARDS = (function () {
 
   /* the quiet switch in the footer: hides the rail on this browser until switched back */
   function toggle() {
-    var foot = document.querySelector('.site-footer .copyright') || document.querySelector('.site-footer');
+    var foot = document.querySelector('.site-footer .copyright span') ||
+               document.querySelector('.site-footer .copyright') || document.querySelector('.site-footer');
     if (!foot || document.querySelector('.fa-rail-toggle')) return;
     var a = document.createElement('a');
     a.href = '#'; a.className = 'fa-rail-toggle';
@@ -159,5 +160,17 @@ var FA_CARDS = (function () {
     if (!isOff()) build();
     toggle();
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  /* the build stamp on the right of the copyright line: pages that load
+     yields.json fill it themselves, everyone else gets it from the tiny
+     oracle_tiles.json export */
+  function badge() {
+    var el = document.getElementById('buildBadge');
+    if (!el || el.textContent) return;
+    fetch('/data/oracle_tiles.json?v=1').then(function (r) { return r.json(); })
+      .then(function (t) { if (t && t.date && !el.textContent) el.textContent = 'data: ' + t.date + ' build'; })
+      .catch(function () {});
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ init(); badge(); });
+  else { init(); badge(); }
 })();

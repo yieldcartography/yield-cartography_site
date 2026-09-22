@@ -16,7 +16,7 @@ DIST = os.path.join(ROOT, 'dist')
 if not os.path.isdir(DIST):
     sys.exit('run this from the yc_site folder (dist/ not found in ' + ROOT + ')')
 
-TAG = '<script src="/assets/promo.js?v=3" defer></script>'
+TAG = '<script src="/assets/promo.js?v=4" defer></script>'
 FOOT = '<li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li>'
 
 src = os.path.join(HERE, 'assets', 'promo.js')
