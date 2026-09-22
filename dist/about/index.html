@@ -36,6 +36,11 @@
   .pub-list .meta { font-family: var(--mono); font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; }
   .pub-list .doi { font-family: var(--mono); font-size: 11.5px; color: var(--accent); }
   .pub-list .abs { font-size: 13px; color: var(--ink-soft); margin-top: 6px; line-height: 1.55; }
+  .pub-tag { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 600;
+             text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent);
+             border: 1px solid var(--accent); border-radius: 3px; padding: 2px 7px;
+             margin-left: 10px; vertical-align: 2px; text-decoration: none; }
+  .pub-tag:hover { background: var(--accent); color: #fff; }
   .ext-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
   .ext-card { display: block; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 4px; background: var(--panel); border-bottom: 1px solid var(--rule); }
   .ext-card:hover { border-color: var(--accent); }
@@ -157,9 +162,9 @@
         <span class="abs">The canonical infinite-horizon heterogeneous-consumer framework lacks a preference-based index that consistently quantifies the welfare impact of policies: money-metric indices such as equivalent and compensating variation are not additive across policy sets and can depend on the assumed status quo or implementation order. The paper shows that for arbitrary heterogeneous von Neumann-Morgenstern preferences with a common discount factor the equivalent (or compensating) variation is nearly additive and aggregates effectively as long as consumers are patient, so the index delivers consistent quantitative welfare predictions for the short-lived policies studied in macroeconomics and finance.</span>
       </li>
       <li>
-        <span class="ttl">Supply, Habitat and the Price of Liquidity in Less-Liquid Sovereign Bond Markets. Evidence from Poland</span>
+        <span class="ttl">Supply, Habitat and the Price of Liquidity in Less-Liquid Sovereign Bond Markets. Evidence from Poland<a class="pub-tag" href="/slides/liquidity/">seminar slides</a></span>
         <span class="meta">Borsa Istanbul Review, in press, corrected proof, online 1 September 2026, art. 100904 · open access · powers the <a href="/liquidity/">liquidity tab</a></span>
-        <span class="doi"><a href="https://doi.org/10.1016/j.bir.2026.100904">doi:10.1016/j.bir.2026.100904</a></span> <span class="doi">· <a href="/slides/liquidity/">seminar slides</a></span>
+        <span class="doi"><a href="https://doi.org/10.1016/j.bir.2026.100904">doi:10.1016/j.bir.2026.100904</a></span>
         <span class="abs">Treats liquidity on a less-liquid sovereign market as the object to be explained rather than an input. Six low-frequency estimators plus the zero-trading-days share, computed bond by bond over 2005-2026, feed bond-month and segment-month panels, MPC and primary-auction event studies, and a monthly supply-block regression of the aggregate spread and ACM term premia. Supply prices in through segment stocks and residual-maturity concentration rather than monthly flow, the post-2020 foreign-investor retreat loads on Amihud price impact but is invisible in the venue-capped quoted spread, and total debt loads on the term premium with a maturity-monotonic preferred-habitat gradient worth about 2.5 percent of the sovereign universe's present value over the 2019-2025 debt expansion.</span>
       </li>
       <li>
