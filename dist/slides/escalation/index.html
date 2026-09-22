@@ -113,7 +113,7 @@
   }
   function go(d){ var n = Math.min(Math.max(page + d, 1), total); if (n !== page){ page = n; render(page); } }
 
-  pdfjsLib.getDocument('escalation_deck.pdf').promise.then(function(d){
+  pdfjsLib.getDocument('escalation_deck.pdf?v=20260922').promise.then(function(d){
     doc = d; total = d.numPages; render(page);
   });
 
