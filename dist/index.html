@@ -245,11 +245,13 @@ function rowPolicy(){
   let h = el.innerHTML;
   const tone = t.tone || {};
   const toneVal = tone.value !== undefined ? tone.value : null;
-  h += tile('/mpc/', 'minutes net tone',
-    (toneVal === null ? '—' : (toneVal > 0 ? '+' : '') + toneVal.toFixed(2)) +
-    (tone.class ? `<span class="badge">${tone.class}</span>` : ''),
-    tone.date ? 'meeting ' + tone.date : '');
-  // tone index double tile (same design as the oracle page), in place of hawk vs dove
+
+  // 1. policy regime
+  h += tile('/mpc/', 'policy regime',
+    t.regime && t.regime.class ? t.regime.class : '—',
+    t.regime && t.regime.since ? 'since ' + t.regime.since : '');
+
+  // 2. MPC minutes tone index (double, oracle-page design)
   if (toneVal !== null){
     const T = toneVal * 100;
     const lean = T < -40 ? 'dovish' : T > 40 ? 'hawkish' : 'neutral';
@@ -269,11 +271,9 @@ function rowPolicy(){
       <div class="bt-sub">net hawkish minus dovish${tone.date ? ', latest minutes ' + tone.date : ''}${hd}</div>
     </a>`;
   }
-  h += tile('/mpc/', 'trending term',
-    t.trending && t.trending.term ? '“' + t.trending.term + '”' : '—',
-    t.trending && t.trending.since ? 'rising since ' + t.trending.since : '');
 
-  // oracle-page tiles: implied moves in 25 bp steps and the oracle gauge
+  // 3. oracle index (double) and 4./5. implied move tiles
+  let mvTiles = '';
   if (ORC && ORC.moves){
     const byH = {};
     ORC.moves.forEach(r => { byH[r.h_m] = r; });
@@ -290,13 +290,6 @@ function rowPolicy(){
         : '';
       return [val, sub];
     };
-    const [v3, s3] = mv(c3, c3, byH[3]);
-    h += tile('/oracle/', '3m implied move', v3, s3 + (ORC.date ? ' · ' + ORC.date : ''));
-    const [v6, s6] = mv(addl, c6, byH[6]);
-    h += tile('/oracle/', '6m additional move', v6, s6);
-    h += tile('/mpc/', 'policy regime',
-      t.regime && t.regime.class ? t.regime.class : '—',
-      t.regime && t.regime.since ? 'since ' + t.regime.since : '');
     const O = ORC.oracle || {};
     if (O.score !== undefined){
       const S = O.score * 100;
@@ -314,6 +307,42 @@ function rowPolicy(){
         <div class="obar">${seg('cut', pc, 'cut')}${seg('hold', ph, 'hold')}${seg('hike', pk, 'hike')}</div>
       </a>`;
     }
+    const [v3, s3] = mv(c3, c3, byH[3]);
+    mvTiles += tile('/oracle/', '3m implied move', v3, s3 + (ORC.date ? ' · ' + ORC.date : ''));
+    const [v6, s6] = mv(addl, c6, byH[6]);
+    mvTiles += tile('/oracle/', '6m additional move', v6, s6);
+  }
+  h += mvTiles;
+
+  // 6.-8. forward tiles: risky (fitted NSS zero curve) big, BRW risk-free small grey.
+  // Forwards read off the zero curves as f(t, t+1) = (t+1) y(t+1) − t y(t)
+  // (continuous compounding). The risk-free 4y point is the 3y/5y midpoint.
+  const ts = DATA.ts || {};
+  if (ts.beta0 && ts.beta0.length){
+    const P = {};
+    ['beta0','beta1','beta2','beta3','tau1','tau2'].forEach(k => {
+      const [c] = lastTwo(ts[k]); P[k] = c;
+    });
+    const nssy = tt => {
+      const x1 = tt / P.tau1, x2 = tt / P.tau2;
+      return P.beta0 + P.beta1 * (1 - Math.exp(-x1)) / x1 +
+             P.beta2 * ((1 - Math.exp(-x1)) / x1 - Math.exp(-x1)) +
+             P.beta3 * ((1 - Math.exp(-x2)) / x2 - Math.exp(-x2));
+    };
+    const [rf1] = lastTwo(ts.rf1_brw_pct), [rf2] = lastTwo(ts.rf2_brw_pct),
+          [rf3] = lastTwo(ts.rf3_brw_pct), [rf5] = lastTwo(ts.rf5_brw_pct);
+    const fRisky = t => (t + 1) * nssy(t + 1) - t * nssy(t);
+    const fRf = { 1: (rf1 !== null && rf2 !== null) ? 2 * rf2 - rf1 : null,
+                  2: (rf2 !== null && rf3 !== null) ? 3 * rf3 - 2 * rf2 : null,
+                  3: (rf3 !== null && rf5 !== null) ? 2 * rf5 - rf3 : null };
+    [1, 2, 3].forEach(t => {
+      const rf = fRf[t];
+      h += `<a class="btile" href="/term-premia/">
+        <div class="bt-label">${t}y1y forward</div>
+        <div class="bt-value">${fRisky(t).toFixed(2)}%</div>
+        <div class="bt-sub">risk-free (BRW) ${rf === null ? '—' : rf.toFixed(2) + '%'}</div>
+      </a>`;
+    });
   }
   el.innerHTML = h;
 }

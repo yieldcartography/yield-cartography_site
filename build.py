@@ -154,6 +154,8 @@ def build():
         'y2': safe_list(nss_w['y2']), 'y5': safe_list(nss_w['y5']), 'y10': safe_list(nss_w['y10']),
         'rf1_brw_pct': safe_list(brw_w['y_rf_bc_1y_pct']),
         'rf2_brw_pct': safe_list(brw_w['y_rf_bc_2y_pct']),
+        'rf3_brw_pct': safe_list(brw_w['y_rf_bc_3y_pct']),
+        'rf7_brw_pct': safe_list(brw_w['y_rf_bc_7y_pct']),
         'tp10_acm_bp': safe_list(acm_w['tp_10y_bp']), 'tp10_brw_bp': safe_list(brw_w['tp_bc_10y_bp']),
         'tp7_acm_bp':  safe_list(acm_w['tp_7y_bp']),  'tp7_brw_bp':  safe_list(brw_w['tp_bc_7y_bp']),
         'tp5_acm_bp':  safe_list(acm_w['tp_5y_bp']),  'tp5_brw_bp':  safe_list(brw_w['tp_bc_5y_bp']),
