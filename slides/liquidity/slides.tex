@@ -1,15 +1,9 @@
 %% Seminar deck: Supply, habitat and the price of liquidity (BIR, 2026)
-%% 14 slides, yieldcartography house theme. Built from the published
-%% BIR version (liquidity_paper_v8) and the carousel numbers.
+%% 14 slides, yieldcartography house theme, academic-seminar register.
+%% Built from the published BIR version (liquidity_paper_v8).
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{beamerthemeyc}
 \renewcommand{\deckfootertitle}{Dec (2026) · Supply, habitat and the price of liquidity · Borsa Istanbul Review}
-
-\title{Supply, habitat and the price of liquidity\\in less-liquid sovereign bond markets}
-\subtitle{Evidence from Poland}
-\author{Marcin Dec}
-\institute{Kozminski University \& FAME|GRAPE, Warsaw}
-\date{Borsa Istanbul Review, 2026 · open access · doi:10.1016/j.bir.2026.100904}
 
 \begin{document}
 
@@ -36,114 +30,124 @@
 \end{frame}
 
 % 2 ---------------------------------------------------------------------------
-\begin{frame}{What actually moves bond liquidity?}
-  \kicker{The question}
+\begin{frame}{Motivation and contribution}
+  \kicker{Research question}
   \begin{itemize}
-    \item In a less-liquid sovereign market, liquidity is not a fixed property
-          of a bond. It is the joint output of issue size, supply, holder
-          structure, the trading-venue rulebook and the macro regime.
-    \item This paper treats liquidity as the \alert{dependent variable},
-          not as an input to curve fitting.
-    \item Five hypotheses, four data layers, twenty-one years of public data
-          on the Polish sovereign curve.
+    \item The low-frequency liquidity-estimator literature is calibrated on
+          deep markets; the supply-and-habitat literature
+          (Greenwood--Vayanos 2014, Vayanos--Vila 2021) is estimated almost
+          exclusively on US Treasuries. Neither has been taken seriously to the
+          middle tier of sovereign curves.
+    \item This paper treats liquidity as the \alert{dependent variable}:
+          what prices into bond-level spreads, into the segment-level supply
+          channel, and into the aggregate term premium.
+    \item Contribution: a bond-level and segment-level liquidity panel for the
+          Polish sovereign curve over 2005--2026, five hypotheses spanning
+          issue size, supply stocks, holder structure, monetary events and the
+          primary-auction cycle, and a supply-block regression of the price of
+          liquidity.
   \end{itemize}
 \end{frame}
 
 % 3 ---------------------------------------------------------------------------
-\begin{frame}{The setting: less-liquid markets (LLM)}
-  \kicker{The setting}
+\begin{frame}{Setting: the less-liquid market (LLM) cohort}
+  \kicker{Institutional environment}
   \begin{itemize}
-    \item The middle tier of sovereign curves: visible enough that every dealer
-          prices liquidity into a quote, transient enough that tick-data
-          estimators built for the deepest curves do not transfer.
-    \item Daily fixings and monthly turnover are the highest-frequency public
-          record.
-    \item Poland is the best-instrumented member of the cohort. Comparable
-          LLMs: Brazil, Chile, Czechia, Hungary, India, Indonesia, Israel,
-          Korea, Malaysia, Mexico, Singapore, South Africa, Thailand,
-          T\"urkiye.
+    \item Middle tier of sovereign curves: liquidity is priced by every dealer,
+          yet tick-data estimators built for the deepest curves do not transfer.
+          Daily venue fixings and monthly turnover are the highest-frequency
+          public record, which dictates the low-frequency estimator set.
+    \item Poland is arguably the best-instrumented cohort member: daily
+          BondSpot fixings with quoted bid and ask, Ministry of Finance
+          holdings by investor class, and a regulated venue with published
+          quoting obligations (Annex~G caps).
+    \item Comparable markets: Brazil, Chile, Czechia, Hungary, India,
+          Indonesia, Israel, Korea, Malaysia, Mexico, Singapore, South Africa,
+          Thailand, T\"urkiye.
   \end{itemize}
 \end{frame}
 
 % 4 ---------------------------------------------------------------------------
-\begin{frame}{Five hypotheses}
-  \kicker{What we test}
+\begin{frame}{Hypotheses}
+  \kicker{Testable predictions and expected signs}
   \small
   \begin{itemize}
-    \item \textbf{H1. Issue size narrows everything.} Larger outstanding
-          $\Rightarrow$ tighter spreads, lower price impact.
-    \item \textbf{H2. Stocks, not flow.} Residual-maturity composition prices
-          into liquidity, monthly issuance flow does not.
-    \item \textbf{H3. Foreign retreat hits Amihud, not the quote.} Buy-side
-          foreign holders exit; volume-scaled measures move, the venue-capped
-          quote does not.
-    \item \textbf{H4. MPC transmission is regime-dependent.} Pre- and
-          post-COVID monetary days price into liquidity through different
-          channels.
-    \item \textbf{H5. Auctions leave an inventory imprint.} Primary Dealers
-          absorb at concession and unwind into the secondary fixing.
+    \item \textbf{H1 (issue size).} Outstanding amount enters negatively in all
+          bond-level liquidity measures.
+    \item \textbf{H2 (stocks versus flow).} Segment liquidity responds to stock
+          variables (segment stock, residual-maturity concentration), not to
+          monthly gross issuance flow.
+    \item \textbf{H3 (holder structure).} The post-2019 foreign buy-side
+          retreat loads on volume-scaled measures (Amihud) but not on the
+          venue-capped quoted spread.
+    \item \textbf{H4 (monetary transmission).} The liquidity response to MPC
+          rate-change days differs pre- versus post-COVID.
+    \item \textbf{H5 (auction cycle).} Primary Dealers absorb auctions at a
+          concession; secondary yields revert over the following business week,
+          increasing in maturity (inventory risk premium).
   \end{itemize}
 \end{frame}
 
 % 5 ---------------------------------------------------------------------------
-\begin{frame}{Finding 1: issue size is the most robust bond-level driver}
-  \kicker{H1 supported}
-  \bignum{$-3.5$ bp}{bond-month coefficient on log(outstanding) for the quoted
-  spread, $p<0.01$. Same sign on the composite $z$-score and on the
-  zero-trading-days share.}
+\begin{frame}{Result 1: issue size (H1)}
+  \kicker{Bond-month panel, bond FE, Driscoll-Kraay SE}
+  \bignum{$-3.5$ bp}{coefficient on log(outstanding) for the quoted spread in
+  the bond-month panel with bond fixed effects and Driscoll--Kraay standard
+  errors, $p<0.01$. Same sign and significance on the composite $z$-score and
+  on the zero-trading-days share.}
   \vspace{1mm}
   \begin{center}\small\color{ycmuted}
-  Survives bond fixed effects, macro and regime controls,\\
-  across all six liquidity estimators.
+  Robust to macro and regime controls, consistent across all six
+  low-frequency estimators.
   \end{center}
 \end{frame}
 
 % 6 ---------------------------------------------------------------------------
-\begin{frame}{Finding 2: supply matters through stocks, not flow}
-  \kicker{H2 supported}
+\begin{frame}{Result 2: supply operates through stocks, not flow (H2)}
+  \kicker{Segment-month panel, segment FE, Driscoll-Kraay SE}
   \begin{itemize}
-    \item Monthly gross issuance does not move segment liquidity once stock
-          measures are in.
-    \item Trailing-twelve-month rolling issuance and the log of segment stock
-          load monotonically; the residual-maturity share loads positively on
-          Amihud and on zero-trading days.
+    \item Monthly gross issuance is insignificant for segment liquidity once
+          stock variables enter the specification.
+    \item Trailing twelve-month issuance and log segment stock load
+          monotonically; the residual-maturity concentration share loads
+          positively on Amihud and on the zero-trading-days share.
+    \item Interpretation: the level and the maturity composition of the
+          outstanding stock, not the issuance calendar, are the supply margins
+          priced into liquidity.
   \end{itemize}
-  \vspace{2mm}
-  \begin{beamercolorbox}[rounded=true,sep=3mm]{block body}
-    \centering\bfseries A well-supplied segment with an even maturity ladder
-    trades tighter than a thin segment with a clumpy ladder.
-  \end{beamercolorbox}
 \end{frame}
 
 % 7 ---------------------------------------------------------------------------
-\begin{frame}{Finding 3: the venue cap decomposes BAS from Amihud}
-  \kicker{H3 supported}
-  \small The buy-side foreign share of zloty-denominated sovereign debt fell
-  from ${\sim}33\%$ to under $15\%$ over 2019--2024.
+\begin{frame}{Result 3: the quote cap separates BAS from Amihud (H3)}
+  \kicker{Identification from the venue rulebook}
+  \small The foreign buy-side share of zloty-denominated sovereign debt fell
+  from ${\sim}33\%$ to under $15\%$ over 2019--2024. The two estimator families
+  respond asymmetrically:
   \vspace{3mm}
   \begin{center}
   \begin{tikzpicture}[x=1cm,y=1cm]
     \node[anchor=west,font=\small\bfseries,text=ycink] at (0,2.35) {Quoted spread (BAS)};
     \fill[ycrule] (0,1.75) rectangle (3.4,2.10);
     \node[anchor=west,font=\scriptsize\itshape,text=ycmuted] at (0,1.45)
-      {capped at 30--90 ticks by the Annex G venue rules};
+      {bounded by the Annex G maximum-spread obligations (30--90 ticks)};
     \node[anchor=west,font=\small\bfseries,text=ycink] at (0,0.60) {Amihud price impact};
     \fill[ycsalmon] (0,0.00) rectangle (10.6,0.35);
     \node[anchor=west,font=\scriptsize\itshape,text=ycmuted] at (0,-0.32)
-      {free to widen: $+0.29^{***}$ on the foreign share};
+      {unbounded: $+0.29^{***}$ on the foreign share};
   \end{tikzpicture}
   \end{center}
   \vspace{1mm}
-  \small\color{ycmuted} The same buy-side retreat is invisible in the quote and
-  strongly visible in the price-impact metric. Carry both measures: the
-  decomposition is the information.
+  \small\color{ycmuted} Under a binding quote cap, quote-based and volume-scaled
+  estimators identify different objects; treating them as substitutes discards
+  the identifying variation.
 \end{frame}
 
 % 8 ---------------------------------------------------------------------------
-\begin{frame}{Finding 4: supply prices into the term premium with a maturity gradient}
-  \kicker{Habitat signature}
-  \small Coefficient on the total State Treasury debt level (per +100 bn PLN)
-  in monthly regressions of ACM term premia:
+\begin{frame}{Result 4: the supply gradient on the term premium}
+  \kicker{Monthly time series, Newey-West SE, Andrews bandwidth}
+  \small Coefficient on the total State Treasury debt level (per $+100$ bn PLN)
+  in monthly regressions of ACM term premia on the supply block and macro
+  controls, $n=167$:
   \begin{center}
   \begin{tikzpicture}[x=1.35cm,y=0.095cm]
     \foreach \y in {0,5,10,15,20,25} \draw[ycrule,line width=0.4pt] (0,\y) -- (9,\y);
@@ -161,26 +165,34 @@
     \node[right,font=\tiny\itshape,text=ycmuted,rotate=90,anchor=west] at (-0.85,2) {bp per +100 bn PLN};
   \end{tikzpicture}
   \end{center}
-  \footnotesize\color{ycmuted} Increasing in tenor: a preferred-habitat
-  signature. Plus about $+8$ bp at 10Y per percentage point of debt-to-GDP.
+  \footnotesize\color{ycmuted} The supply block is jointly significant at 1\%
+  for all term-premium maturities ($F$ between 4.3 and 9.5) and insignificant
+  for the venue-capped aggregate BAS ($F=0.65$). The tenor-increasing gradient
+  is the preferred-habitat signature of Vayanos--Vila (2021), not a uniform
+  additive premium. Debt-to-GDP adds ${\sim}+8$ bp at 10Y per pp.
 \end{frame}
 
 % 9 ---------------------------------------------------------------------------
-\begin{frame}{Finding 5: the supply wedge is macro-relevant}
-  \kicker{Aggregate price tag}
-  \small Reprice the Polish fixed-cash-flow universe under the current curve,
-  the BRW risk-neutral curve, and the curve net of the supply-attributable
-  term-premium wedge from the 2019--2025 debt rise:
-  \bignum{2.4\%}{of the present value of the 951 bn PLN fixed-cash-flow
-  universe is the mark-to-market difference attributable to the supply-driven
-  term premium accumulated over the 2019--2025 debt expansion. About 23 bn PLN.}
+\begin{frame}{Result 5: a mark-to-market counterfactual}
+  \kicker{Three-curve present-value scenario}
+  \small The outstanding fixed-cash-flow universe (951 bn PLN face) is repriced
+  under (A) the contemporaneous NSS curve, (B) the BRW risk-neutral curve, and
+  (C) the NSS curve net of the supply-attributable term-premium wedge implied
+  by the 2019--2025 debt expansion (coefficients from Result 4 $\times$ the
+  400 bn PLN debt rise):
+  \bignum{2.4\%}{of present value, about 23 bn PLN, is the mark-to-market
+  difference between (A) and (C): the cumulated supply-driven term-premium
+  wedge. First-order calculation under a parallel application of the
+  tenor-specific wedge; convexity effects are second order at these magnitudes.}
 \end{frame}
 
 % 10 --------------------------------------------------------------------------
-\begin{frame}{Finding 6: primary auctions print a small inventory premium}
-  \kicker{H5 in the credible window}
-  \small Mean change in segment-mean fixing yield from the auction-day level at
-  $k=+5$ business days, pre-2022 sub-sample:
+\begin{frame}{Result 6: auction-cycle reversion (H5)}
+  \kicker{Event study on the yield path, pre-2022 sub-sample}
+  \small Normalised yield path $\Delta y_{s,k} = y_{s,t_e+k} - y_{s,t_e}$
+  around auction trade dates, segment means at $k=+5$ business days. The
+  2022--23 hiking cycle is macro-confounded and excluded; the pre-2022 window
+  is the credible sample:
   \begin{center}
   \begin{tikzpicture}[x=1.7cm,y=0.75cm]
     \draw[ycmuted,line width=0.5pt] (0,0) -- (7,0);
@@ -198,63 +210,68 @@
     \node[left,font=\tiny\itshape,text=ycmuted,rotate=90,anchor=south] at (-0.55,-1.7) {bp from auction day};
   \end{tikzpicture}
   \end{center}
-  \small\color{ycmuted} Yields drift down post-event and the magnitude rises
-  with maturity: the textbook auction-cycle reversion of Lou--Yan--Chang (2013),
-  now documented on an LLM.
+  \footnotesize\color{ycmuted} Post-event yield drift is negative and increasing
+  in maturity, consistent with an inventory risk premium. Magnitudes are in
+  line with the US Treasury auction-cycle estimates of Lou--Yan--Chang (2013)
+  and Sigaux (2018).
 \end{frame}
 
 % 11 --------------------------------------------------------------------------
-\begin{frame}{How to read the result}
-  \kicker{What it means}
+\begin{frame}{Interpretation}
+  \kicker{What the five results add up to}
   \small
   \begin{itemize}
-    \item \textbf{For practitioners.} Quote-based and volume-scaled liquidity
-          metrics are not interchangeable when the venue caps the quote.
-          Carry both: the decomposition is the information.
-    \item \textbf{For policymakers.} The supply gradient on the term premium is
-          real: a 100 bn PLN debt rise prices into the ten-year term premium by
-          about 23 bp through the level channel, plus another 8 bp per
-          percentage point of debt-to-GDP.
-    \item \textbf{For researchers.} Treat sovereign liquidity on a less-liquid
-          market as an endogenous object driven by stocks, holders and venue
-          rules, not as a fixed bond attribute.
+    \item \textbf{Measurement.} Under a binding venue quote cap, quote-based
+          and volume-scaled liquidity estimators are complements, not
+          substitutes; their divergence identifies the buy-side retreat that
+          the quote conceals.
+    \item \textbf{Pricing.} Supply prices into the term structure through
+          stocks and maturity composition with a tenor-increasing gradient,
+          the observable implication of preferred-habitat demand curves in a
+          market without a deep arbitrage sector.
+    \item \textbf{Magnitude.} The implied wedge is macro-relevant: roughly
+          2.4\% of the sovereign universe's present value over one debt
+          expansion, and about 23 bp at 10Y per 100 bn PLN of debt through the
+          level channel alone.
   \end{itemize}
 \end{frame}
 
 % 12 --------------------------------------------------------------------------
-\begin{frame}{Methodology in one slide}
-  \kicker{One panel, four layers}
+\begin{frame}{Data and econometrics}
+  \kicker{Specification summary}
   \small
   \begin{itemize}
-    \item \textbf{Data.} Daily BondSpot fixings and turnover on 91
-          PLN-denominated sovereign bonds, 2005--2026, plus Ministry of Finance
-          holdings and a macro panel.
-    \item \textbf{Measures.} Six low-frequency estimators: quoted bid-ask,
-          Amihud, Roll, Bao--Pan--Wang gamma, Corwin--Schultz, composite
-          $z$-score, plus the zero-trading-days share.
-    \item \textbf{Econometrics.} Bond-month and segment-month panels with fixed
-          effects and Driscoll--Kraay errors; MPC event study with a
-          pre/post-COVID split; auction event study on the yield path;
-          aggregate monthly regressions of BAS and ACM term premia on supply.
-    \item \textbf{Valuation.} A three-curve present-value scenario pricing the
-          supply-attributable wedge on the fixed-cash-flow universe.
+    \item \textbf{Panel.} Daily BondSpot closing fixings and turnover, 91
+          PLN-denominated sovereign bonds, 2005--2026; Ministry of Finance
+          outstanding amounts, holdings by investor class, and a monthly macro
+          block.
+    \item \textbf{Measures.} Quoted bid-ask, Amihud, Roll, Bao--Pan--Wang
+          $\gamma$, Corwin--Schultz, an equal-weight composite $z$-score, and
+          the zero-trading-days share.
+    \item \textbf{Estimation.} Bond-month and segment-month fixed-effects
+          panels with Driscoll--Kraay (Bartlett kernel) standard errors;
+          MPC and auction event studies (AAR/CAAR and normalised yield paths);
+          aggregate monthly time-series regressions with Newey--West standard
+          errors, lag bandwidth by the Andrews (1991) rule; joint $F$-tests on
+          the supply block.
+    \item \textbf{Valuation.} Three-curve present-value counterfactual on the
+          fixed-cash-flow universe.
   \end{itemize}
 \end{frame}
 
 % 13 --------------------------------------------------------------------------
-\begin{frame}{The results live on, daily}
+\begin{frame}{Companion data and replication}
   \kicker{yieldcartography.com}
   \begin{itemize}
-    \item The paper's six measures and the composite are recomputed on the full
-          BondSpot panel with every site build, normalisation constants frozen
-          on the paper sample so the live series stays comparable with the
-          published one: \textcolor{ycaccent}{\ttfamily
-          yieldcartography.com/liquidity}.
-    \item ACM and BRW term premia behind the supply regressions update daily on
-          the \textcolor{ycaccent}{\ttfamily /term-premia/} tab, and the
-          cockpit carries the headline tiles.
-    \item All underlying CSVs are downloadable from the dashboards; the paper
-          is open access.
+    \item The six measures and the composite are recomputed on the full
+          BondSpot panel with every site build; normalisation constants are
+          frozen on the paper sample, so the live series is directly comparable
+          with the published one:
+          \textcolor{ycaccent}{\ttfamily yieldcartography.com/liquidity}.
+    \item The ACM--BRW term premia behind the supply regressions update daily
+          on \textcolor{ycaccent}{\ttfamily /term-premia/}.
+    \item Underlying CSVs are downloadable from the dashboards; the paper is
+          open access.
   \end{itemize}
 \end{frame}
 
