@@ -35,7 +35,13 @@
   .pub-list .ttl { font-weight: 600; color: var(--ink); display: block; margin-bottom: 4px; font-size: 14px; }
   .pub-list .meta { font-family: var(--mono); font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; }
   .pub-list .doi { font-family: var(--mono); font-size: 11.5px; color: var(--accent); }
-  .pub-list .abs { font-size: 13px; color: var(--ink-soft); margin-top: 6px; line-height: 1.55; }
+  .pub-list .abs { font-size: 13px; color: var(--ink-soft); margin-top: 4px; line-height: 1.55; display: block; }
+  .pub-list details.absfold { margin-top: 4px; }
+  .pub-list details.absfold > summary { cursor: pointer; font-family: var(--mono); font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); list-style: none; }
+  .pub-list details.absfold > summary::before { content: '\25B8\00a0'; }
+  .pub-list details.absfold[open] > summary::before { content: '\25BE\00a0'; }
+  .pub-list details.absfold > summary:hover { color: var(--accent); }
   .pub-tag { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 600;
              text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent);
              border: 1px solid var(--accent); border-radius: 3px; padding: 2px 7px;
@@ -153,61 +159,67 @@
   </section>
 
   <section class="section">
-    <h2 class="with-rule">Selected publications &amp; working papers</h2>
+    <h2 class="with-rule">Publications &amp; working papers · related to yieldcartography</h2>
     <ul class="pub-list">
-      <li>
-        <span class="ttl">Welfare Measurements with Heterogeneous Agents</span>
-        <span class="meta">with Marek Weretka — Journal of Economic Dynamics and Control, 184 (March 2026), art. 105252 · preprint at SSRN 5335293</span>
-        <span class="doi"><a href="https://doi.org/10.1016/j.jedc.2025.105252">doi:10.1016/j.jedc.2025.105252</a></span>
-        <span class="abs">The canonical infinite-horizon heterogeneous-consumer framework lacks a preference-based index that consistently quantifies the welfare impact of policies: money-metric indices such as equivalent and compensating variation are not additive across policy sets and can depend on the assumed status quo or implementation order. The paper shows that for arbitrary heterogeneous von Neumann-Morgenstern preferences with a common discount factor the equivalent (or compensating) variation is nearly additive and aggregates effectively as long as consumers are patient, so the index delivers consistent quantitative welfare predictions for the short-lived policies studied in macroeconomics and finance.</span>
-      </li>
       <li>
         <span class="ttl">Supply, Habitat and the Price of Liquidity in Less-Liquid Sovereign Bond Markets. Evidence from Poland<a class="pub-tag" href="/slides/liquidity/">seminar slides</a></span>
         <span class="meta">Borsa Istanbul Review, in press, corrected proof, online 1 September 2026, art. 100904 · open access · powers the <a href="/liquidity/">liquidity tab</a></span>
         <span class="doi"><a href="https://doi.org/10.1016/j.bir.2026.100904">doi:10.1016/j.bir.2026.100904</a></span>
-        <span class="abs">Treats liquidity on a less-liquid sovereign market as the object to be explained rather than an input. Six low-frequency estimators plus the zero-trading-days share, computed bond by bond over 2005-2026, feed bond-month and segment-month panels, MPC and primary-auction event studies, and a monthly supply-block regression of the aggregate spread and ACM term premia. Supply prices in through segment stocks and residual-maturity concentration rather than monthly flow, the post-2020 foreign-investor retreat loads on Amihud price impact but is invisible in the venue-capped quoted spread, and total debt loads on the term premium with a maturity-monotonic preferred-habitat gradient worth about 2.5 percent of the sovereign universe's present value over the 2019-2025 debt expansion.</span>
+        <details class="absfold"><summary>abstract</summary><span class="abs">Treats liquidity on a less-liquid sovereign market as the object to be explained rather than an input. Six low-frequency estimators plus the zero-trading-days share, computed bond by bond over 2005-2026, feed bond-month and segment-month panels, MPC and primary-auction event studies, and a monthly supply-block regression of the aggregate spread and ACM term premia. Supply prices in through segment stocks and residual-maturity concentration rather than monthly flow, the post-2020 foreign-investor retreat loads on Amihud price impact but is invisible in the venue-capped quoted spread, and total debt loads on the term premium with a maturity-monotonic preferred-habitat gradient worth about 2.5 percent of the sovereign universe's present value over the 2019-2025 debt expansion.</span></details>
       </li>
       <li>
         <span class="ttl">Does the Term Premium Pay for the Duration? Evidence from Polish Sovereigns<a class="pub-tag" href="/slides/duration/">seminar slides</a></span>
         <span class="meta">preprint, 1 June 2026 · Research Square v1 · powers the <a href="/total-return/">total-return tab</a></span>
         <span class="doi"><a href="https://doi.org/10.21203/rs.3.rs-9849665/v1">doi:10.21203/rs.3.rs-9849665/v1</a></span>
-        <span class="abs">Develops a closed-form seven-component identity for the realised quarterly total return on a coupon-bearing sovereign bond (coupon accrual, reinvestment proceeds, clean-price roll-down, expected-rate change, term-premium change, convexity, and a closure residual). Applied to the published Treasury BondSpot Poland index over 2006-2026 on an 89-bond panel, the identity tracks the basket within ten basis points per year. Carry and roll-down contribute +413 bp per year on average; the macro-driven curve-move bloc averages -17 bp per year and is statistically indistinguishable from zero on the full sample. Conditioning out the four-quarter 2022 NBP-hike storm, the TBSP-versus-rolling-NBP-deposit excess is +46.5 bp per quarter at HAC p = 0.003. A TBSP-tracking Polish bond fund is best classified as a carry trade between the term spread and the NBP reference rate, carrying a low-frequency regime risk that paid off asymmetrically in 2022.</span>
+        <details class="absfold"><summary>abstract</summary><span class="abs">Develops a closed-form seven-component identity for the realised quarterly total return on a coupon-bearing sovereign bond (coupon accrual, reinvestment proceeds, clean-price roll-down, expected-rate change, term-premium change, convexity, and a closure residual). Applied to the published Treasury BondSpot Poland index over 2006-2026 on an 89-bond panel, the identity tracks the basket within ten basis points per year. Carry and roll-down contribute +413 bp per year on average; the macro-driven curve-move bloc averages -17 bp per year and is statistically indistinguishable from zero on the full sample. Conditioning out the four-quarter 2022 NBP-hike storm, the TBSP-versus-rolling-NBP-deposit excess is +46.5 bp per quarter at HAC p = 0.003. A TBSP-tracking Polish bond fund is best classified as a carry trade between the term spread and the NBP reference rate, carrying a low-frequency regime risk that paid off asymmetrically in 2022.</span></details>
       </li>
       <li>
         <span class="ttl">Closer to New York than to Frankfurt? The Expectations Hypothesis in Poland, the US and the Euro Area<a class="pub-tag" href="/slides/eh/">seminar slides</a></span>
         <span class="meta">working paper, 2026 · SSRN 6695444 </span>
         <span class="doi"><a href="https://doi.org/10.2139/ssrn.6695444">doi:10.2139/ssrn.6695444</a></span>
-        <span class="abs">Five families of expectations-hypothesis tests applied to Polish, US and euro-area sovereign curves over 2005-2026. The Polish curve is mildly anti-PEH, the US is roughly consistent with PEH at long horizons, and the euro-area AAA panel rejects strongly under asymptotic Newey-West but barely under wild block bootstrap — clean evidence for the Bauer-Hamilton (2018) concern about asymptotic inference in overlapping-return regressions with persistent regressors.</span>
+        <details class="absfold"><summary>abstract</summary><span class="abs">Five families of expectations-hypothesis tests applied to Polish, US and euro-area sovereign curves over 2005-2026. The Polish curve is mildly anti-PEH, the US is roughly consistent with PEH at long horizons, and the euro-area AAA panel rejects strongly under asymptotic Newey-West but barely under wild block bootstrap — clean evidence for the Bauer-Hamilton (2018) concern about asymptotic inference in overlapping-return regressions with persistent regressors.</span></details>
       </li>
       <li>
         <span class="ttl">Are Survey-Based Rate Expectations Informative? Evidence from Less-Liquid Markets<a class="pub-tag" href="/slides/surveys/">seminar slides</a></span>
         <span class="meta">working paper, 2026 · SSRN 6644222 </span>
         <span class="doi"><a href="https://doi.org/10.2139/ssrn.6644222">doi:10.2139/ssrn.6644222</a></span>
-        <span class="abs">Tests whether the NBP Survey of Professional Forecasters carries information beyond what is already in the Polish term structure. Uses ACM and BRW expected-rate paths from the LW-NSS-fitted Polish zero-coupon panel as the model benchmark, runs Diebold-Mariano, Clark-West and forecast-encompassing tests at horizons of 1 to 60 months. The model wins at 3y and 5y, the survey wins at 1y; encompassing tests reject the survey at long horizons.</span>
+        <details class="absfold"><summary>abstract</summary><span class="abs">Tests whether the NBP Survey of Professional Forecasters carries information beyond what is already in the Polish term structure. Uses ACM and BRW expected-rate paths from the LW-NSS-fitted Polish zero-coupon panel as the model benchmark, runs Diebold-Mariano, Clark-West and forecast-encompassing tests at horizons of 1 to 60 months. The model wins at 3y and 5y, the survey wins at 1y; encompassing tests reject the survey at long horizons.</span></details>
       </li>
       <li>
-        <span class="ttl">Parsimonious Yield Curve Modeling in Less-Liquid Markets</span>
+        <span class="ttl">Parsimonious Yield Curve Modeling in Less-Liquid Markets<a class="pub-tag" href="/slides/lwnss/">seminar slides</a></span>
         <span class="meta">FAME|GRAPE Working Paper #53</span>
         <span class="doi"><a href="https://grape.org.pl/publications/wps" target="_blank">grape.org.pl/publications/wps</a></span>
-        <span class="abs">Develops the liquidity-weighted Nelson-Siegel-Svensson (LW-NSS) framework for sovereign curves where bond-by-bond observation noise is heterogeneous. Information-matrix derivation gives an explicit weight-matrix structure derived from BondSpot turnover and outstanding amounts. Refit of the Polish panel reduces 21-year mean fit MAE by 1.6 bp versus equal-weight NSS while preserving curvature.</span>
+        <details class="absfold"><summary>abstract</summary><span class="abs">Develops the liquidity-weighted Nelson-Siegel-Svensson (LW-NSS) framework for sovereign curves where bond-by-bond observation noise is heterogeneous. Information-matrix derivation gives an explicit weight-matrix structure derived from BondSpot turnover and outstanding amounts. Refit of the Polish panel reduces 21-year mean fit MAE by 1.6 bp versus equal-weight NSS while preserving curvature.</span></details>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2 class="with-rule">Other publications &amp; working papers</h2>
+    <ul class="pub-list">
+      <li>
+        <span class="ttl">Welfare Measurements with Heterogeneous Agents<a class="pub-tag" href="/slides/welfare/">seminar slides</a></span>
+        <span class="meta">with Marek Weretka — Journal of Economic Dynamics and Control, 184 (March 2026), art. 105252 · preprint at SSRN 5335293</span>
+        <span class="doi"><a href="https://doi.org/10.1016/j.jedc.2025.105252">doi:10.1016/j.jedc.2025.105252</a></span>
+        <details class="absfold"><summary>abstract</summary><span class="abs">The canonical infinite-horizon heterogeneous-consumer framework lacks a preference-based index that consistently quantifies the welfare impact of policies: money-metric indices such as equivalent and compensating variation are not additive across policy sets and can depend on the assumed status quo or implementation order. The paper shows that for arbitrary heterogeneous von Neumann-Morgenstern preferences with a common discount factor the equivalent (or compensating) variation is nearly additive and aggregates effectively as long as consumers are patient, so the index delivers consistent quantitative welfare predictions for the short-lived policies studied in macroeconomics and finance.</span></details>
       </li>
       <li>
-        <span class="ttl">When 3% Means Nothing: Calibrating Escalation Limits to a Bank's Own Forecasting Error Distribution</span>
+        <span class="ttl">When 3% Means Nothing: Calibrating Escalation Limits to a Bank's Own Forecasting Error Distribution<a class="pub-tag" href="/slides/escalation/">seminar slides</a></span>
         <span class="meta">working paper, 2025 · SSRN 6276722</span>
         <span class="doi"><a href="https://doi.org/10.2139/ssrn.6276722">doi:10.2139/ssrn.6276722</a></span>
-        <span class="abs">Argues that bank-internal escalation thresholds for forecasting errors should be calibrated to the empirical error distribution of the institution rather than imposed as round-number percentages. Develops the calibration on Polish bank stress-test data and shows that uniform 3% thresholds either grossly under- or over-trigger depending on the size and macroeconomic exposure of the institution.</span>
+        <details class="absfold"><summary>abstract</summary><span class="abs">Argues that bank-internal escalation thresholds for forecasting errors should be calibrated to the empirical error distribution of the institution rather than imposed as round-number percentages. Develops the calibration on Polish bank stress-test data and shows that uniform 3% thresholds either grossly under- or over-trigger depending on the size and macroeconomic exposure of the institution.</span></details>
       </li>
       <li>
-        <span class="ttl">From Point through Density Valuation to Individual Risk Assessment in the Discounted Cash Flows Method</span>
+        <span class="ttl">From Point through Density Valuation to Individual Risk Assessment in the Discounted Cash Flows Method<a class="pub-tag" href="/slides/dcf/">seminar slides</a></span>
         <span class="meta">International Journal of Finance &amp; Economics, 26 (2021), 5621–5635</span>
         <span class="doi"><a href="https://doi.org/10.1002/ijfe.2084">doi:10.1002/ijfe.2084</a></span>
-        <span class="abs">Reformulates the discounted-cash-flow valuation method to deliver a full distribution of valuation outcomes rather than a point estimate, with explicit treatment of cash-flow uncertainty and discount-rate uncertainty. Shows how the resulting distribution feeds directly into individual position-level risk assessment.</span>
+        <details class="absfold"><summary>abstract</summary><span class="abs">Reformulates the discounted-cash-flow valuation method to deliver a full distribution of valuation outcomes rather than a point estimate, with explicit treatment of cash-flow uncertainty and discount-rate uncertainty. Shows how the resulting distribution feeds directly into individual position-level risk assessment.</span></details>
       </li>
       <li>
-        <span class="ttl">Markovian and Multi-Curve Friendly Parametrisation of a HJM Model Used in Valuation Adjustment of Interest Rate Derivatives</span>
+        <span class="ttl">Markovian and Multi-Curve Friendly Parametrisation of a HJM Model Used in Valuation Adjustment of Interest Rate Derivatives<a class="pub-tag" href="/slides/hjm/">seminar slides</a></span>
         <span class="meta">Bank i Kredyt, 50(2), 2019</span>
         <span class="doi"><a href="https://bankikredyt.nbp.pl/content/2019/02/BIK_02_2019_01.pdf">PDF — bankikredyt.nbp.pl</a></span>
-        <span class="abs">Derives a Markovian, multi-curve-consistent parametrisation of the Heath-Jarrow-Morton model suitable for XVA computation across collateralised and uncollateralised interest-rate derivatives. Reduces the dimensionality of the state vector required for valuation adjustment without sacrificing fit on the swap-curve and OIS-curve data.</span>
+        <details class="absfold"><summary>abstract</summary><span class="abs">Derives a Markovian, multi-curve-consistent parametrisation of the Heath-Jarrow-Morton model suitable for XVA computation across collateralised and uncollateralised interest-rate derivatives. Reduces the dimensionality of the state vector required for valuation adjustment without sacrificing fit on the swap-curve and OIS-curve data.</span></details>
       </li>
     </ul>
     <p style="margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted)">For the full publication list and ongoing working papers see the GRAPE, SSRN and RePEc profiles linked above.</p>

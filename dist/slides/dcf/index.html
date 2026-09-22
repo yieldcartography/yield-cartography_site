@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slides: From point through density valuation to individual risk assessment — yieldcartography</title>
+<meta name="description" content="Six-slide seminar deck for Dec (2021), From Point through Density Valuation to Individual Risk Assessment in the Discounted Cash Flows Method, IJFE. Viewable full screen, keyboard navigation.">
+<link rel="stylesheet" href="/assets/style.css?v=9">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
+<link rel="canonical" href="https://yieldcartography.com/slides/dcf/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Seminar slides: From point through density valuation to individual risk assessment">
+<meta property="og:url" content="https://yieldcartography.com/slides/dcf/">
+<meta property="og:site_name" content="yieldcartography">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  .deck-shell { max-width: 1180px; margin: 0 auto; }
+  .deck-stage { position: relative; background: #1d2733; border-radius: 8px;
+                overflow: hidden; user-select: none; }
+  .deck-stage canvas { display: block; width: 100%; height: auto; }
+  .deck-stage.fs { border-radius: 0; display: flex; align-items: center;
+                   justify-content: center; background: #10161d; }
+  .deck-stage.fs canvas { max-width: 100vw; max-height: 100vh; width: auto; height: 100vh; }
+  .deck-bar { display: flex; align-items: center; gap: 10px; margin-top: 10px;
+              font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .deck-bar button { font-family: var(--mono); font-size: 12px; padding: 6px 14px;
+                     border: 1px solid var(--rule); border-radius: 4px; background: #fff;
+                     color: var(--accent); cursor: pointer; }
+  .deck-bar button:hover { border-color: var(--accent); }
+  .deck-bar .pg { color: var(--accent); font-weight: 600; min-width: 54px; text-align: center; }
+  .deck-bar a { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+  .deck-nav-hit { position: absolute; top: 0; bottom: 0; width: 34%; cursor: pointer; }
+  .deck-nav-hit.left { left: 0; } .deck-nav-hit.right { right: 0; }
+</style>
+<script src="/assets/promo.js?v=5" defer></script>
+<script src="/assets/search.js?v=1" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <nav>
+    <a href="/cockpit/">cockpit</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/oracle/">oracle</a>
+    <a href="/mpc/">MPC</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/total-return/">total return</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/">shorts</a>
+    <a href="/movies/">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main>
+  <h1 style="margin:18px 0 4px 0;font-size:22px;letter-spacing:-0.3px">Seminar slides: From point through density valuation to individual risk assessment</h1>
+  <p style="color:var(--muted);margin:0 0 14px 0;font-size:13px">Dec, M. (2021), International Journal of Finance &amp; Economics, 26, 5621-5635, <a href="https://doi.org/10.1002/ijfe.2084">doi:10.1002/ijfe.2084</a>. Six slides. Arrow keys or click the slide edges to navigate, F or the button for full screen.</p>
+
+  <div class="deck-shell">
+    <div class="deck-stage" id="stage">
+      <canvas id="cv"></canvas>
+      <div class="deck-nav-hit left" id="hitL" title="previous"></div>
+      <div class="deck-nav-hit right" id="hitR" title="next"></div>
+    </div>
+    <div class="deck-bar">
+      <button id="prev">&larr; prev</button>
+      <span class="pg" id="pg">–</span>
+      <button id="next">next &rarr;</button>
+      <button id="fs">full screen (F)</button>
+      <span style="flex:1"></span>
+      <a href="dcf_deck.pdf" download>download PDF</a>
+      <a href="/about/">about →</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
+        <li><a href="/slides/">Seminar decks</a></li>
+        <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>
+</footer>
+
+<script>
+(function(){
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  var doc = null, page = 1, total = 0, rendering = false, pendingPage = null;
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  var stage = document.getElementById('stage');
+
+  function render(n){
+    if (!doc) return;
+    if (rendering){ pendingPage = n; return; }
+    rendering = true;
+    doc.getPage(n).then(function(p){
+      var scale = (stage.classList.contains('fs') ? window.screen.height * 1.0 : 1600) /
+                  p.getViewport({scale: 1}).height * (stage.classList.contains('fs') ? 1 : 0.45);
+      var vp = p.getViewport({scale: Math.max(scale, 1.2)});
+      cv.width = vp.width; cv.height = vp.height;
+      p.render({canvasContext: ctx, viewport: vp}).promise.then(function(){
+        rendering = false;
+        document.getElementById('pg').textContent = n + ' / ' + total;
+        if (pendingPage !== null){ var q = pendingPage; pendingPage = null; render(q); }
+      });
+    });
+  }
+  function go(d){ var n = Math.min(Math.max(page + d, 1), total); if (n !== page){ page = n; render(page); } }
+
+  pdfjsLib.getDocument('dcf_deck.pdf').promise.then(function(d){
+    doc = d; total = d.numPages; render(page);
+  });
+
+  document.getElementById('prev').addEventListener('click', function(){ go(-1); });
+  document.getElementById('next').addEventListener('click', function(){ go(1); });
+  document.getElementById('hitL').addEventListener('click', function(){ go(-1); });
+  document.getElementById('hitR').addEventListener('click', function(){ go(1); });
+  document.getElementById('fs').addEventListener('click', function(){
+    if (document.fullscreenElement) document.exitFullscreen();
+    else stage.requestFullscreen();
+  });
+  document.addEventListener('fullscreenchange', function(){
+    stage.classList.toggle('fs', !!document.fullscreenElement);
+    render(page);
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(-1); }
+    else if (e.key === 'Home') { page = 1; render(1); }
+    else if (e.key === 'End') { page = total; render(total); }
+    else if (e.key.toLowerCase() === 'f' && !e.metaKey && !e.ctrlKey) {
+      if (document.fullscreenElement) document.exitFullscreen(); else stage.requestFullscreen();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

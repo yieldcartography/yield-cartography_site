@@ -1,0 +1,113 @@
+%% Seminar deck: From point through density valuation to individual risk
+%% assessment in the DCF method (IJFE, 2021). House style, academic register.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{beamerthemeyc}
+\renewcommand{\deckfootertitle}{Dec (2021) · From point through density valuation to individual risk assessment · IJFE}
+
+\begin{document}
+
+% 1 ---------------------------------------------------------------------------
+\begin{frame}[plain]
+  \vspace{2mm}
+  {\ttfamily\scriptsize\color{ycmuted}SEMINAR DECK · YIELDCARTOGRAPHY.COM}\\[-0.3em]
+  {\color{ycrule}\rule{\textwidth}{0.5pt}}
+  \vspace{4mm}
+
+  {\fontsize{19}{23}\selectfont\bfseries\color{ycink}From point through density valuation\\to individual risk assessment\\in the discounted cash flows method.\par}
+  \vspace{6mm}
+  {\small\bfseries Marcin Dec\par}
+  {\footnotesize\color{ycmuted}Kozminski University \& FAME|GRAPE, Warsaw\par}
+  \vspace{3mm}
+  {\ttfamily\scriptsize\color{ycaccent}International Journal of Finance \& Economics, 26 (2021), 5621--5635 · doi:10.1002/ijfe.2084\par}
+  \vfill
+  \raisebox{-1mm}{\includegraphics[height=6mm]{kozminski_logo.png}}\hspace{5mm}
+  \raisebox{-1mm}{\includegraphics[height=6mm]{grape_logo.png}}\hspace{5mm}
+  \raisebox{-1mm}{\includegraphics[height=6mm]{yc_logo.png}}
+\end{frame}
+
+% 2 ---------------------------------------------------------------------------
+\begin{frame}{Motivation}
+  \kicker{A point estimate conceals the uncertainty that matters}
+  \begin{itemize}
+    \item The discounted-cash-flow method delivers a single number,
+          \( V = \sum_{t} \mathbb{E}[CF_t] \,/\, (1+r)^{t} \), from inputs
+          that are themselves uncertain: projected cash flows and the
+          discount rate.
+    \item Sensitivity tables and scenario grids, the standard practice, probe
+          the input space pointwise and carry no probability content.
+    \item The paper reformulates the valuation to deliver the full
+          distribution of outcomes implied by explicit distributions on the
+          inputs.
+  \end{itemize}
+\end{frame}
+
+% 3 ---------------------------------------------------------------------------
+\begin{frame}{Density valuation}
+  \kicker{From input distributions to a valuation law}
+  \small With cash-flow uncertainty $CF_t \sim G_t$ and discount-rate
+  uncertainty $r \sim H$ treated explicitly, the valuation becomes a random
+  variable
+  \[ V \;=\; \sum_{t=1}^{T} \frac{CF_t}{(1+r)^{t}},
+     \qquad V \sim F_V\big(\cdot\,;\,G_1,\dots,G_T,\,H\big), \]
+  \begin{itemize}
+    \item The object of interest is $F_V$ itself: its location reproduces the
+          classical point estimate, while its shape carries the valuation
+          risk that the point estimate suppresses.
+    \item The paper develops the treatment of cash-flow uncertainty and
+          discount-rate uncertainty and their joint effect on $F_V$.
+  \end{itemize}
+\end{frame}
+
+% 4 ---------------------------------------------------------------------------
+\begin{frame}{From density to individual risk assessment}
+  \kicker{Position-level use}
+  \begin{itemize}
+    \item Once $F_V$ is available, position-level risk assessment is direct:
+          quantiles of $F_V$ bound the valuation at chosen confidence levels,
+          and the probability of the value falling below a critical level is
+          read off the distribution.
+    \item The resulting risk statements integrate with individual position
+          limits and with portfolio-level aggregation in a way point
+          estimates cannot.
+    \item Valuation and risk measurement collapse into one object: the same
+          distribution answers the pricing and the risk question.
+  \end{itemize}
+\end{frame}
+
+% 5 ---------------------------------------------------------------------------
+\begin{frame}{Implications}
+  \kicker{For valuation practice}
+  \begin{itemize}
+    \item Reporting a valuation as a distribution disciplines the input
+          assumptions: every scenario grid becomes a special case of an
+          explicit probabilistic statement.
+    \item Disagreements between valuations can be decomposed into
+          disagreements about input distributions, which are auditable.
+    \item The framework extends naturally to any present-value object with
+          uncertain flows and rates, from equity valuation to project
+          finance.
+  \end{itemize}
+\end{frame}
+
+% 6 ---------------------------------------------------------------------------
+\begin{frame}[plain]
+  \vspace{12mm}
+  {\fontsize{27}{31}\selectfont\bfseries\color{ycink}Thank you.\par}
+  \vspace{6mm}
+  {\normalsize\color{ycink}Marcin Dec\par}
+  {\small\color{ycmuted}Kozminski University \& FAME|GRAPE, Warsaw\\
+   mdec@kozminski.edu.pl · ORCID 0000-0002-6220-8267\par}
+  \vspace{5mm}
+  {\ttfamily\footnotesize\color{ycaccent}%
+   Dec, M. (2021). From Point through Density Valuation to Individual\\
+   Risk Assessment in the Discounted Cash Flows Method.\\
+   International Journal of Finance \& Economics, 26, 5621--5635.\\
+   doi:10.1002/ijfe.2084\par}
+  \vfill
+  \raisebox{-1mm}{\includegraphics[height=6mm]{kozminski_logo.png}}\hspace{5mm}
+  \raisebox{-1mm}{\includegraphics[height=6mm]{grape_logo.png}}\hspace{5mm}
+  \raisebox{-1mm}{\includegraphics[height=6mm]{yc_logo.png}}
+  \hfill{\ttfamily\scriptsize\color{ycmuted}yieldcartography.com/slides/dcf/}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,118 @@
+%% Seminar deck: When 3% means nothing (working paper, SSRN 6276722).
+%% House style, academic register. Built from the working-paper abstract.
+%% No venue disclosed.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{beamerthemeyc}
+\renewcommand{\deckfootertitle}{Dec · When 3\% means nothing · SSRN 6276722}
+
+\begin{document}
+
+% 1 ---------------------------------------------------------------------------
+\begin{frame}[plain]
+  \vspace{2mm}
+  {\ttfamily\scriptsize\color{ycmuted}SEMINAR DECK · YIELDCARTOGRAPHY.COM}\\[-0.3em]
+  {\color{ycrule}\rule{\textwidth}{0.5pt}}
+  \vspace{4mm}
+
+  {\fontsize{19}{23}\selectfont\bfseries\color{ycink}When 3\% means nothing:\\calibrating escalation limits to a bank's\\own forecasting error distribution.\par}
+  \vspace{6mm}
+  {\small\bfseries Marcin Dec\par}
+  {\footnotesize\color{ycmuted}Kozminski University \& FAME|GRAPE, Warsaw\par}
+  \vspace{3mm}
+  {\ttfamily\scriptsize\color{ycaccent}Working paper · SSRN 6276722 · doi:10.2139/ssrn.6276722 · under peer review\par}
+  \vfill
+  \raisebox{-1mm}{\includegraphics[height=6mm]{kozminski_logo.png}}\hspace{5mm}
+  \raisebox{-1mm}{\includegraphics[height=6mm]{grape_logo.png}}\hspace{5mm}
+  \raisebox{-1mm}{\includegraphics[height=6mm]{yc_logo.png}}
+\end{frame}
+
+% 2 ---------------------------------------------------------------------------
+\begin{frame}{Motivation}
+  \kicker{Round numbers as risk governance}
+  \begin{itemize}
+    \item Bank-internal governance frameworks escalate when a forecasting
+          error, of a balance-sheet item, of net interest income, of a
+          stress-test projection, exceeds a threshold. In practice the
+          threshold is a round number, commonly three percent, imposed
+          uniformly across institutions and portfolios.
+    \item A fixed threshold has no distributional content: whether a 3\%
+          error is routine noise or a genuine signal depends entirely on the
+          institution's own forecasting error distribution.
+    \item The paper proposes and evaluates calibrating escalation limits to
+          that distribution.
+  \end{itemize}
+\end{frame}
+
+% 3 ---------------------------------------------------------------------------
+\begin{frame}{The calibration rule}
+  \kicker{Thresholds as quantiles}
+  \small For institution $i$ with empirical forecasting-error distribution
+  $F_i$ of the monitored quantity, the escalation limit at tolerance
+  $\alpha$ is the quantile
+  \[ c_{i,\alpha} \;=\; F_{|e|,i}^{-1}\!\left(1-\alpha\right),
+     \qquad \text{so that} \qquad
+     \Pr\!\left(|e_{it}| > c_{i,\alpha}\right) \;=\; \alpha . \]
+  \begin{itemize}
+    \item Under the quantile rule, the escalation frequency is equalised
+          across institutions by construction; under a uniform fixed
+          threshold it is whatever the institution's error dispersion makes
+          it.
+    \item The rule requires only the institution's own forecasting track
+          record, an input every supervised bank already possesses.
+  \end{itemize}
+\end{frame}
+
+% 4 ---------------------------------------------------------------------------
+\begin{frame}{Evidence}
+  \kicker{Polish bank stress-test data}
+  \begin{itemize}
+    \item The calibration is developed on Polish bank stress-test forecast
+          data across institutions of different size and macroeconomic
+          exposure.
+    \item A uniform 3\% threshold either grossly under-triggers or
+          over-triggers depending on the institution: for a large,
+          diversified balance sheet it fires on routine noise, for a small
+          or macro-exposed institution it misses genuinely informative
+          errors.
+    \item The quantile-calibrated limits restore a common escalation
+          probability and make threshold breaches comparable across the
+          system.
+  \end{itemize}
+\end{frame}
+
+% 5 ---------------------------------------------------------------------------
+\begin{frame}{Implications}
+  \kicker{For risk governance and supervision}
+  \begin{itemize}
+    \item Escalation frameworks gain statistical content: a breach carries a
+          known and uniform surprise probability, so it is informative by
+          design.
+    \item Supervisory comparability improves, since breach counts across
+          institutions measure the same tail event.
+    \item The rule composes with the existing governance apparatus; it
+          replaces only the number, an institution-specific quantile in place
+          of a system-wide constant.
+  \end{itemize}
+\end{frame}
+
+% 6 ---------------------------------------------------------------------------
+\begin{frame}[plain]
+  \vspace{12mm}
+  {\fontsize{27}{31}\selectfont\bfseries\color{ycink}Thank you.\par}
+  \vspace{6mm}
+  {\normalsize\color{ycink}Marcin Dec\par}
+  {\small\color{ycmuted}Kozminski University \& FAME|GRAPE, Warsaw\\
+   mdec@kozminski.edu.pl · ORCID 0000-0002-6220-8267\par}
+  \vspace{5mm}
+  {\ttfamily\footnotesize\color{ycaccent}%
+   Dec, M. When 3\% Means Nothing: Calibrating Escalation Limits to a\\
+   Bank's Own Forecasting Error Distribution. SSRN 6276722.\\
+   doi:10.2139/ssrn.6276722 · under peer review\par}
+  \vfill
+  \raisebox{-1mm}{\includegraphics[height=6mm]{kozminski_logo.png}}\hspace{5mm}
+  \raisebox{-1mm}{\includegraphics[height=6mm]{grape_logo.png}}\hspace{5mm}
+  \raisebox{-1mm}{\includegraphics[height=6mm]{yc_logo.png}}
+  \hfill{\ttfamily\scriptsize\color{ycmuted}yieldcartography.com/slides/escalation/}
+\end{frame}
+
+\end{document}
