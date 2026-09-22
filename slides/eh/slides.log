@@ -773,7 +773,7 @@ File: pgfmodulematrix.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 zlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 ))))
-LaTeX Font Info:    Trying to load font information for T1+phv on input line 8.
+LaTeX Font Info:    Trying to load font information for T1+phv on input line 9.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd
@@ -787,24 +787,24 @@ File: l3backend-pdftex.def 2022-01-12 L3 backend support: PDF output (pdfTeX)
 (./slides.aux)
 \openout1 = `slides.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -862,7 +862,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 8.
+Package hyperref Info: Link coloring OFF on input line 9.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
@@ -875,60 +875,60 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count345
 )
-LaTeX Info: Redefining \ref on input line 8.
-LaTeX Info: Redefining \pageref on input line 8.
-LaTeX Info: Redefining \nameref on input line 8.
+LaTeX Info: Redefining \ref on input line 9.
+LaTeX Info: Redefining \pageref on input line 9.
+LaTeX Info: Redefining \nameref on input line 9.
 
 (./slides.out) (./slides.out)
 \@outlinefile=\write5
 \openout5 = `slides.out'.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/lmr/m/n --> OT1/cmss/m/n on input line 8.
+(Font)                  OT1/lmr/m/n --> OT1/cmss/m/n on input line 9.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/lmr/bx/n --> OT1/cmss/b/n on input line 8.
+(Font)                  OT1/lmr/bx/n --> OT1/cmss/b/n on input line 9.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmss/m/n --> OT1/phv/m/n on input line 8.
+(Font)                  OT1/cmss/m/n --> OT1/phv/m/n on input line 9.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmss/b/n --> OT1/phv/b/n on input line 8.
+(Font)                  OT1/cmss/b/n --> OT1/phv/b/n on input line 9.
 \symnumbers=\mathgroup6
 \sympureletters=\mathgroup7
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/phv/m/n --> T1/lmr/m/n on input line 8.
-LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 8.
+(Font)                  OT1/phv/m/n --> T1/lmr/m/n on input line 9.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/lmr/bx/n --> T1/phv/b/n on input line 8.
+(Font)                  OT1/lmr/bx/n --> T1/phv/b/n on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  OT1/lmr/bx/n --> T1/phv/b/n on input line 8.
-LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 8.
+(Font)                  OT1/lmr/bx/n --> T1/phv/b/n on input line 9.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/lmss/m/n --> T1/phv/m/n on input line 8.
+(Font)                  OT1/lmss/m/n --> T1/phv/m/n on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/lmss/bx/n --> T1/phv/m/n on input line 8.
-LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 8.
+(Font)                  OT1/lmss/bx/n --> T1/phv/m/n on input line 9.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/lmr/m/it --> T1/phv/m/it on input line 8.
+(Font)                  OT1/lmr/m/it --> T1/phv/m/it on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/lmr/bx/it --> T1/phv/m/it on input line 8.
-LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 8.
+(Font)                  OT1/lmr/bx/it --> T1/phv/m/it on input line 9.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 8.
+(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 8.
+(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 9.
 LaTeX Font Info:    Overwriting symbol font `numbers' in version `bold'
-(Font)                  T1/phv/m/n --> T1/phv/b/n on input line 8.
+(Font)                  T1/phv/m/n --> T1/phv/b/n on input line 9.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
-(Font)                  T1/phv/m/it --> T1/phv/b/it on input line 8.
+(Font)                  T1/phv/m/it --> T1/phv/b/it on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `bold'
-(Font)                  OT1/phv/b/n --> T1/lmr/b/n on input line 8.
+(Font)                  OT1/phv/b/n --> T1/lmr/b/n on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  T1/phv/b/n --> T1/phv/b/n on input line 8.
+(Font)                  T1/phv/b/n --> T1/phv/b/n on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  T1/phv/m/n --> T1/phv/b/n on input line 8.
+(Font)                  T1/phv/m/n --> T1/phv/b/n on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  T1/phv/m/it --> T1/phv/b/it on input line 8.
+(Font)                  T1/phv/m/it --> T1/phv/b/it on input line 9.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  T1/lmtt/m/n --> T1/lmtt/b/n on input line 8.
+(Font)                  T1/lmtt/m/n --> T1/lmtt/b/n on input line 9.
 
 (/usr/share/texlive/texmf-dist/tex/latex/translator/translator-basic-dictionary
 -English.dict
@@ -957,45 +957,93 @@ Dictionary: translator-theorem-dictionary, Language: English
 <kozminski_logo.png, id=13, 248.93pt x 103.38625pt>
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 8.
+Package pdftex.def Info: kozminski_logo.png  used on input line 9.
 (pdftex.def)             Requested size: 24.66275pt x 10.243pt.
 <grape_logo.png, id=15, 356.33125pt x 99.37125pt>
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 8.
+Package pdftex.def Info: grape_logo.png  used on input line 9.
 (pdftex.def)             Requested size: 36.72807pt x 10.243pt.
 <yc_logo.png, id=16, 301.125pt x 301.125pt>
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 8.
+Package pdftex.def Info: yc_logo.png  used on input line 9.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 8
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 9
 .
  (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 
-8.
+9.
 
 (/usr/share/texmf/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 30.
+Package pdftex.def Info: kozminski_logo.png  used on input line 31.
 (pdftex.def)             Requested size: 41.10205pt x 17.07164pt.
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 30.
+Package pdftex.def Info: grape_logo.png  used on input line 31.
 (pdftex.def)             Requested size: 61.21709pt x 17.07164pt.
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 30.
+Package pdftex.def Info: yc_logo.png  used on input line 31.
 (pdftex.def)             Requested size: 17.06964pt x 17.07164pt.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./kozminski_logo.png> <./g
 rape_logo.png> <./yc_logo.png>]
+LaTeX Font Info:    Trying to load font information for OT1+phv on input line 5
+0.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1phv.fd
+File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
+)
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 5
+0.
+
+(/usr/share/texmf/tex/latex/lm/omllmm.fd
+File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
+50.
+
+(/usr/share/texmf/tex/latex/lm/omslmsy.fd
+File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
+50.
+
+(/usr/share/texmf/tex/latex/lm/omxlmex.fd
+File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10.95> on input line 50.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 50.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 50.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 50.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 50.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10.95> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 50.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <8> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 50.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <6> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 50.
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
 Package pdftex.def Info: kozminski_logo.png  used on input line 50.
@@ -1008,10 +1056,21 @@ File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
 Package pdftex.def Info: yc_logo.png  used on input line 50.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
-
-[2
+ [2
 
 ]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 68.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 68.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 68.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 68.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <7> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 68.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <5> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 68.
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
 Package pdftex.def Info: kozminski_logo.png  used on input line 68.
@@ -1027,181 +1086,118 @@ Package pdftex.def Info: yc_logo.png  used on input line 68.
  [3
 
 ]
-Overfull \vbox (0.19043pt too high) detected at line 89
- []
-
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 89.
+Package pdftex.def Info: kozminski_logo.png  used on input line 87.
 (pdftex.def)             Requested size: 24.66275pt x 10.243pt.
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 89.
+Package pdftex.def Info: grape_logo.png  used on input line 87.
 (pdftex.def)             Requested size: 36.72807pt x 10.243pt.
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 89.
+Package pdftex.def Info: yc_logo.png  used on input line 87.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
-[4
+ [4
 
 ]
-LaTeX Font Info:    Trying to load font information for OT1+phv on input line 1
-08.
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1phv.fd
-File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
-)
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
-08.
-
-(/usr/share/texmf/tex/latex/lm/omllmm.fd
-File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-108.
-
-(/usr/share/texmf/tex/latex/lm/omslmsy.fd
-File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-108.
-
-(/usr/share/texmf/tex/latex/lm/omxlmex.fd
-File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 108.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 108.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 108.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 108
-.
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 108
-.
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 108.
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <7> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 108.
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <5> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 108.
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 10
-8.
-
-(/usr/share/texmf/tex/latex/lm/t1lmr.fd
-File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 108.
+Package pdftex.def Info: kozminski_logo.png  used on input line 111.
 (pdftex.def)             Requested size: 24.66275pt x 10.243pt.
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 108.
+Package pdftex.def Info: grape_logo.png  used on input line 111.
 (pdftex.def)             Requested size: 36.72807pt x 10.243pt.
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 108.
+Package pdftex.def Info: yc_logo.png  used on input line 111.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
  [5
 
 ]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 147.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <9> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 147.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <14.4> on input line 147.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <14.4> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 147.
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 122.
+Package pdftex.def Info: kozminski_logo.png  used on input line 147.
 (pdftex.def)             Requested size: 24.66275pt x 10.243pt.
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 122.
+Package pdftex.def Info: grape_logo.png  used on input line 147.
 (pdftex.def)             Requested size: 36.72807pt x 10.243pt.
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 122.
+Package pdftex.def Info: yc_logo.png  used on input line 147.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
- [6
+
+[6
 
 ]
-LaTeX Font Info:    Calculating math sizes for size <44> on input line 136.
+LaTeX Font Info:    Calculating math sizes for size <44> on input line 157.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <44> on input line 136.
+(Font)              <44> on input line 157.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <30.79987> on input line 136.
+(Font)              <30.79987> on input line 157.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <22> on input line 136.
+(Font)              <22> on input line 157.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <44> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 136.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 157.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <30.79987> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 136.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 157.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <22> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 136.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 157.
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 136.
+Package pdftex.def Info: kozminski_logo.png  used on input line 157.
 (pdftex.def)             Requested size: 24.66275pt x 10.243pt.
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 136.
+Package pdftex.def Info: grape_logo.png  used on input line 157.
 (pdftex.def)             Requested size: 36.72807pt x 10.243pt.
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 136.
+Package pdftex.def Info: yc_logo.png  used on input line 157.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
  [7
 
 ]
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 151.
+Package pdftex.def Info: kozminski_logo.png  used on input line 175.
 (pdftex.def)             Requested size: 24.66275pt x 10.243pt.
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 151.
+Package pdftex.def Info: grape_logo.png  used on input line 175.
 (pdftex.def)             Requested size: 36.72807pt x 10.243pt.
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 151.
+Package pdftex.def Info: yc_logo.png  used on input line 175.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
  [8
 
 ]
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <8> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 176.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 176.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 176.
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <6> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 176.
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 176.
+Package pdftex.def Info: kozminski_logo.png  used on input line 189.
 (pdftex.def)             Requested size: 24.66275pt x 10.243pt.
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 176.
+Package pdftex.def Info: grape_logo.png  used on input line 189.
 (pdftex.def)             Requested size: 36.72807pt x 10.243pt.
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 176.
+Package pdftex.def Info: yc_logo.png  used on input line 189.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
  [9
 
 ]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 206.
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <9> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 206.
-
-Overfull \vbox (0.30904pt too high) detected at line 206
- []
-
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
 Package pdftex.def Info: kozminski_logo.png  used on input line 206.
@@ -1214,106 +1210,73 @@ File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
 Package pdftex.def Info: yc_logo.png  used on input line 206.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
-[10
+ [10
 
 ]
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 220.
+Package pdftex.def Info: kozminski_logo.png  used on input line 225.
 (pdftex.def)             Requested size: 24.66275pt x 10.243pt.
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 220.
+Package pdftex.def Info: grape_logo.png  used on input line 225.
 (pdftex.def)             Requested size: 36.72807pt x 10.243pt.
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 220.
+Package pdftex.def Info: yc_logo.png  used on input line 225.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
  [11
 
 ]
-Overfull \vbox (8.24548pt too high) detected at line 250
- []
-
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 250.
+Package pdftex.def Info: kozminski_logo.png  used on input line 245.
 (pdftex.def)             Requested size: 24.66275pt x 10.243pt.
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 250.
+Package pdftex.def Info: grape_logo.png  used on input line 245.
 (pdftex.def)             Requested size: 36.72807pt x 10.243pt.
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 250.
+Package pdftex.def Info: yc_logo.png  used on input line 245.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
-[12
+ [12
 
 ]
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 270.
+Package pdftex.def Info: kozminski_logo.png  used on input line 260.
 (pdftex.def)             Requested size: 24.66275pt x 10.243pt.
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 270.
+Package pdftex.def Info: grape_logo.png  used on input line 260.
 (pdftex.def)             Requested size: 36.72807pt x 10.243pt.
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 270.
+Package pdftex.def Info: yc_logo.png  used on input line 260.
 (pdftex.def)             Requested size: 10.24178pt x 10.243pt.
  [13
 
 ]
-File: kozminski_logo.png Graphic file (type png)
-<use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 293.
-(pdftex.def)             Requested size: 24.66275pt x 10.243pt.
-File: grape_logo.png Graphic file (type png)
-<use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 293.
-(pdftex.def)             Requested size: 36.72807pt x 10.243pt.
-File: yc_logo.png Graphic file (type png)
-<use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 293.
-(pdftex.def)             Requested size: 10.24178pt x 10.243pt.
- [14
+LaTeX Font Info:    Trying to load font information for TS1+phv on input line 2
+83.
 
-]
-File: kozminski_logo.png Graphic file (type png)
-<use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 309.
-(pdftex.def)             Requested size: 24.66275pt x 10.243pt.
-File: grape_logo.png Graphic file (type png)
-<use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 309.
-(pdftex.def)             Requested size: 36.72807pt x 10.243pt.
-File: yc_logo.png Graphic file (type png)
-<use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 309.
-(pdftex.def)             Requested size: 10.24178pt x 10.243pt.
- [15
-
-]
-LaTeX Font Info:    Trying to load font information for TS1+phv on input line 3
-32.
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1phv.fd
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1phv.fd
 File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
 )
 File: kozminski_logo.png Graphic file (type png)
 <use kozminski_logo.png>
-Package pdftex.def Info: kozminski_logo.png  used on input line 332.
+Package pdftex.def Info: kozminski_logo.png  used on input line 283.
 (pdftex.def)             Requested size: 41.10205pt x 17.07164pt.
 File: grape_logo.png Graphic file (type png)
 <use grape_logo.png>
-Package pdftex.def Info: grape_logo.png  used on input line 332.
+Package pdftex.def Info: grape_logo.png  used on input line 283.
 (pdftex.def)             Requested size: 61.21709pt x 17.07164pt.
 File: yc_logo.png Graphic file (type png)
 <use yc_logo.png>
-Package pdftex.def Info: yc_logo.png  used on input line 332.
+Package pdftex.def Info: yc_logo.png  used on input line 283.
 (pdftex.def)             Requested size: 17.06964pt x 17.07164pt.
-
-[16
+ [14
 
 ]
 \tf@nav=\write6
@@ -1330,34 +1293,31 @@ Package rerunfilecheck Info: File `slides.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 25071 strings out of 480247
- 494213 string characters out of 5896151
- 734129 words of memory out of 5000000
- 42420 multiletter control sequences out of 15000+600000
- 586549 words of font info for 141 fonts, out of 8000000 for 9000
+ 25091 strings out of 480247
+ 494573 string characters out of 5896151
+ 735115 words of memory out of 5000000
+ 42454 multiletter control sequences out of 15000+600000
+ 564937 words of font info for 143 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,17n,104p,412b,716s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 99i,17n,104p,412b,746s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/enc/d
-vips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/shar
-e/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/l
+vips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/shar
+e/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/l
 m-mathex.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/s
 hare/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/type1/publi
-c/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/
-texmf/fonts/type1/public/lm/lmmi7.pfb></usr/share/texmf/fonts/type1/public/lm/l
-mmi8.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi9.pfb></usr/share/texmf/fo
-nts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pf
-b></usr/share/texmf/fonts/type1/public/lm/lmsy6.pfb></usr/share/texmf/fonts/typ
-e1/public/lm/lmsy7.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/
-share/texmf/fonts/type1/public/lm/lmsy9.pfb></usr/share/texmf/fonts/type1/publi
-c/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt8.pfb></usr/share/t
-exmf/fonts/type1/public/lm/lmtt9.pfb></usr/share/texlive/texmf-dist/fonts/type1
-/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helveti
-c/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pf
-b>
-Output written on slides.pdf (16 pages, 256063 bytes).
+c/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi6.pfb></usr/share/t
+exmf/fonts/type1/public/lm/lmmi7.pfb></usr/share/texmf/fonts/type1/public/lm/lm
+mi9.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fo
+nts/type1/public/lm/lmsy7.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy9.pfb
+></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/typ
+e1/public/lm/lmtt8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/urw/helvetic/uhvro8a.pfb>
+Output written on slides.pdf (14 pages, 219206 bytes).
 PDF statistics:
- 216 PDF objects out of 1000 (max. 8388607)
- 147 compressed objects within 2 object streams
- 33 named destinations out of 1000 (max. 500000)
+ 185 PDF objects out of 1000 (max. 8388607)
+ 126 compressed objects within 2 object streams
+ 29 named destinations out of 1000 (max. 500000)
  58 words of extra memory for PDF output out of 10000 (max. 10000000)
 

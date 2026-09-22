@@ -88,6 +88,39 @@
   \end{itemize}
 \end{frame}
 
+% 4a --------------------------------------------------------------------------
+\begin{frame}{Liquidity measures}
+  \kicker{Low-frequency estimators on daily fixings}
+  \small For bond $i$ in month $t$, from daily closing fixings (price $p$, bid
+  $b$, ask $a$, turnover $V$, modified duration $MD$):
+  \[ BAS_{it} \;=\; 10^{4}\,\overline{\left(\frac{|a-b|}{p\cdot MD}\right)},
+     \qquad
+     Amihud_{it} \;=\; \overline{\left(\frac{|r_d|}{V_d}\right)},
+     \qquad
+     Roll_{it} \;=\; 2\sqrt{-\widehat{\mathrm{Cov}}(\Delta p_d,\Delta p_{d-1})} \]
+  \begin{itemize}
+    \item Duration scaling converts the quoted price spread into a
+          yield-equivalent object, comparable across maturities.
+    \item Completed by the Bao--Pan--Wang $\gamma$, the Corwin--Schultz
+          high-low estimator, the zero-trading-days share, and an equal-weight
+          composite $z$-score of the standardised measures.
+  \end{itemize}
+\end{frame}
+
+% 4b --------------------------------------------------------------------------
+\begin{frame}{Estimating equations}
+  \kicker{Three layers}
+  \small Bond-month panel (H1--H3), bond fixed effects, Driscoll--Kraay SE:
+  \[ L_{it} \;=\; \alpha_i + \beta' X_{it} + \gamma' M_t + \varepsilon_{it} \]
+  Aggregate monthly supply block (Result 4), Newey--West SE:
+  \[ TP_t^{(\tau)} \;=\; \alpha + \beta_D\, Debt_t + \beta_F\, Foreign_t
+     + \beta_N\, NBP_t + \beta_G\, \tfrac{Debt_t}{GDP_t}
+     + \delta' M_t + u_t \]
+  Auction event study (H5), normalised yield path by segment $s$:
+  \[ \Delta y_{s,k} \;=\; y_{s,\,t_e+k} - y_{s,\,t_e},
+     \qquad k \in [-5,\,+10] \text{ business days} \]
+\end{frame}
+
 % 5 ---------------------------------------------------------------------------
 \begin{frame}{Result 1: issue size (H1)}
   \kicker{Bond-month panel, bond FE, Driscoll-Kraay SE}

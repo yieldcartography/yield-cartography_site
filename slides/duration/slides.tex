@@ -65,6 +65,10 @@
     \item $Cnvx$ second-order convexity; $Res$ the closure residual. The sum
           reproduces the published index by construction: the identity is an
           attribution, not a model.
+    \item The split of CurveMove rests on the fitted-curve decomposition
+          \( y_t(\tau) = y^{rf}_t(\tau) + tp_t(\tau) \): the ACM--BRW
+          expected-rate leg and term-premium leg of the LW-NSS zero curve,
+          each revalued separately.
   \end{itemize}
 \end{frame}
 
@@ -131,8 +135,13 @@
           interval on the cumulative of $[-2{,}534,\,+1{,}776]$ bp; the
           TBSP-versus-cash excess of $+17.6$ bp per quarter has $p=0.55$.
           Both intervals bracket zero.
-    \item The reason is not noise throughout the sample but the concentration
-          of the variance in a single regime episode.
+    \item The tests: with $e_t = r^{TBSP}_t - r^{cash}_t$ the null is
+          $H_0\!: \mathbb{E}[e_t]=0$, assessed by
+          \( t = \bar e \,/\, \sqrt{\widehat{V}_{NW}/T} \) and by bootstrap
+          intervals on cumulative sums; the same construction applies to the
+          $TPC$ series.
+    \item The reason for the wide intervals is not noise throughout the sample
+          but the concentration of the variance in a single regime episode.
   \end{itemize}
 \end{frame}
 
