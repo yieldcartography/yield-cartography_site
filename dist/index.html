@@ -70,6 +70,17 @@
           margin-top: 5px; font-family: var(--mono); font-size: 8.5px; color: #fff; }
   .obar > div { display: flex; align-items: center; justify-content: center;
                 white-space: nowrap; overflow: hidden; }
+  a.btile { position: relative; }
+  a.btile[data-tip]:hover::after { content: attr(data-tip); position: absolute;
+    left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%);
+    width: 260px; background: #1d2733; color: #f2f2f2; border-radius: 5px;
+    padding: 8px 10px; font-family: var(--sans, -apple-system, sans-serif);
+    font-size: 11.5px; line-height: 1.45; font-weight: 400; letter-spacing: 0;
+    text-transform: none; white-space: normal; z-index: 30; pointer-events: none;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25); }
+  a.btile[data-tip]:hover::before { content: ''; position: absolute; left: 50%;
+    bottom: calc(100% + 2px); transform: translateX(-50%);
+    border: 6px solid transparent; border-top-color: #1d2733; z-index: 30; }
   .obar .cut  { background: #2e75b6; }
   .obar .hold { background: #9aa3ab; }
   .obar .hike { background: #d11b1b; }
@@ -173,8 +184,39 @@ function arrow(cur, prev, dec, unit, thr){
   return `<span class="bt-arrow ${cls}">${sym} ${d > 0 ? '+' : ''}${d.toFixed(dec)}${unit}</span>`;
 }
 
+const TIPS = [
+  [/^zero yield/, 'NSS-fitted zero-coupon spot rate at this tenor from the latest daily fit of the BondSpot bond panel, with the NBP bill rate anchoring the short end. The arrow is the day-over-day change in basis points.'],
+  [/^2s10s/, '10y minus 2y zero yield, the classic curve-steepness gauge. Positive means an upward-sloping curve.'],
+  [/^E\[avg short rate\]/, 'Expected average short rate over this horizon from the BRW bias-corrected decomposition: the risk-free leg of the yield once the term premium is stripped out. Weekly.'],
+  [/^NBP reference rate/, 'The NBP reference rate, with the size and date of the last MPC move.'],
+  [/^term premium/, 'BRW bias-corrected term premium at this tenor: the compensation demanded over expected short rates, in basis points. Weekly.'],
+  [/^long-run E\[r\]/, 'VAR-implied long-run expected short rate per market: the level the expected-rate path converges to in the ACM estimation (annualized delta0 with demeaned factors). Not an r-star estimate.'],
+  [/^policy regime/, 'Phase classification from the minutes text model, dated from the meeting where the stance flipped.'],
+  [/^3m implied move/, 'Cumulative policy move priced by the BRW risk-free path over the next 3 months, in 25 bp steps. A step registers only once 0.75 of it is priced, so small drifts read as none.'],
+  [/^6m additional move/, 'Steps priced beyond the 3m horizon. None here means the priced path is flat between 3m and 6m.'],
+  [/y1y forward$/, 'The 1y forward rate starting this many years ahead, read off the fitted NSS zero curve. The grey figure is the same forward off the BRW risk-free path, so the gap between the two is the forward term premium.'],
+  [/^US 10y TP/, 'Monthly ACM 10y term premium fitted on the FRB GSW zero-coupon panel with the same pipeline as the Polish curve.'],
+  [/^EA 10y TP/, 'Monthly ACM 10y term premium fitted on the ECB AAA spot-rate panel with the same pipeline as the Polish curve.'],
+  [/^corr PL/, 'Correlation of monthly PL BRW and US ACM 10y term-premium levels over the common sample.'],
+  [/^BAS median/, 'Median bid-ask spread across BondSpot-quoted Treasury bonds in the month, in basis points. The tightest single gauge of dealer quoting costs.'],
+  [/^ZTD share/, 'Zero-trading-days: the share of bond-days in the month with no BondSpot trade. Higher means a thinner market.'],
+  [/^Amihud median/, 'Median Amihud price-impact measure: absolute return per unit of turnover. Higher means prices move more per zloty traded, i.e. less liquidity.'],
+  [/^composite z/, 'z-scored composite of the six liquidity measures, with normalization constants frozen on the paper window so the live reading stays comparable with the published series.'],
+  [/^liquidity sample/, 'Coverage of the monthly liquidity panel. The newest month is computed month-to-date and marked in progress until it closes.'],
+  [/^NSS panel/, 'The daily NSS fitting history behind every curve on this site: one fitted curve per trading day since 2005.'],
+  [/^latest fit/, 'Bonds in the latest fitting panel and the median absolute fit error across them.'],
+  [/^minutes corpus/, 'The most recent MPC minutes ingested into the text corpus behind the tone index and the oracle text leg. Minutes publish about three weeks after each decision meeting.'],
+  [/^research shorts/, 'Two-page summaries of the working papers behind these dashboards.'],
+  [/^4K curve movies/, 'Daily 4K time-lapses of the curve history, on YouTube.'],
+];
+function tipFor(label){
+  const plain = String(label).replace(/<[^>]*>/g, '');
+  for (const pair of TIPS) if (pair[0].test(plain)) return pair[1];
+  return null;
+}
 function tile(href, label, valueHtml, sub, wide){
-  return `<a class="btile${wide ? ' wide' : ''}" href="${href}">
+  const tip = tipFor(label);
+  return `<a class="btile${wide ? ' wide' : ''}" href="${href}"${tip ? ` data-tip="${tip}"` : ''}>
     <div class="bt-label">${label}</div>
     <div class="bt-value">${valueHtml}</div>
     ${sub ? `<div class="bt-sub">${sub}</div>` : ''}</a>`;
@@ -233,7 +275,7 @@ function rowTp(){
     if (lr[k] !== undefined && lr[k] !== null)
       lines += `<div class="bt-line">${FLAGS[k]} <b>${lr[k].toFixed(2)}%</b></div>`;
   });
-  h += `<a class="btile" href="/term-premia/">
+  h += `<a class="btile" href="/term-premia/" data-tip="${tipFor('long-run E[r]')}">
     <div class="bt-label">long-run E[r]</div>${lines || '<div class="bt-value">—</div>'}
     <div class="bt-sub">VAR asymptote, per market</div></a>`;
   el.innerHTML = h;
@@ -263,7 +305,7 @@ function rowPolicy(){
       ? `<div class="${cls}" style="width:${p}%">${p > 15 ? lab + ' ' + p + '%' : ''}</div>` : '';
     const hd = (tone.hawk !== undefined && tone.dove !== undefined)
       ? ` · hawk ${tone.hawk.toFixed(1)} / dove ${tone.dove.toFixed(1)} per 1,000 words` : '';
-    h += `<a class="btile wide" href="/mpc/">
+    h += `<a class="btile wide" href="/mpc/" data-tip="Net hawkish minus dovish term frequency in the latest MPC minutes, scaled to a ±100 score with bands at ±40 separating dovish, neutral and hawkish. The bar shows the same score as a probability-style split.">
       <div class="bt-label">MPC minutes tone index</div>
       <div class="bt-value" style="color:${lcol};font-size:16px;text-transform:uppercase">${lean}
         <span style="font-size:11px;color:var(--muted);font-weight:400">score ${T >= 0 ? '+' : ''}${T.toFixed(0)} / 100</span></div>
@@ -300,7 +342,7 @@ function rowPolicy(){
             pk = Math.round((O.p_hike || 0) * 100);
       const seg = (cls, p, lab) => p > 0
         ? `<div class="${cls}" style="width:${p}%">${p > 15 ? lab + ' ' + p + '%' : ''}</div>` : '';
-      h += `<a class="btile wide" href="/oracle/">
+      h += `<a class="btile wide" href="/oracle/" data-tip="Blend of the market leg (BRW-implied 3m move) and the text leg (minutes tone), scaled to ±100 and mapped to cut, hold and hike odds for the next quarter. Above +40 reads tightening, below −40 loosening.">
         <div class="bt-label">oracle index · next quarter</div>
         <div class="bt-value" style="color:${lcol};font-size:16px;text-transform:uppercase">${lean}
           <span style="font-size:11px;color:var(--muted);font-weight:400">score ${S >= 0 ? '+' : ''}${S.toFixed(0)} / 100</span></div>
@@ -337,7 +379,7 @@ function rowPolicy(){
                   3: (rf3 !== null && rf5 !== null) ? 2 * rf5 - rf3 : null };
     [1, 2, 3].forEach(t => {
       const rf = fRf[t];
-      h += `<a class="btile" href="/term-premia/">
+      h += `<a class="btile" href="/term-premia/" data-tip="${tipFor(t + 'y1y forward')}">
         <div class="bt-label">${t}y1y forward</div>
         <div class="bt-value">${fRisky(t).toFixed(2)}%</div>
         <div class="bt-sub">risk-free (BRW) ${rf === null ? '—' : rf.toFixed(2) + '%'}</div>
@@ -377,7 +419,7 @@ function rowXm(){
   const bpl = meanBeta(xm.pl && xm.pl.matrix ? xm.pl.matrix : xm.pl);
   const bus = meanBeta(xm.us && xm.us.matrix ? xm.us.matrix : xm.us);
   const bea = meanBeta(xm.ea && xm.ea.matrix ? xm.ea.matrix : xm.ea);
-  h += `<a class="btile wide" href="/eh-tests/">
+  h += `<a class="btile wide" href="/eh-tests/" data-tip="Mean Fama-Bliss FB1 slope coefficient across all horizon-by-tenor cells, per market. The pure expectations hypothesis predicts 1: Poland is contrarian (negative), the US sits in between, the euro area is closest.">
     <div class="bt-label">expectations hypothesis · mean FB1 slope β</div>
     <div class="bt-line">${FLAGS.pl} PL <b>${bpl === null ? '—' : bpl.toFixed(2)}</b>
       &nbsp;${FLAGS.us} US <b>${bus === null ? '—' : bus.toFixed(2)}</b>
