@@ -79,13 +79,13 @@
           while monthly gross issuance flow is uninformative conditional on
           them.
     \item \textbf{H3 (holder structure).} The post-2019 foreign buy-side
-          retreat loads on volume-scaled measures (Amihud) but not on the
-          venue-capped quoted spread.
+          retreat loads on Amihud, while the venue-capped quoted spread is
+          unresponsive.
     \item \textbf{H4 (monetary transmission).} The liquidity response to MPC
           rate-change days differs pre- versus post-COVID.
     \item \textbf{H5 (auction cycle).} Primary Dealers absorb auctions at a
-          concession; secondary yields revert over the following business week,
-          increasing in maturity (inventory risk premium).
+          concession; secondary yields revert over the following week,
+          increasing in maturity.
   \end{itemize}
 \end{frame}
 
@@ -185,7 +185,7 @@
   in monthly regressions of ACM term premia on the supply block and macro
   controls, $n=167$:
   \begin{center}
-  \begin{tikzpicture}[x=1.35cm,y=0.095cm]
+  \begin{tikzpicture}[x=1.3cm,y=0.078cm]
     \foreach \y in {0,5,10,15,20,25} \draw[ycrule,line width=0.4pt] (0,\y) -- (9,\y);
     \draw[ycmuted,line width=0.5pt] (0,0) -- (9,0);
     \foreach \y in {0,10,20} \node[left=2pt,font=\scriptsize,text=ycmuted] at (0,\y) {\y};
@@ -201,14 +201,12 @@
     \node[right,font=\tiny\itshape,text=ycmuted,rotate=90,anchor=west] at (-0.85,2) {bp per +100 bn PLN};
   \end{tikzpicture}
   \end{center}
-  \footnotesize\color{ycmuted} The supply block \{debt, foreign share, NBP
-  share, debt/GDP, 12m issuance\} is jointly significant at 1\% for all
-  term-premium maturities ($F$ = 4.3--9.5) and insignificant for the
-  venue-capped aggregate BAS ($F=0.65$, $p=0.66$). Debt-to-GDP adds
-  $+3.3$/$+5.4$/$+8.1$ bp at 2/5/10Y per pp. A COVID interaction roughly
-  triples the 10Y debt sensitivity post-2020 ($+0.69$ bp per bn PLN). The
-  tenor-increasing gradient is the observable implication of preferred-habitat
-  demand curves (Vayanos--Vila 2021).
+  \footnotesize\color{ycmuted} The supply block is jointly significant at 1\%
+  for all term-premium maturities ($F$ = 4.3--9.5), insignificant for the
+  venue-capped BAS ($F=0.65$). Debt-to-GDP adds $+3.3$/$+5.4$/$+8.1$ bp at
+  2/5/10Y per pp; a COVID interaction triples the 10Y debt sensitivity
+  post-2020. The tenor-increasing gradient is the preferred-habitat
+  implication of Vayanos--Vila (2021).
 \end{frame}
 
 % 9 ---------------------------------------------------------------------------
@@ -238,12 +236,11 @@
 % 10 --------------------------------------------------------------------------
 \begin{frame}{Result 6: auction-cycle reversion (H5)}
   \kicker{Event study on the yield path, pre-2022 sub-sample}
-  \small Normalised yield path $\Delta y_{s,k} = y_{s,t_e+k} - y_{s,t_e}$
-  around auction trade dates, segment means at $k=+5$ business days. The
-  2022--23 hiking cycle is macro-confounded and excluded; the pre-2022 window
-  is the credible sample:
+  \small Segment-mean $\Delta y_{s,k}$ around auction trade dates at
+  $k=+5$ business days; the macro-confounded 2022--23 hiking cycle is
+  excluded:
   \begin{center}
-  \begin{tikzpicture}[x=1.7cm,y=0.75cm]
+  \begin{tikzpicture}[x=1.65cm,y=0.62cm]
     \draw[ycmuted,line width=0.5pt] (0,0) -- (7,0);
     \foreach \y in {-3,-2,-1,0} \draw[ycrule,line width=0.4pt] (0,\y) -- (7,\y);
     \foreach \y in {-3,-2,-1,0} \node[left=2pt,font=\scriptsize,text=ycmuted] at (0,\y) {\y};
@@ -259,10 +256,9 @@
     \node[left,font=\tiny\itshape,text=ycmuted,rotate=90,anchor=south] at (-0.55,-1.7) {bp from auction day};
   \end{tikzpicture}
   \end{center}
-  \footnotesize\color{ycmuted} Post-event yield drift is negative and increasing
-  in maturity, consistent with an inventory risk premium. Magnitudes are in
-  line with the US Treasury auction-cycle estimates of Lou--Yan--Chang (2013)
-  and Sigaux (2018).
+  \footnotesize\color{ycmuted} Post-event yield drift is negative and
+  increasing in maturity, consistent with an inventory risk premium; magnitudes
+  match the US estimates of Lou--Yan--Chang (2013) and Sigaux (2018).
 \end{frame}
 
 % 11 --------------------------------------------------------------------------
@@ -300,10 +296,9 @@
     \item \textbf{Estimation.} Bond-month and segment-month fixed-effects
           panels with Driscoll--Kraay (Bartlett kernel) standard errors;
           MPC and auction event studies (AAR/CAAR and normalised yield paths);
-          aggregate monthly time-series regressions with Newey--West standard
-          errors, lag bandwidth by the Andrews (1991) rule ($L \in [10,14]$);
-          joint $F$-tests on the supply block; first-difference and
-          non-linearity specifications as robustness.
+          aggregate monthly time-series regressions with Newey--West errors,
+          Andrews (1991) bandwidth ($L \in [10,14]$); joint $F$-tests on the
+          supply block; first-difference robustness.
     \item \textbf{Valuation.} Three-curve present-value counterfactual on the
           fixed-cash-flow universe.
   \end{itemize}

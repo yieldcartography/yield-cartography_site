@@ -58,17 +58,13 @@
      \;+\; Cnvx_t \;+\; Res_t \]
   \begin{itemize}
     \item $CC$ coupon accrual, $RP$ reinvestment proceeds, $RD$ clean-price
-          roll-down along an unchanged curve: the return to an unchanged state
-          of the world.
-    \item $ERC$ and $TPC$: revaluation from the expected-rate and term-premium
-          legs of the ACM--BRW decomposition of the fitted zero curve.
+          roll-down along an unchanged curve.
+    \item $ERC$ and $TPC$: revaluation from the two legs of the fitted-curve
+          decomposition \( y_t(\tau) = y^{rf}_t(\tau) + tp_t(\tau) \)
+          (ACM--BRW on the LW-NSS zero curve), each revalued separately.
     \item $Cnvx$ second-order convexity; $Res$ the closure residual. The sum
           reproduces the published index by construction; no estimation enters
           the partition.
-    \item The split of CurveMove rests on the fitted-curve decomposition
-          \( y_t(\tau) = y^{rf}_t(\tau) + tp_t(\tau) \): the ACM--BRW
-          expected-rate leg and term-premium leg of the LW-NSS zero curve,
-          each revalued separately.
   \end{itemize}
 \end{frame}
 
@@ -105,7 +101,7 @@
 \begin{frame}{The full attribution, per year of sample}
   \kicker{Cumulative contribution / sample length}
   \begin{center}
-  \begin{tikzpicture}[x=0.0225cm,y=0.62cm]
+  \begin{tikzpicture}[x=0.0225cm,y=0.54cm]
     \draw[ycmuted,line width=0.5pt] (0,-0.4) -- (0,7.6);
     \foreach [count=\i] \lab/\v/\c in {
         Coupon accrual/391.7/ycaccent,
@@ -125,8 +121,8 @@
     \node[below,font=\tiny\itshape,text=ycmuted] at (60,-0.8) {bp per year};
   \end{tikzpicture}
   \end{center}
-  \footnotesize\color{ycmuted} Components sum to the published TBSP log-return,
-  $+405$ bp per year. Coupon accrual exceeds all other components combined.
+  \footnotesize\color{ycmuted} Components sum to the published TBSP
+  log-return, $+405$ bp per year.
 \end{frame}
 
 % 7 ---------------------------------------------------------------------------
@@ -134,21 +130,18 @@
   \kicker{HAC tests and bootstrap intervals}
   \begin{itemize}
     \item $ERC+TPC$ cumulates to $-337$ bp over the sample ($-17$ bp per
-          year), largely the unreversed portion of the 2022 tightening-cycle
-          revaluation.
+          year), largely the unreversed 2022 revaluation.
     \item The full-sample tests are uninformative: the mean realised $TPC$ of
           $-3.1$ bp per quarter has HAC $p=0.83$, with a bootstrap confidence
           interval on the cumulative of $[-2{,}534,\,+1{,}776]$ bp; the
           TBSP-versus-cash excess of $+17.6$ bp per quarter has $p=0.55$.
           Both intervals bracket zero.
-    \item The tests: with $e_t = r^{TBSP}_t - r^{cash}_t$ the null is
-          $H_0\!: \mathbb{E}[e_t]=0$, assessed by
-          \( t = \bar e \,/\, \sqrt{\widehat{V}_{NW}/T} \) and by bootstrap
-          intervals on cumulative sums; the same construction applies to the
-          $TPC$ series.
-    \item The width of the intervals reflects the concentration of the
-          series' variance in a single regime episode; conditioning on that
-          episode is the natural next step.
+    \item The tests: with $e_t = r^{TBSP}_t - r^{cash}_t$ the null
+          $H_0\!: \mathbb{E}[e_t]=0$ is assessed by
+          \( t = \bar e \,/\, \sqrt{\widehat{V}_{NW}/T} \) and by
+          bootstrap intervals on cumulative sums, likewise for $TPC$. The
+          interval width reflects the concentration of variance in a single
+          regime episode.
   \end{itemize}
 \end{frame}
 
