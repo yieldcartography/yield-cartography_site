@@ -2,7 +2,7 @@
  * yieldcartography embed loader
  * Usage on a third-party page:
  *   <script src="https://yieldcartography.com/embed.js" data-chart="yield-curve"></script>
- * Supported data-chart values: yield-curve, term-premia, oracle.
+ * Supported data-chart values: yield-curve, term-premia, oracle, cockpit.
  * The script replaces itself with a responsive, auto-sizing iframe of the
  * chosen chart. Framing is allowed only from origins whitelisted in the
  * site _headers (Content-Security-Policy: frame-ancestors).
@@ -12,7 +12,8 @@
   var CHARTS = {
     'yield-curve': '/curves/',
     'term-premia': '/term-premia/',
-    'oracle': '/oracle/'
+    'oracle': '/oracle/',
+    'cockpit': '/'
   };
 
   var self = document.currentScript;
@@ -36,7 +37,7 @@
   iframe.setAttribute('allowtransparency', 'true');
   iframe.style.cssText =
     'width:100%;border:0;display:block;overflow:hidden;' +
-    'min-height:' + (key === 'oracle' ? '760px' : '560px') + ';';
+    'min-height:' + (key === 'oracle' ? '760px' : key === 'cockpit' ? '980px' : '560px') + ';';
 
   // Insert the iframe where the script tag sits.
   self.parentNode.insertBefore(iframe, self.nextSibling);

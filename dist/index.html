@@ -109,10 +109,7 @@
   </nav>
 </header>
 
-<main class="board">
-
-  <h1 style="margin:18px 0 4px 0;font-size:24px;letter-spacing:-0.3px">Cockpit</h1>
-  <p style="color:var(--muted);margin:0 0 16px 0;font-size:13px">Every number on the Polish sovereign curve on one screen. Rows one to three are an identity: yield = expected rate path + term premium (BRW). Click any tile for the full dashboard.</p>
+<main class="board" style="padding-top:24px">
 
   <div class="board-frame">
 
@@ -162,6 +159,35 @@
   <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>
 </footer>
 
+<!-- YC embed mode (activated by ?embed=1): header, footer and frame chrome off,
+     tiles link out to the full site in a new tab, height posted to the parent
+     for the embed.js auto-resizer. Framing is gated by the frame-ancestors
+     allowlist in _headers, extended per partner on request. -->
+<style>
+  body.yc-embed .site-header,
+  body.yc-embed .site-footer { display:none !important; }
+  body.yc-embed { background:#fff; }
+  body.yc-embed main.board { max-width:none; margin:0; padding:8px 10px 12px; }
+  body.yc-embed .board-frame { border:none; padding:6px 0 0 0; background:#fff; }
+  body.yc-embed .brow-head > * { background:#fff; }
+</style>
+<script>
+(function(){
+  if (new URLSearchParams(location.search).get('embed') !== '1') return;
+  document.body.classList.add('yc-embed');
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a');
+    if (a && a.host === location.host){ a.target = '_blank'; a.rel = 'noopener'; }
+  });
+  function postH(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (window.parent !== window) parent.postMessage({ type:'yc-embed-height', height:h }, '*');
+  }
+  window.addEventListener('load', postH);
+  if (window.ResizeObserver) new ResizeObserver(postH).observe(document.body);
+  setInterval(postH, 1200);
+})();
+</script>
 <script>
 let DATA = null, MPC = null, ORC = null, TR = null;
 
