@@ -589,7 +589,16 @@ function drawSnapCurve(s){
     xmax = Math.max(12, maxTtm + 1);
   }
   lay.xaxis.title = { text:'maturity (years)', font:FONT_MONO }; lay.xaxis.range=[0, xmax];
+  lay.xaxis.dtick = 1;                       // one-year grid density
   lay.yaxis.title = { text:'yield (%)', font:FONT_MONO };
+  // big zero-rate labels above the fitted curve at the benchmark tenors
+  lay.annotations = [1, 2, 5, 7, 10].filter(t => t <= xmax).map(t => {
+    const z = nss_y(t, s.beta0, s.beta1, s.beta2, s.beta3, s.tau1, s.tau2) * 100;
+    return { x: t, y: z, text: '<b>' + z.toFixed(2) + '</b>', showarrow: false,
+             yshift: 22, font: {family: 'JetBrains Mono, Menlo, monospace', size: 14,
+                                color: PALETTE.accent},
+             bgcolor: 'rgba(255,255,255,0.75)' };
+  });
   Plotly.react('snapCurve', traces, lay, CFG);
 }
 
