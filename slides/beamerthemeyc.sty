@@ -1,0 +1,82 @@
+%% beamerthemeyc.sty — yieldcartography house beamer theme
+%% Shared by every seminar deck under /slides/. 16:9, quiet design:
+%% navy/salmon palette of the dashboards, mono kickers and footers,
+%% ALK + GRAPE + yieldcartography logo strip on every slide.
+%% Logos expected next to the deck: kozminski_logo.png, grape_logo.png,
+%% yc_logo.png (copied from YIELDS).
+\mode<presentation>
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{graphicx}
+
+% ---- palette: mirrors assets/style.css -------------------------------------
+\definecolor{ycaccent}{HTML}{1F4E79}   % navy
+\definecolor{ycsalmon}{HTML}{C2522D}   % salmon
+\definecolor{ycink}{HTML}{1A1A1A}
+\definecolor{ycmuted}{HTML}{666666}
+\definecolor{ycrule}{HTML}{D9D9D9}
+\definecolor{ycpanel}{HTML}{FAFAF8}
+\definecolor{ycgreen}{HTML}{2E7D32}
+
+\setbeamercolor{normal text}{fg=ycink,bg=white}
+\setbeamercolor{structure}{fg=ycaccent}
+\setbeamercolor{frametitle}{fg=ycaccent,bg=white}
+\setbeamercolor{title}{fg=ycink}
+\setbeamercolor{subtitle}{fg=ycmuted}
+\setbeamercolor{author}{fg=ycink}
+\setbeamercolor{institute}{fg=ycmuted}
+\setbeamercolor{date}{fg=ycmuted}
+\setbeamercolor{itemize item}{fg=ycsalmon}
+\setbeamercolor{itemize subitem}{fg=ycmuted}
+\setbeamercolor{enumerate item}{fg=ycsalmon}
+\setbeamercolor{alerted text}{fg=ycsalmon}
+\setbeamercolor{block title}{fg=white,bg=ycaccent}
+\setbeamercolor{block body}{fg=ycink,bg=ycpanel}
+
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{title}{size=\huge,series=\bfseries}
+\setbeamerfont{subtitle}{size=\normalsize}
+\setbeamerfont{footline}{size=\tiny}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\raisebox{0.14em}{\rule{0.5em}{0.5em}}}
+\setbeamertemplate{itemize subitem}{--}
+
+% ---- kicker: mono uppercase strap above the frame title --------------------
+\newcommand{\kicker}[1]{%
+  {\ttfamily\scriptsize\color{ycmuted}\MakeUppercase{#1}}\\[-0.35em]
+  {\color{ycrule}\rule{\textwidth}{0.5pt}}\vspace{0.35em}}
+
+% ---- big number ------------------------------------------------------------
+\newcommand{\bignum}[2]{%
+  \begin{center}
+  {\fontsize{44}{48}\selectfont\bfseries\color{ycaccent}#1}\\[0.35em]
+  {\small\color{ycmuted}\parbox{0.86\textwidth}{\centering #2}}
+  \end{center}}
+
+% ---- frame title with salmon tick ------------------------------------------
+\setbeamertemplate{frametitle}{%
+  \vspace{0.55em}%
+  {\color{ycsalmon}\rule[-0.18em]{0.22em}{1.05em}}\hspace{0.45em}%
+  \usebeamerfont{frametitle}\insertframetitle\par
+  \vspace{0.15em}}
+
+% ---- footline: logo strip + deck title + page ------------------------------
+\setbeamertemplate{footline}{%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=5.4mm,dp=2.6mm,leftskip=8mm,rightskip=8mm]{normal text}
+    {\color{ycrule}\rule[2.4mm]{0.92\paperwidth}{0.4pt}}\hspace*{-0.92\paperwidth}%
+    \raisebox{-1.2mm}{\includegraphics[height=3.6mm]{kozminski_logo.png}}\hspace{2.6mm}%
+    \raisebox{-1.2mm}{\includegraphics[height=3.6mm]{grape_logo.png}}\hspace{2.6mm}%
+    \raisebox{-1.2mm}{\includegraphics[height=3.6mm]{yc_logo.png}}%
+    \hfill{\ttfamily\color{ycmuted}\deckfootertitle}%
+    \hfill{\ttfamily\color{ycaccent}\insertframenumber\,/\,\inserttotalframenumber}%
+  \end{beamercolorbox}}
+\newcommand{\deckfootertitle}{}   % set per deck with \renewcommand
+
+\mode<all>
