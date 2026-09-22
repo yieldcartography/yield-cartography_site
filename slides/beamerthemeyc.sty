@@ -15,6 +15,13 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 
+% Uppercase Greek: with helvet as the text font the operators font has no
+% Greek glyphs, so route \Delta etc. through the math-italic letters font.
+\DeclareMathSymbol{\Delta}{\mathalpha}{letters}{"01}
+\DeclareMathSymbol{\Sigma}{\mathalpha}{letters}{"06}
+\DeclareMathSymbol{\Gamma}{\mathalpha}{letters}{"00}
+\DeclareMathSymbol{\Omega}{\mathalpha}{letters}{"0A}
+
 % ---- palette: mirrors assets/style.css -------------------------------------
 \definecolor{ycaccent}{HTML}{1F4E79}   % navy
 \definecolor{ycsalmon}{HTML}{C2522D}   % salmon
@@ -53,12 +60,12 @@
   {\ttfamily\scriptsize\color{ycmuted}\MakeUppercase{#1}}\\[-0.35em]
   {\color{ycrule}\rule{\textwidth}{0.5pt}}\vspace{0.35em}}
 
-% ---- big number ------------------------------------------------------------
+% ---- headline estimate: bold accent figure inline with its description -----
 \newcommand{\bignum}[2]{%
-  \begin{center}
-  {\fontsize{44}{48}\selectfont\bfseries\color{ycaccent}#1}\\[0.35em]
-  {\small\color{ycmuted}\parbox{0.86\textwidth}{\centering #2}}
-  \end{center}}
+  \vspace{0.5mm}
+  {\fontsize{15}{18}\selectfont\bfseries\color{ycaccent}#1}\enspace
+  {\small\color{ycink}#2\par}
+  \vspace{0.5mm}}
 
 % ---- frame title with salmon tick ------------------------------------------
 \setbeamertemplate{frametitle}{%

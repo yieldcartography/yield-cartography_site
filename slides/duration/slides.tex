@@ -41,8 +41,8 @@
           rolling short-term cash earns this premium.
     \item The empirical question is the realised counterpart: of the 4.14\%
           compound annual return the published TBSP index delivered over
-          nineteen years, \alert{how much is attributable to term-premium
-          realisation} rather than to coupon accrual, reinvestment and
+          nineteen years, \alert{what share is attributable to term-premium
+          realisation}, and what share to coupon accrual, reinvestment and
           roll-down?
     \item The benchmark cash rate throughout is the NBP reference rate, a
           proxy for the upper envelope of retail deposit rates.
@@ -63,8 +63,8 @@
     \item $ERC$ and $TPC$: revaluation from the expected-rate and term-premium
           legs of the ACM--BRW decomposition of the fitted zero curve.
     \item $Cnvx$ second-order convexity; $Res$ the closure residual. The sum
-          reproduces the published index by construction: the identity is an
-          attribution, not a model.
+          reproduces the published index by construction; no estimation enters
+          the partition.
     \item The split of CurveMove rests on the fitted-curve decomposition
           \( y_t(\tau) = y^{rf}_t(\tau) + tp_t(\tau) \): the ACM--BRW
           expected-rate leg and term-premium leg of the LW-NSS zero curve,
@@ -88,11 +88,17 @@
 
 % 5 ---------------------------------------------------------------------------
 \begin{frame}{Result 1: the carry-and-roll bloc}
-  \kicker{Cumulative attribution}
-  \bignum{+413 bp/yr}{cumulative CarryRoll contribution ($CC+RP+RD$),
-  $+8{,}010$ bp over the sample, against $+7{,}866$ bp delivered by the
-  published index. The income bloc alone accounts for essentially the whole
-  realised return.}
+  \kicker{Cumulative attribution, 2006-12-29 to 2026-05-15}
+  \begin{itemize}
+    \item CarryRoll ($CC+RP+RD$) cumulates to $+8{,}010$ bp, $+413$ bp per
+          year of sample, against the $+7{,}866$ bp ($+405$ bp per year)
+          delivered by the published index.
+    \item Within the bloc, coupon accrual contributes $+7{,}604.9$ bp,
+          roll-down $+361.4$ bp and reinvestment $+43.7$ bp: the income bloc
+          alone accounts for essentially the entire realised return.
+    \item Convexity adds a further $+278.8$ bp ($+14.4$ per year), a
+          second-order but persistent positive term.
+  \end{itemize}
 \end{frame}
 
 % 6 ---------------------------------------------------------------------------
@@ -140,8 +146,9 @@
           \( t = \bar e \,/\, \sqrt{\widehat{V}_{NW}/T} \) and by bootstrap
           intervals on cumulative sums; the same construction applies to the
           $TPC$ series.
-    \item The reason for the wide intervals is not noise throughout the sample
-          but the concentration of the variance in a single regime episode.
+    \item The width of the intervals reflects the concentration of the
+          series' variance in a single regime episode; conditioning on that
+          episode is the natural next step.
   \end{itemize}
 \end{frame}
 
@@ -155,18 +162,25 @@
           drawdown, only partially reversed after 2023.
     \item Treating these quarters as part of a homogeneous sample conflates a
           rare regime realisation with the unconditional distribution; the
-          paper conditions on the episode explicitly rather than through
-          dummies.
+          paper conditions on the episode explicitly; dummy-variable
+          specifications are reported as robustness.
   \end{itemize}
 \end{frame}
 
 % 9 ---------------------------------------------------------------------------
 \begin{frame}{Result 3: the conditional excess return}
   \kicker{Excluding the four episode quarters}
-  \bignum{+46.5 bp/q}{mean TBSP-versus-rolling-cash excess on the 74-quarter
-  sub-sample, HAC $p=0.003$, cumulative bootstrap confidence interval
-  $[+1{,}217,\,+5{,}534]$ bp. The excess is positive on 74 of the 78
-  quarter-ends in the full sample.}
+  \begin{itemize}
+    \item On the 74-quarter sub-sample the mean TBSP-versus-rolling-cash
+          excess is $+46.5$ bp per quarter, HAC $p=0.003$, with a cumulative
+          bootstrap confidence interval of $[+1{,}217,\,+5{,}534]$ bp.
+    \item The full-sample counterpart is $+17.6$ bp per quarter
+          ($+1{,}354$ bp cumulative), $p=0.55$: the four episode quarters move
+          the point estimate by a factor of 2.6 and inflate the variance
+          enough to remove significance.
+    \item The excess over cash is positive on 74 of the 78 quarter-ends of the
+          full sample.
+  \end{itemize}
 \end{frame}
 
 % 10 --------------------------------------------------------------------------
@@ -174,14 +188,14 @@
   \kicker{Reconciling ex-ante and realised premia}
   \small
   \begin{itemize}
-    \item A positive ex-ante term premium and a realised term-premium
-          contribution indistinguishable from zero are not contradictory:
+    \item A positive ex-ante term premium coexists with a realised
+          term-premium contribution indistinguishable from zero because
           realisation risk is concentrated in rare, persistent regime
-          episodes, so unconditional sample means converge slowly.
-    \item A TBSP-tracking exposure is characterised more accurately as a carry
-          position between the term spread and the policy rate, bearing
-          low-frequency regime risk, than as a systematic harvest of the
-          ex-ante premium.
+          episodes; unconditional sample means therefore converge slowly.
+    \item A TBSP-tracking exposure is characterised as a carry position
+          between the term spread and the policy rate bearing low-frequency
+          regime risk; the ex-ante premium is realised only conditionally on
+          the regime path.
     \item The characterisation reproduces the observed moments: the long-run
           excess over cash, the modest trailing information ratio (0.21), and
           the depth of the 2022 drawdown.
@@ -204,7 +218,7 @@
           bootstrap confidence intervals on cumulative contributions; the
           regime episode is handled by explicit conditioning.
     \item \textbf{Verification.} The closure residual and the tracking gap
-          against the published index are reported, not absorbed: $+20$ bp and
+          against the published index are reported explicitly: $+20$ bp and
           $-106$ bp cumulative respectively.
   \end{itemize}
 \end{frame}

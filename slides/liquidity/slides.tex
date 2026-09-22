@@ -36,7 +36,7 @@
     \item The low-frequency liquidity-estimator literature is calibrated on
           deep markets; the supply-and-habitat literature
           (Greenwood--Vayanos 2014, Vayanos--Vila 2021) is estimated almost
-          exclusively on US Treasuries. Neither has been taken seriously to the
+          exclusively on US Treasuries. Both remain largely untested on the
           middle tier of sovereign curves.
     \item This paper treats liquidity as the \alert{dependent variable}:
           what prices into bond-level spreads, into the segment-level supply
@@ -74,9 +74,10 @@
   \begin{itemize}
     \item \textbf{H1 (issue size).} Outstanding amount enters negatively in all
           bond-level liquidity measures.
-    \item \textbf{H2 (stocks versus flow).} Segment liquidity responds to stock
-          variables (segment stock, residual-maturity concentration), not to
-          monthly gross issuance flow.
+    \item \textbf{H2 (stocks versus flow).} Segment liquidity responds to
+          stock variables (segment stock, residual-maturity concentration),
+          while monthly gross issuance flow is uninformative conditional on
+          them.
     \item \textbf{H3 (holder structure).} The post-2019 foreign buy-side
           retreat loads on volume-scaled measures (Amihud) but not on the
           venue-capped quoted spread.
@@ -124,19 +125,21 @@
 % 5 ---------------------------------------------------------------------------
 \begin{frame}{Result 1: issue size (H1)}
   \kicker{Bond-month panel, bond FE, Driscoll-Kraay SE}
-  \bignum{$-3.5$ bp}{coefficient on log(outstanding) for the quoted spread in
-  the bond-month panel with bond fixed effects and Driscoll--Kraay standard
-  errors, $p<0.01$. Same sign and significance on the composite $z$-score and
-  on the zero-trading-days share.}
-  \vspace{1mm}
-  \begin{center}\small\color{ycmuted}
-  Robust to macro and regime controls, consistent across all six
-  low-frequency estimators.
-  \end{center}
+  \begin{itemize}
+    \item Coefficient on $\log(\text{outstanding})$ for the quoted spread:
+          $-3.5$ bp, $p<0.01$; on the composite $z$-score: $-0.123$,
+          $p<0.01$; the zero-trading-days share carries the same sign and
+          significance.
+    \item The sign is uniform across all six low-frequency estimators and
+          survives the macro block and the post-2020 regime controls.
+    \item Economically, outstanding amount is the single most robust
+          bond-level covariate of liquidity in the panel, consistent with the
+          H1 prediction and with the deep-market evidence on issue size.
+  \end{itemize}
 \end{frame}
 
 % 6 ---------------------------------------------------------------------------
-\begin{frame}{Result 2: supply operates through stocks, not flow (H2)}
+\begin{frame}{Result 2: supply operates through stock variables (H2)}
   \kicker{Segment-month panel, segment FE, Driscoll-Kraay SE}
   \begin{itemize}
     \item Monthly gross issuance is insignificant for segment liquidity once
@@ -144,9 +147,9 @@
     \item Trailing twelve-month issuance and log segment stock load
           monotonically; the residual-maturity concentration share loads
           positively on Amihud and on the zero-trading-days share.
-    \item Interpretation: the level and the maturity composition of the
-          outstanding stock, not the issuance calendar, are the supply margins
-          priced into liquidity.
+    \item The supply margins priced into segment liquidity are therefore the
+          level and the maturity composition of the outstanding stock; gross
+          issuance flow is statistically irrelevant once stocks enter.
   \end{itemize}
 \end{frame}
 
@@ -198,25 +201,38 @@
     \node[right,font=\tiny\itshape,text=ycmuted,rotate=90,anchor=west] at (-0.85,2) {bp per +100 bn PLN};
   \end{tikzpicture}
   \end{center}
-  \footnotesize\color{ycmuted} The supply block is jointly significant at 1\%
-  for all term-premium maturities ($F$ between 4.3 and 9.5) and insignificant
-  for the venue-capped aggregate BAS ($F=0.65$). The tenor-increasing gradient
-  is the preferred-habitat signature of Vayanos--Vila (2021), not a uniform
-  additive premium. Debt-to-GDP adds ${\sim}+8$ bp at 10Y per pp.
+  \footnotesize\color{ycmuted} The supply block \{debt, foreign share, NBP
+  share, debt/GDP, 12m issuance\} is jointly significant at 1\% for all
+  term-premium maturities ($F$ = 4.3--9.5) and insignificant for the
+  venue-capped aggregate BAS ($F=0.65$, $p=0.66$). Debt-to-GDP adds
+  $+3.3$/$+5.4$/$+8.1$ bp at 2/5/10Y per pp. A COVID interaction roughly
+  triples the 10Y debt sensitivity post-2020 ($+0.69$ bp per bn PLN). The
+  tenor-increasing gradient is the observable implication of preferred-habitat
+  demand curves (Vayanos--Vila 2021).
 \end{frame}
 
 % 9 ---------------------------------------------------------------------------
 \begin{frame}{Result 5: a mark-to-market counterfactual}
-  \kicker{Three-curve present-value scenario}
-  \small The outstanding fixed-cash-flow universe (951 bn PLN face) is repriced
-  under (A) the contemporaneous NSS curve, (B) the BRW risk-neutral curve, and
-  (C) the NSS curve net of the supply-attributable term-premium wedge implied
-  by the 2019--2025 debt expansion (coefficients from Result 4 $\times$ the
-  400 bn PLN debt rise):
-  \bignum{2.4\%}{of present value, about 23 bn PLN, is the mark-to-market
-  difference between (A) and (C): the cumulated supply-driven term-premium
-  wedge. First-order calculation under a parallel application of the
-  tenor-specific wedge; convexity effects are second order at these magnitudes.}
+  \kicker{Three-curve present-value scenario, valuation date 2026-04-21}
+  \small The outstanding fixed-cash-flow universe (951.9 bn PLN face; PS/DS/WS
+  fixed-coupon plus OK zero-coupon issues) is repriced under three zero
+  curves, discrete annual compounding, act/365.25:
+  \begin{center}
+  \small
+  \begin{tabular}{llrr}
+    & curve & PV (bn PLN) & vs (A)\\
+    \hline
+    (A) & contemporaneous NSS & 949.8 & ---\\
+    (B) & BRW risk-neutral ($y^{rf}$ leg) & 997.2 & $+4.99\%$\\
+    (C) & NSS net of the supply wedge & 972.7 & $+2.41\%$\\
+  \end{tabular}
+  \end{center}
+  \vspace{1mm}
+  The wedge in (C) applies the Result-4 coefficients (23/81/92 bp at 2/5/10Y)
+  to the 400 bn PLN debt rise of 2019--2025. The $+22.9$ bn PLN difference
+  between (A) and (C) is the cumulated supply-attributable term-premium
+  component of present value. First-order calculation; convexity effects are
+  second order at these magnitudes.
 \end{frame}
 
 % 10 --------------------------------------------------------------------------
@@ -255,9 +271,9 @@
   \small
   \begin{itemize}
     \item \textbf{Measurement.} Under a binding venue quote cap, quote-based
-          and volume-scaled liquidity estimators are complements, not
-          substitutes; their divergence identifies the buy-side retreat that
-          the quote conceals.
+          and volume-scaled liquidity estimators carry distinct information
+          sets; their divergence identifies the buy-side retreat that the
+          quote conceals.
     \item \textbf{Pricing.} Supply prices into the term structure through
           stocks and maturity composition with a tenor-increasing gradient,
           the observable implication of preferred-habitat demand curves in a
@@ -285,8 +301,9 @@
           panels with Driscoll--Kraay (Bartlett kernel) standard errors;
           MPC and auction event studies (AAR/CAAR and normalised yield paths);
           aggregate monthly time-series regressions with Newey--West standard
-          errors, lag bandwidth by the Andrews (1991) rule; joint $F$-tests on
-          the supply block.
+          errors, lag bandwidth by the Andrews (1991) rule ($L \in [10,14]$);
+          joint $F$-tests on the supply block; first-difference and
+          non-linearity specifications as robustness.
     \item \textbf{Valuation.} Three-curve present-value counterfactual on the
           fixed-cash-flow universe.
   \end{itemize}

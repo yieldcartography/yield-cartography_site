@@ -149,11 +149,17 @@
 % 6 ---------------------------------------------------------------------------
 \begin{frame}{The euro-area rejection is bootstrap-fragile}
   \kicker{Asymptotic versus bootstrap inference}
-  \bignum{75 $\rightarrow$ 4}{euro-area PEH rejections out of 90 cells under
-  Newey--West versus under the wild block bootstrap. An order-of-magnitude
-  collapse, and the cleanest illustration in the sample of the
-  Bauer--Hamilton (2018) concern: asymptotic inference in overlapping-return
-  regressions with persistent regressors is badly oversized.}
+  \begin{itemize}
+    \item Euro-area rejections fall from 75/90 under Newey--West to 4/90 under
+          the wild block bootstrap; by family: FB1 $30\!\to\!2$,
+          FB2 $20\!\to\!1$, CP $4\!\to\!0$, Thornton $21\!\to\!1$.
+    \item The US pattern is the same in miniature ($6\!\to\!0$), while the
+          Polish cells reject under neither method.
+    \item The gap quantifies the size distortion of HAC $t$-statistics in
+          overlapping-return regressions with persistent regressors
+          (Bauer--Hamilton 2018): on this sample configuration the asymptotic
+          test is oversized by roughly an order of magnitude.
+  \end{itemize}
 \end{frame}
 
 % 7 ---------------------------------------------------------------------------
@@ -166,8 +172,8 @@
           medium horizons.
     \item The Polish zero-out-of-ninety therefore cannot be read as support
           for PEH: at most horizons the test could not have detected a
-          violation of plausible magnitude. Absence of evidence, not evidence
-          of absence.
+          violation of plausible magnitude, so the non-rejection is
+          uninformative there.
     \item Polish point estimates sit at least as far from the null as the US
           ones, on the opposite side of zero, with wide standard errors driven
           by the persistence of the forward-spread regressor.
@@ -184,7 +190,8 @@
           negative and rejections drop to zero.
     \item Structural-break tests (sup-Wald) date the US and euro-area breaks
           at the 2008 crisis; the Polish breaks arrive late, in 2019 and 2022,
-          coinciding with its own policy cycle rather than the global one.
+          coinciding with the domestic policy cycle, two years or more after
+          the global one.
   \end{itemize}
 \end{frame}
 
@@ -196,12 +203,12 @@
           concentrated in the pre-2015 and the 2015--2021 negative-deposit-rate
           regimes, and is absent after 2021.
     \item Pooled cross-market equality tests cannot reject equal slopes across
-          the three markets (Wald $p$ between 0.13 and 0.53): the
-          PL--US--EA ranking is a point-estimate ordering, not a formally
-          separated one.
+          the three markets (Wald $p$ between 0.13 and 0.53); the PL--US--EA
+          ranking is an ordering of point estimates without formal
+          separation.
     \item Together with the break geography, the cross-market differences line
-          up with regime exposure rather than with structural properties of
-          the curves.
+          up with differences in regime exposure across the three observation
+          windows.
   \end{itemize}
 \end{frame}
 
@@ -214,13 +221,12 @@
           the triple that avoided a GFC recession, crisis-era QE and the
           negative-rate regime. Its curve met those shocks only through its
           own, later policy cycle.
-    \item Cross-market PEH rejection then tracks two things: which regimes a
-          curve lived through, and how much power the test has on that
-          sample. Neither is a structural property of the curve itself.
+    \item Cross-market PEH rejection then tracks two sample characteristics:
+          the regimes a curve lived through, and the power of the test on that
+          sample. Both are properties of the observation window.
     \item Practical corollary for term-structure work on less-liquid markets:
           report bootstrap inference next to HAC, report power, and treat
-          non-rejection on short samples as uninformative rather than as
-          support for the null.
+          non-rejection on short samples as uninformative.
   \end{itemize}
 \end{frame}
 
