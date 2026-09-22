@@ -1,1 +1,1 @@
-{"date":"2026-09-21","nbp":3.802,"moves":[{"h_m":3,"brw_dbp":16.3,"brw_moves":0.65},{"h_m":6,"brw_dbp":31.6,"brw_moves":1.26}],"oracle":{"market_score":0.652,"market_d3_bp":16.3,"tone_score":0.077,"tone_date":"2026-07-08","score":0.479,"p_cut":0.0,"p_hike":0.479,"p_hold":0.521}}
+{"date":"2026-09-22","nbp":3.802,"moves":[{"h_m":3,"brw_dbp":13.9,"brw_moves":0.56},{"h_m":6,"brw_dbp":26.9,"brw_moves":1.08}],"oracle":{"market_score":0.556,"market_d3_bp":13.9,"tone_score":0.077,"tone_date":"2026-07-08","score":0.412,"p_cut":0.0,"p_hike":0.412,"p_hold":0.588}}
