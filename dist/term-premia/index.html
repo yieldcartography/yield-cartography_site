@@ -63,10 +63,11 @@
   details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
   details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 110px; white-space: nowrap; }
 </style>
+<script src="/assets/figtools.js?v=1" defer></script>
 <script src="/assets/promo.js?v=5" defer></script>
 <script src="/assets/search.js?v=1" defer></script>
 </head>
-<body>
+<body data-fig-source-default="Author's own calculations (ACM and BRW estimation) on the LW-NSS zero-coupon panel built from Treasury BondSpot Poland fixings and NBP reference rates." data-fig-cite-default="Dec, M. (2026). Does the Term Premium Pay for the Duration? Evidence from Polish Sovereigns. Research Square preprint, doi:10.21203/rs.3.rs-9849665/v1.">
 
 <header class="site-header">
   <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
@@ -155,7 +156,7 @@
     <div id="tpHorizon" class="plot-frame huge"></div>
   </div>
 
-  <div class="panel" style="margin-bottom:18px">
+  <div class="panel" data-fig-source="Author's own calculations (ACM and BRW estimation) on the LW-NSS panel (Treasury BondSpot Poland fixings and NBP reference rates), plus the GSW US Treasury panel (Federal Reserve Board) and ECB euro-area AAA yields (ECB Data Portal)." style="margin-bottom:18px">
     <div class="panel-head-row">
       <h3 style="margin:0">Cross-country term-premia comparison</h3>
       <button class="csv-btn" id="csvXTp">CSV</button>
@@ -165,7 +166,7 @@
   </div>
 
   <div class="grid-2">
-    <div class="panel">
+    <div class="panel" data-fig-source="Author's own calculations (ACM and BRW estimation) on the LW-NSS panel (Treasury BondSpot Poland fixings and NBP reference rates), plus the GSW US Treasury panel (Federal Reserve Board) and ECB euro-area AAA yields (ECB Data Portal).">
       <div class="panel-head-row">
         <h3 style="margin:0">Correlation heatmap — PL BRW × US ACM</h3>
         <button class="csv-btn" id="csvCorrUs">CSV</button>
@@ -173,7 +174,7 @@
       <p class="note">Pearson correlations between PL BRW term premia and US ACM term premia at all horizon pairs. Off-diagonal cells tell you how Polish term premia at one tenor co-move with US term premia at another tenor.</p>
       <div id="corrPlUs" class="plot-frame square"></div>
     </div>
-    <div class="panel">
+    <div class="panel" data-fig-source="Author's own calculations (ACM and BRW estimation) on the LW-NSS panel (Treasury BondSpot Poland fixings and NBP reference rates), plus the GSW US Treasury panel (Federal Reserve Board) and ECB euro-area AAA yields (ECB Data Portal).">
       <div class="panel-head-row">
         <h3 style="margin:0">Correlation heatmap — PL BRW × EA ACM</h3>
         <button class="csv-btn" id="csvCorrEa">CSV</button>
