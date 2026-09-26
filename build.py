@@ -265,6 +265,18 @@ def build():
         if not snap['bonds']:
             snap['bonds'] = _bond_panel_from_bases(bases, d, venue_tov,
                                                    mf_long, mf_months)
+        else:
+            # The liquidity panel carries fixed-coupon bonds only; merge in
+            # any bases-only bonds for the same date (OK zero-coupon series
+            # in particular) so the displayed panel matches the fitter input.
+            have = {b['isin'] for b in snap['bonds'] if b.get('isin')}
+            extra = [r for r in _bond_panel_from_bases(bases, d, venue_tov,
+                                                       mf_long, mf_months)
+                     if r.get('isin') and r['isin'] not in have]
+            if extra:
+                snap['bonds'] = sorted(
+                    snap['bonds'] + extra,
+                    key=lambda r: (r.get('ttm') is None, r.get('ttm')))
         prior_m, mf_m = _turnover_months(d, mf_months)
         snap['tov_bs_month'] = prior_m
         snap['tov_mf_month'] = mf_m
