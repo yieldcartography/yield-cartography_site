@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Realised vols — yieldcartography</title>
+<meta name="description" content="Realised normal volatility of the Polish sovereign curve: horizon-by-tenor vol table, vol term structure, rolling history, and a short-long probability plane with Gaussian percentile ellipses.">
+<link rel="stylesheet" href="/assets/style.css?v=9">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://yieldcartography.com/vols/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Realised volatility — yieldcartography">
+<meta property="og:description" content="Realised normal volatility of the Polish sovereign curve: vol surface, term structure and probability plane.">
+<meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yieldcartography.com/vols/">
+<meta property="og:site_name" content="yieldcartography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Realised volatility — yieldcartography">
+<meta name="twitter:description" content="Realised normal volatility of the Polish sovereign curve: vol surface, term structure and probability plane.">
+<meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<style>
+  .plot-frame { width: 100%; height: 360px; }
+  .plot-frame.tall { height: 440px; }
+  .plot-frame.square { height: 460px; }
+  .ctl-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; margin: 0 0 12px 0; }
+  .ctl-row label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 3px; }
+  .ctl-row select, .ctl-row input { font-family: var(--mono); font-size: 12px; padding: 5px 8px; border: 1px solid var(--rule); border-radius: 4px; background: #fff; color: var(--ink); width: 92px; }
+  .out-row { display: flex; gap: 22px; flex-wrap: wrap; margin: 10px 0 4px 0; }
+  .out-row .o { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
+  .out-row .o b { font-size: 16px; color: var(--accent); font-weight: 700; display: block; }
+  .note-amber { background: #fdf6e3; border: 1px solid #e6c877; border-left: 3px solid #d9a520; border-radius: 4px; padding: 10px 14px; color: #7a5c10; }
+  .arr { display: inline-block; margin-left: 4px; font-size: 12px; line-height: 1; }
+  .arr.up { color: var(--salmon); }
+  .arr.dn { color: var(--green); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; align-items: stretch; }
+  .two-col .panel { margin-bottom: 0; display: flex; flex-direction: column; }
+  .two-col .panel h3 { min-height: 2.6em; }
+  .two-col .panel .note { min-height: 4.2em; }
+  .two-col .fig-source { margin-top: auto; padding-top: 8px; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+  .small-note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.3px; margin: 6px 0 0 0; }
+  .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 10px 0; }
+  .pill { font-family: var(--mono); font-size: 10.5px; padding: 4px 9px; border: 1px solid var(--rule); border-radius: 12px; background: var(--bg); color: var(--ink-soft); cursor: pointer; user-select: none; letter-spacing: 0.4px; text-transform: uppercase; }
+  .pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .pill:hover:not(.active) { border-color: var(--accent-soft); color: var(--accent); }
+  .stats-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+  .stats-table th, .stats-table td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); }
+  .stats-table th { color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; background: #f5f5f5; }
+  .stats-table th.lbl, .stats-table td.lbl { text-align: left; white-space: nowrap; }
+  details.intro { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 0 0 18px 0; }
+  details.intro > summary { cursor: pointer; font-family: var(--mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+  details.intro p, details.intro li { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0; }
+  details.intro h4 { margin: 12px 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); font-family: var(--mono); }
+  details.intro table.glossary { border-collapse: collapse; width: 100%; margin: 4px 0 6px 0; }
+  details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
+  details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 110px; white-space: nowrap; }
+</style>
+<script src="/assets/figtools.js?v=1" defer></script>
+<script src="/assets/promo.js?v=5" defer></script>
+<script src="/assets/search.js?v=1" defer></script>
+</head>
+<body data-fig-source-default="Author's own calculations on the LW-NSS zero-coupon panel built from Treasury BondSpot Poland fixings and NBP reference rates, month-end observations from 2005."
+ data-fig-cite-default="Dec, M. (2026). Parsimonious Yield Curve Modeling in Less-Liquid Markets. FAME|GRAPE Working Paper #53.">
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <nav>
+    <a href="/cockpit/">cockpit</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/vols/" class="active">vols</a>
+    <a href="/oracle/">oracle</a>
+    <a href="/mpc/">MPC</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/total-return/">total return</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/">shorts</a>
+    <a href="/movies/">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main>
+
+  <h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Realised volatility of the Polish sovereign curve</h1>
+  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">Realised normal (basis-point) volatilities of constant-maturity zero yields: standard deviations of h-month changes at each tenor, annualised by &radic;(12/h), the realised counterpart of a swaption surface. Plus a short-long probability plane: twelve-month moves of the 3M and 10Y rates, with Gaussian percentile ellipses centred on the latest move.</p>
+
+  <div class="stats" style="margin-top:18px">
+    <div class="stat"><div class="label">12m vol, 2y tenor</div><div class="value" id="stat-v2">—</div><div class="delta">bp per year, full sample</div><div class="delta" id="stat-r2y">—</div></div>
+    <div class="stat"><div class="label">12m vol, 10y tenor</div><div class="value" id="stat-v10">—</div><div class="delta">bp per year, full sample</div><div class="delta" id="stat-r10y">—</div></div>
+    <div class="stat"><div class="label">Latest 12m move (3m)</div><div class="value" id="stat-s">—</div><div class="delta">bp, short rate</div></div>
+    <div class="stat"><div class="label">Latest 12m move (10y)</div><div class="value" id="stat-l">—</div><div class="delta">bp, long rate</div></div>
+    <div class="stat"><div class="label">Corr(s, &#8467;)</div><div class="value" id="stat-corr">—</div><div class="delta">full sample, 12m moves</div></div>
+  </div>
+
+  <details class="intro">
+    <summary>How to read this page (methodology and glossary)</summary>
+    <p>The realisations are month-end changes of the LW-NSS-fitted constant-maturity zero curve at eight tenors from 3 months to 10 years. For each horizon h the realised normal volatility at a tenor is the standard deviation of h-month yield changes annualised by &radic;(12/h), in basis points per year: a realised analogue of a normal swaption surface with expiry h on a swap of the tenor's length. The probability plane takes the twelve-month move of the short rate (3M zero, coordinate s) and of the long rate (10Y zero, coordinate &#8467;), giving one (s, &#8467;) pair per month. The percentile ellipses are those of a bivariate Gaussian centred on the latest observed pair, with no drift and the sample covariance of the pairs; the Mahalanobis radius of the p-th percentile is &radic;(&minus;2&thinsp;ln(1&minus;p)).</p>
+    <h4>Caveats</h4>
+    <p>The Polish constant-maturity yields are model-fitted (LW-NSS), so sub-1y tenors inherit some smoothing from the fit where quote-based constant-maturity series would not. Changes at horizons above one month overlap when sampled monthly, so the table cells are descriptive volatilities, not independent-sample estimates. The plane summarises the curve move by its two endpoints; belly moves that leave the 3M and 10Y unchanged are invisible to it.</p>
+    <h4>Glossary</h4>
+    <table class="glossary">
+      <tr><td class="code">normal vol</td><td>Volatility of yield changes in basis points (not log-normal price vol), the convention of swaption markets for rates.</td></tr>
+      <tr><td class="code">h</td><td>Horizon of the yield change in months: 1, 3, 6 or 12. Annualisation by &radic;(12/h).</td></tr>
+      <tr><td class="code">(s, &#8467;)</td><td>Twelve-month change of the 3M zero rate (s) and of the 10Y zero rate (&#8467;), in bp.</td></tr>
+      <tr><td class="code">ellipse p</td><td>The p-th percentile contour of the fitted bivariate Gaussian: half of future moves inside the 50% ring if the past covariance holds and moves are Gaussian with no drift.</td></tr>
+      <tr><td class="code">pricer</td><td>Bachelier (normal) model on the synthetic IRS. Payer = A[(F&minus;K)&Phi;(d)+&sigma;&radic;T&phi;(d)], d=(F&minus;K)/(&sigma;&radic;T). Vols are realised forward-par-rate vols scaled by the user's Q-adjustment factor; prices are actuarial benchmarks, not market quotes.</td></tr>
+      <tr><td class="code">full / 10y</td><td>Sample toggle: full month-end history from 2005, or the last ten years of moves only.</td></tr>
+    </table>
+  </details>
+
+  <div class="panel" style="margin-bottom:18px" id="panel-table">
+    <h3 style="margin:0 0 6px 0">Realised normal volatility, bp per year</h3>
+    <p class="note">Standard deviation of the h-month change in the constant-maturity zero yield at each tenor, annualised by &radic;(12/h).</p>
+    <div class="pill-row" id="tablePills">
+      <span class="pill active" data-s="full">Full sample</span>
+      <span class="pill" data-s="ten">Last 10 years</span>
+    </div>
+    <div style="overflow-x:auto"><table class="stats-table" id="volTable" data-figtable></table></div>
+    <p class="small-note" id="tableMeta"></p>
+  </div>
+
+  <div class="panel" style="margin-bottom:18px" data-fig-cite="Dec, M. (2026). Parsimonious Yield Curve Modeling in Less-Liquid Markets. FAME|GRAPE Working Paper #53; Dec, M. (2019). Markovian and Multi-Curve Friendly Parametrisation of a HJM Model Used in Valuation Adjustment of Interest Rate Derivatives. Bank i Kredyt, 50(2).">
+    <h3 style="margin:0 0 6px 0">Vol term structure</h3>
+    <p class="note">Realised vol against tenor, one line per horizon (solid), with the best-fitting one-factor Hull-White shape &sigma;<sub>r</sub>&middot;(1&minus;e<sup>&minus;a&tau;</sup>)/(a&tau;) overlaid (dotted). Under Hull-White the decay of vol in tenor identifies the mean-reversion speed a from realised data alone, with no options market: the diagnostic transplanted from the implied-vol calibration of Dec (2019). Where the realised row is hump-shaped (short horizons), one summand cannot fit, echoing that paper's finding that Hull-White needs two summands on PLN data.</p>
+    <div class="pill-row" id="smilePills">
+      <span class="pill active" data-s="full">Full sample</span>
+      <span class="pill" data-s="ten">Last 10 years</span>
+    </div>
+    <div id="chart-smile" class="plot-frame"></div>
+    <p class="small-note" id="smileMeta"></p>
+  </div>
+
+  <div class="panel" style="margin-bottom:18px">
+    <h3 style="margin:0 0 6px 0">Rolling realised vol</h3>
+    <p class="note">Rolling standard deviation of one-month yield changes, annualised, at the 2y, 5y and 10y tenors. Choose the window length.</p>
+    <div class="pill-row" id="rollPills">
+      <span class="pill active" data-w="12">12 months</span>
+      <span class="pill" data-w="24">24 months</span>
+      <span class="pill" data-w="36">36 months</span>
+    </div>
+    <div id="chart-roll" class="plot-frame tall"></div>
+  </div>
+
+  <div class="two-col">
+  <div class="panel">
+    <h3 style="margin:0 0 6px 0">Vol surface (horizon &times; tenor)</h3>
+    <p class="note">The vol table as a heatmap: realised normal vol in bp per year by horizon and tenor, matching the sample toggled above the term-structure chart.</p>
+    <div class="pill-row" style="visibility:hidden"><span class="pill">spacer</span></div>
+    <div id="chart-heat" class="plot-frame square"></div>
+    <p class="small-note" id="heatMeta"></p>
+  </div>
+
+  <div class="panel">
+    <h3 style="margin:0 0 6px 0">Probability plane: short &times; long twelve-month moves</h3>
+    <p class="note">Historical (s, &#8467;) pairs (dots), the latest pair (diamond), Gaussian percentile ellipses centred on it. s = 3M move, &#8467; = 10Y move, no drift.</p>
+    <div class="pill-row" id="planePills">
+      <span class="pill active" data-s="full">Full sample</span>
+      <span class="pill" data-s="ten">Last 10 years</span>
+    </div>
+    <div id="chart-plane" class="plot-frame square"></div>
+    <p class="small-note" id="planeMeta"></p>
+  </div>
+  </div>
+
+  <div class="panel" style="margin-bottom:18px" data-fig-cite="Dec, M. (2026). Parsimonious Yield Curve Modeling in Less-Liquid Markets. FAME|GRAPE Working Paper #53; Dec, M. (2019). Markovian and Multi-Curve Friendly Parametrisation of a HJM Model Used in Valuation Adjustment of Interest Rate Derivatives. Bank i Kredyt, 50(2).">
+        <h3 style="margin:0 0 6px 0">Hypothetical swaption pricer (Bachelier on realised vol)</h3>
+    <p class="note">Prices a swaption on a synthetic IRS: annual fixed leg against the 6m zero rate reset semi-annually, both legs off the LW-NSS PLN curve, so forward par rate and annuity are pure curve arithmetic. The normal (basis-point) convention and the very need for a realised-vol benchmark both trace to the structure of the PLN options market documented in Dec (2019): a thin swaption surface, no active caps and floors market, and log-normal quotes distorted near zero strikes.</p>
+    <p class="note note-amber"><b>Measure caveat:</b> the volatility input is realised (P-measure, backward-looking); a traded swaption is priced on implied (Q-measure) volatility, which normally exceeds realised by a volatility risk premium. The Q-adjustment factor multiplies the realised vol to approximate this wedge (default 1.10, adjust to taste); at factor 1.00 the outputs are actuarial prices, not market prices.</p>
+    <div class="ctl-row">
+      <div><label>Expiry</label><select id="swExp"><option value="1">1m</option><option value="3">3m</option><option value="6">6m</option><option value="12" selected>12m</option></select></div>
+      <div><label>Swap tenor</label><select id="swTen"><option>1</option><option>2</option><option>3</option><option value="5" selected>5</option><option>7</option><option>10</option></select></div>
+      <div><label>Strike vs ATM, bp</label><input id="swK" type="number" value="0" step="5"></div>
+      <div><label>Q-adjustment &times;</label><input id="swQ" type="number" value="1.10" step="0.05" min="0.5" max="3"></div>
+      <div><label>Vol override, bp/yr</label><input id="swVol" type="number" placeholder="table"></div>
+    </div>
+    <div class="pill-row" id="swPills">
+      <span class="pill active" data-s="full">Full-sample vol</span>
+      <span class="pill" data-s="ten">Last-10y vol</span>
+    </div>
+    <div class="out-row">
+      <div class="o">forward rate<b id="swF">—</b></div>
+      <div class="o">strike<b id="swKo">—</b></div>
+      <div class="o">&sigma; used, bp/yr<b id="swS">—</b></div>
+      <div class="o">annuity<b id="swA">—</b></div>
+      <div class="o">payer, bp of notional<b id="swP">—</b></div>
+      <div class="o">receiver, bp of notional<b id="swR">—</b></div>
+    </div>
+    <h3 style="margin:16px 0 6px 0;font-size:13px">ATM premium grid, bp of notional</h3>
+    <p class="note">Bachelier at-the-money premia under the toggled realised vol and the current Q-adjustment factor.</p>
+    <div style="overflow-x:auto"><table class="stats-table" id="swGrid" data-figtable></table></div>
+    <h3 style="margin:16px 0 6px 0;font-size:13px">ATM strikes, % (forward par rates)</h3>
+    <p class="note">The at-the-money strike of each cell: today's forward par rate of the synthetic IRS starting at expiry.</p>
+    <div style="overflow-x:auto"><table class="stats-table" id="swStrikes" data-figtable></table></div>
+    <p class="small-note" id="swMeta"></p>
+  </div>
+
+  <p class="small-note" style="margin-top:18px">Source-by-source observation timestamps for every input feeding this page are listed in the <a href="/#freshness">Data lineage &amp; freshness</a> block on the landing page.</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/vols/">Realised vols</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
+        <li><a href="/slides/">Seminar decks</a></li>
+        <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+  </div>
+  <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>
+</footer>
+
+<script>
+(async function () {
+  const r = await fetch('/data/vols_tiles.json');
+  const d = await r.json();
+  const css = getComputedStyle(document.documentElement);
+  const accent = css.getPropertyValue('--accent').trim() || '#1F4E79';
+  const salmon = css.getPropertyValue('--salmon').trim() || '#C2522D';
+  const muted = css.getPropertyValue('--muted').trim() || '#888';
+  const ink = css.getPropertyValue('--ink').trim() || '#222';
+  const mk = (xtype) => ({ margin: {l: 46, r: 12, t: 8, b: 36},
+    paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+    font: {family: 'inherit', size: 11.5, color: ink},
+    legend: {orientation: 'h', y: 1.1, font: {size: 11}}, hovermode: 'closest',
+    xaxis: {gridcolor: '#eee', type: xtype}, yaxis: {gridcolor: '#eee'} });
+  const cfg = { displayModeBar: false, responsive: true };
+  const H = d.horizons.map(String), TEN = d.tenors;
+
+  // stat tiles
+  const t12 = d.vol_table['12'].full;
+  document.getElementById('stat-v2').textContent = t12[3];
+  document.getElementById('stat-v10').textContent = t12[7];
+  function rollNote(id, key) {
+    const r = d.rolling['12'][key], now = r[r.length - 1],
+          ago = r[Math.max(0, r.length - 13)], ch = now - ago;
+    const arr = ch > 0 ? '<span class="arr up">\u25b2</span>'
+              : ch < 0 ? '<span class="arr dn">\u25bc</span>' : '';
+    document.getElementById(id).innerHTML =
+      'rolling 12m: ' + now.toFixed(0) + ' bp' + arr + ' ' +
+      (ch >= 0 ? '+' : '\u2212') + Math.abs(ch).toFixed(0) + ' y/y';
+  }
+  rollNote('stat-r2y', '2y');
+  rollNote('stat-r10y', '10y');
+  document.getElementById('stat-s').textContent = d.plane.centre.s.toFixed(0);
+  document.getElementById('stat-l').textContent = d.plane.centre.l.toFixed(0);
+  document.getElementById('stat-corr').textContent = d.plane.full.corr.toFixed(2);
+
+  // ---- table ----
+  const tbl = document.getElementById('volTable');
+  const span = (a, b) => a + '–' + b;
+  const fullSpan = span(d.sample[0].slice(0,4), d.sample[1].slice(0,4));
+  const tenSpan = span(String(+d.sample[1].slice(0,4) - 10), d.sample[1].slice(0,4));
+  function drawTable(s) {
+    let html = '<tr><th class="lbl">horizon, sample</th>' +
+      TEN.map(t => '<th>' + t + '</th>').join('') + '</tr>';
+    for (const h of H) {
+      html += '<tr><td class="lbl">' + h + (h === '1' ? ' month' : ' months') +
+        ', ' + (s === 'full' ? fullSpan : tenSpan) + '</td>' +
+        d.vol_table[h][s].map(v => '<td>' + v + '</td>').join('') + '</tr>';
+    }
+    tbl.innerHTML = html;
+  }
+  drawTable('full');
+  document.getElementById('tablePills').addEventListener('click', ev => {
+    const p = ev.target.closest('.pill'); if (!p) return;
+    document.querySelectorAll('#tablePills .pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active'); drawTable(p.dataset.s);
+  });
+  document.getElementById('tableMeta').textContent =
+    d.n_month_ends + ' month-ends, ' + d.n_pairs +
+    ' (s, \u2113) pairs. Updated ' + d.updated + '.';
+
+  // ---- smile + heatmap (shared sample toggle) ----
+  const shades = ['#9db8d2', '#5d84ad', accent, salmon];
+  function drawSmile(s) {
+    const traces = [];
+    H.forEach((h, i) => {
+      traces.push({x: TEN, y: d.vol_table[h][s], name: h + 'm horizon',
+        mode: 'lines+markers', line: {color: shades[i], width: 1.8},
+        marker: {size: 5}});
+      const f = d.hw_fit[h][s];
+      traces.push({x: TEN, y: f.fitted, name: h + 'm HW fit',
+        mode: 'lines', line: {color: shades[i], width: 1, dash: 'dot'},
+        showlegend: false, hoverinfo: 'skip'});
+    });
+    Plotly.newPlot('chart-smile', traces, Object.assign(mk('category'), {
+      yaxis: {gridcolor: '#eee', title: {text: 'bp per year', font: {size: 11}}}
+    }), cfg);
+    document.getElementById('smileMeta').textContent =
+      'Hull-White fits (dotted): ' + H.map(h => {
+        const f = d.hw_fit[h][s];
+        return h + 'm: a=' + f.a.toFixed(2) + ', \u03c3r=' + f.sig_r.toFixed(0) +
+          'bp, rmse ' + f.rmse.toFixed(1) + 'bp';
+      }).join(' \u00b7 ') + '. Poor short-horizon fits reflect the humped rows.';
+    Plotly.newPlot('chart-heat', [{
+      z: H.map(h => d.vol_table[h][s]), x: TEN, y: H.map(h => h + 'm'),
+      type: 'heatmap', colorscale: [[0, '#f2f5f9'], [0.5, '#7fa1c4'], [1, '#1F4E79']],
+      colorbar: {thickness: 10, len: 0.9}
+    }], mk('category'), cfg);
+  }
+  document.getElementById('heatMeta').textContent =
+    'Sample ' + d.sample[0] + ' to ' + d.sample[1] + ', ' + d.n_month_ends +
+    ' month-ends. Darker cells are higher realised vol.';
+  drawSmile('full');
+  document.getElementById('smilePills').addEventListener('click', ev => {
+    const p = ev.target.closest('.pill'); if (!p) return;
+    document.querySelectorAll('#smilePills .pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active'); drawSmile(p.dataset.s);
+  });
+
+  // ---- rolling ----
+  function drawRoll(w) {
+    const rw = d.rolling[w];
+    Plotly.newPlot('chart-roll', [
+      {x: rw.date, y: rw['2y'], name: '2y', line: {color: salmon, width: 1.6}},
+      {x: rw.date, y: rw['5y'], name: '5y', line: {color: '#5d84ad', width: 1.6}},
+      {x: rw.date, y: rw['10y'], name: '10y', line: {color: accent, width: 1.6}}
+    ], Object.assign(mk('date'), {hovermode: 'x unified',
+      yaxis: {gridcolor: '#eee', title: {text: 'bp per year', font: {size: 11}}}}), cfg);
+  }
+  drawRoll('12');
+  document.getElementById('rollPills').addEventListener('click', ev => {
+    const p = ev.target.closest('.pill'); if (!p) return;
+    document.querySelectorAll('#rollPills .pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active'); drawRoll(p.dataset.w);
+  });
+
+  // ---- probability plane ----
+  function drawPlane(s) {
+    const pl = d.plane[s];
+    const traces = [{
+      x: d.pairs.l, y: d.pairs.s, mode: 'markers', name: '12m moves',
+      marker: {size: 4, color: muted, opacity: 0.45}
+    }];
+    for (const p of Object.keys(pl.rings)) {
+      const ring = pl.rings[p];
+      traces.push({x: ring.l, y: ring.s, mode: 'lines',
+        name: Math.round(+p * 100) + '%',
+        line: {color: accent, width: p === '0.95' ? 1.8 : 1, dash: p === '0.5' ? 'solid' : 'dash'}});
+    }
+    traces.push({x: [d.plane.centre.l], y: [d.plane.centre.s], mode: 'markers',
+      name: 'latest 12m move', marker: {size: 10, color: salmon, symbol: 'diamond'}});
+    Plotly.newPlot('chart-plane', traces, Object.assign(mk('linear'), {
+      xaxis: {gridcolor: '#eee', title: {text: '\u2113 \u00b7 10y rate move, bp', font: {size: 11}}, zeroline: true, constrain: 'domain'},
+      yaxis: {gridcolor: '#eee', title: {text: 's \u00b7 3m rate move, bp', font: {size: 11}},
+              zeroline: true, scaleanchor: 'x', constrain: 'domain'}
+    }), cfg);
+    document.getElementById('planeMeta').textContent =
+      'Covariance (' + (s === 'full' ? 'full sample' : 'last ten years') + '): sd 3m move ' +
+      pl.sd_s + ' bp, sd 10y move ' + pl.sd_l + ' bp, correlation ' + pl.corr +
+      '. Rings at 50 / 75 / 90 / 95%.';
+  }
+  drawPlane('full');
+  document.getElementById('planePills').addEventListener('click', ev => {
+    const p = ev.target.closest('.pill'); if (!p) return;
+    document.querySelectorAll('#planePills .pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active'); drawPlane(p.dataset.s);
+  });
+
+  // ---- hypothetical swaption pricer ----
+  const SW = d.swaption;
+  let swSample = 'full';
+  const erf = x => {
+    const t = 1 / (1 + 0.3275911 * Math.abs(x));
+    const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t
+      - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+    return x >= 0 ? y : -y;
+  };
+  const Phi = x => 0.5 * (1 + erf(x / Math.SQRT2));
+  const phi = x => Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+  function bachelier(F, K, sig, T, A) {
+    const sd = sig * Math.sqrt(T);
+    if (sd <= 0) return {p: Math.max(F - K, 0) * A * 1e4, r: Math.max(K - F, 0) * A * 1e4};
+    const dd = (F - K) / sd;
+    const payer = A * ((F - K) * Phi(dd) + sd * phi(dd));
+    const recv = A * ((K - F) * Phi(-dd) + sd * phi(dd));
+    return {p: payer * 1e4, r: recv * 1e4};
+  }
+  function swRepresent() {
+    const em = document.getElementById('swExp').value;
+    const tau = document.getElementById('swTen').value;
+    const cell = SW.cells[em + 'm' + tau + 'y'];
+    const q = Math.max(0, +document.getElementById('swQ').value || 1);
+    const ov = parseFloat(document.getElementById('swVol').value);
+    const sigBp = (isFinite(ov) ? ov : cell['sig_' + swSample]) * q;
+    const F = cell.F / 100.0, T = em / 12.0, A = cell.A;
+    const K = F + (+document.getElementById('swK').value || 0) / 1e4;
+    const pr = bachelier(F, K, sigBp * 1e-4, T, A);
+    const put = (id, v) => document.getElementById(id).textContent = v;
+    put('swF', (F * 100).toFixed(2) + '%');
+    put('swKo', (K * 100).toFixed(2) + '%');
+    put('swS', sigBp.toFixed(0));
+    put('swA', A.toFixed(3));
+    put('swP', pr.p.toFixed(1));
+    put('swR', pr.r.toFixed(1));
+    // ATM grid under current sample + factor
+    let html = '<tr><th class="lbl">expiry \u2215 tenor</th>' +
+      SW.tenors_y.map(t => '<th>' + t + 'y</th>').join('') + '</tr>';
+    for (const e of SW.expiries_m) {
+      html += '<tr><td class="lbl">' + e + 'm</td>' + SW.tenors_y.map(t => {
+        const c = SW.cells[e + 'm' + t + 'y'];
+        const sg = c['sig_' + swSample] * q * 1e-4;
+        const atm = c.A * sg * Math.sqrt(e / 12.0) / Math.sqrt(2 * Math.PI) * 1e4;
+        return '<td>' + atm.toFixed(0) + '</td>';
+      }).join('') + '</tr>';
+    }
+    document.getElementById('swGrid').innerHTML = html;
+    let kh = '<tr><th class="lbl">expiry \u2215 tenor</th>' +
+      SW.tenors_y.map(t => '<th>' + t + 'y</th>').join('') + '</tr>';
+    for (const e of SW.expiries_m) {
+      kh += '<tr><td class="lbl">' + e + 'm</td>' + SW.tenors_y.map(t =>
+        '<td>' + SW.cells[e + 'm' + t + 'y'].F.toFixed(2) + '</td>').join('') + '</tr>';
+    }
+    document.getElementById('swStrikes').innerHTML = kh;
+    document.getElementById('swMeta').textContent =
+      'Realised forward-swap-rate vols computed from the month-end curve history ' +
+      '(sd of expiry-length changes of the forward par rate, annualised). ' +
+      'Q-adjustment \u00d7' + q.toFixed(2) + ' applied. Actuarial construction: ' +
+      'no traded PLN swaption is referenced.';
+  }
+  for (const id of ['swExp', 'swTen', 'swK', 'swQ', 'swVol']) {
+    document.getElementById(id).addEventListener('input', swRepresent);
+  }
+  document.getElementById('swPills').addEventListener('click', ev => {
+    const p = ev.target.closest('.pill'); if (!p) return;
+    document.querySelectorAll('#swPills .pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active'); swSample = p.dataset.s; swRepresent();
+  });
+  swRepresent();
+})();
+</script>
+
+</body>
+</html>

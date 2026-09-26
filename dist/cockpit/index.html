@@ -42,6 +42,7 @@
   .g-policy  { background: rgba(90,90,90,0.05); }
   .g-xm      { background: rgba(46,125,50,0.04); }
   .g-tr      { background: rgba(31,78,121,0.03); }
+  .g-vol     { background: rgba(60,110,90,0.04); }
   .g-liq     { background: rgba(194,82,45,0.03); }
   .g-meta    { background: rgba(90,90,90,0.03); }
   a.btile { display: block; background: #fff; border: 1px solid var(--rule);
@@ -98,6 +99,7 @@
     <a href="/cockpit/" class="active">cockpit</a>
     <a href="/curves/">curves</a>
     <a href="/term-premia/">term premia</a>
+    <a href="/vols/">vols</a>
     <a href="/oracle/">oracle</a>
     <a href="/mpc/">MPC</a>
     <a href="/liquidity/">liquidity</a>
@@ -137,6 +139,10 @@
     <div class="brow-head"><span class="brow-title">Total return · TBSP decomposition, quarterly</span><a class="brow-link" href="/total-return/">total return →</a></div>
   </div>
 
+  <div class="brow g-vol" id="row-vol">
+    <div class="brow-head"><span class="brow-title">Realised volatility · normal, bp per year</span><a class="brow-link" href="/vols/">vols →</a></div>
+  </div>
+
   <div class="brow g-liq" id="row-liq">
     <div class="brow-head"><span class="brow-title">Liquidity · BondSpot panel, monthly</span><a class="brow-link" href="/liquidity/">liquidity →</a></div>
   </div>
@@ -151,7 +157,7 @@
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
+    <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/vols/">Realised vols</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
         <li><a href="/slides/">Seminar decks</a></li>
         <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li></ul></div>
@@ -190,7 +196,7 @@
 })();
 </script>
 <script>
-let DATA = null, MPC = null, ORC = null, TR = null;
+let DATA = null, MPC = null, ORC = null, TR = null, VOL = null;
 
 const FLAGS = {
   pl: '<svg viewBox="0 0 15 11" width="14" height="10"><rect width="15" height="5.5" fill="#f5f5f5" stroke="#d0d0d0" stroke-width="0.5"/><rect y="5.5" width="15" height="5.5" fill="#dc143c"/></svg>',
@@ -218,6 +224,9 @@ function arrow(cur, prev, dec, unit, thr){
 }
 
 const TIPS = [
+  [/^12m vol/, 'Realised normal volatility: standard deviation of 12-month changes in the constant-maturity zero yield at this tenor, annualised, full sample from 2005. The sub-line is the 12-month rolling vol of one-month changes with its year-over-year change.'],
+  [/^12m move/, 'The realised change of this zero rate over the last twelve months, in basis points: one coordinate of the short-long probability plane on the vols tab.'],
+  [/^corr\(s/, 'Full-sample correlation between twelve-month moves of the 3m and 10y rates: the orientation of the Gaussian ellipses on the probability plane.'],
   [/^zero yield/, 'NSS-fitted zero-coupon spot rate at this tenor from the latest daily fit of the BondSpot bond panel, with the NBP bill rate anchoring the short end. The arrow is the day-over-day change in basis points.'],
   [/^2s10s/, '10y minus 2y zero yield, the classic curve-steepness gauge. Positive means an upward-sloping curve.'],
   [/^E\[avg short rate\]/, 'Expected average short rate over this horizon from the BRW bias-corrected decomposition: the risk-free leg of the yield once the term premium is stripped out. Weekly.'],
@@ -486,6 +495,28 @@ function rowTr(){
   el.innerHTML = h;
 }
 
+function rowVol(){
+  const el = document.getElementById('row-vol');
+  if (!VOL || !VOL.vol_table){ return; }
+  let h = el.innerHTML;
+  const t12 = VOL.vol_table['12'].full;
+  const rollSub = k => {
+    const r = VOL.rolling['12'][k];
+    const now = r[r.length - 1], ch = now - r[Math.max(0, r.length - 13)];
+    return 'rolling 12m ' + now.toFixed(0) + ' bp <span class="' +
+      (ch >= 0 ? 'dn' : 'up') + '">' + (ch >= 0 ? '▲+' : '▼−') +
+      Math.abs(ch).toFixed(0) + ' y/y</span>';
+  };
+  const c = VOL.plane.centre;
+  const mv = v => `<span class="${v >= 0 ? 'up' : 'dn'}">${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(0)} bp</span>`;
+  h += tile('/vols/', '12m vol · 2y tenor', t12[3].toFixed(0), rollSub('2y'));
+  h += tile('/vols/', '12m vol · 10y tenor', t12[7].toFixed(0), rollSub('10y'));
+  h += tile('/vols/', '12m move · 3m rate', mv(c.s), 'probability-plane coordinate s');
+  h += tile('/vols/', '12m move · 10y rate', mv(c.l), 'probability-plane coordinate ℓ');
+  h += tile('/vols/', 'corr(s, ℓ)', VOL.plane.full.corr.toFixed(2),
+    'sd ' + VOL.plane.full.sd_s.toFixed(0) + ' / ' + VOL.plane.full.sd_l.toFixed(0) + ' bp');
+  el.innerHTML = h;
+}
 function rowLiq(){
   const L = DATA.liquidity || {};
   const el = document.getElementById('row-liq');
@@ -550,8 +581,12 @@ async function load(){
     const r4 = await fetch('/data/tr_tiles.json?v=1');
     TR = await r4.json();
   } catch (e) { TR = null; }
+  try {
+    const r5 = await fetch('/data/vols_tiles.json?v=1');
+    VOL = await r5.json();
+  } catch (e) { VOL = null; }
   showBuildBadge();
-  rowCurve(); rowRf(); rowTp(); rowPolicy(); rowXm(); rowTr(); rowLiq(); rowMeta();
+  rowCurve(); rowRf(); rowTp(); rowPolicy(); rowXm(); rowTr(); rowVol(); rowLiq(); rowMeta();
 }
 load();
 </script>
