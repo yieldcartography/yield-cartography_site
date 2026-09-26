@@ -1699,7 +1699,7 @@ bindTableCsvButtons();
     <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/vols/">Realised vols</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
         <li><a href="/slides/">Seminar decks</a></li></ul></div>
-    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li><li><input id="betaCode" type="password" placeholder="beta access code" autocomplete="off" style="font-family:var(--mono);font-size:10.5px;padding:4px 8px;border:1px solid var(--rule);border-radius:4px;background:transparent;color:inherit;width:130px;margin-top:6px"></li></ul></div>
   </div>
   <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>
 </footer>
@@ -1715,5 +1715,6 @@ fetch('/data/yields.json', {cache:'no-store'}).then(r=>r.json()).then(d=>{
 });
 </script>
 
+<script src="/assets/betagate.js?v=1" defer></script>
 </body>
 </html>

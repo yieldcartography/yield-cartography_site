@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<script>
+(function(){
+  'use strict';
+  var ok=false; try{ ok=localStorage.getItem('yc_beta')==='1'; }catch(e){}
+  if(ok) return;
+  document.documentElement.style.visibility='hidden';
+  document.addEventListener('DOMContentLoaded', function(){
+    document.body.innerHTML='<div style="max-width:420px;margin:18vh auto;padding:26px;'+
+      'border:1px solid #ddd;border-radius:8px;font-family:ui-monospace,monospace;text-align:center">'+
+      '<div style="font-size:13px;letter-spacing:1px;margin-bottom:14px">LT · BETA</div>'+
+      '<input id="ltGate" type="password" placeholder="beta access code" autocomplete="off" '+
+      'style="font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid #ccc;'+
+      'border-radius:4px;width:220px;text-align:center">'+
+      '<div style="font-size:10px;color:#999;margin-top:12px"><a href="/" style="color:#999">← yieldcartography</a></div></div>';
+    document.documentElement.style.visibility='visible';
+    var b=document.getElementById('ltGate');
+    b.focus();
+    b.addEventListener('keydown', function(ev){
+      if(ev.key!=='Enter') return;
+      if(b.value.trim().toLowerCase()==='beta'){
+        try{ localStorage.setItem('yc_beta','1'); }catch(e){}
+        location.reload();
+      } else { b.value=''; b.placeholder='no'; setTimeout(function(){b.placeholder='beta access code';},1200); }
+    });
+  });
+})();
+</script>
+<title>LT — yieldcartography</title>
+<meta name="description" content="Long-term extrapolation of the Polish sovereign curve to 100 years under the EIOPA Solvency II methodology: Smith-Wilson, UFR 3.30%, LLP 10 years, convergence at 60 years.">
+<link rel="stylesheet" href="/assets/style.css?v=9">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://yieldcartography.com/lt/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Long-term curve (EIOPA methodology) — yieldcartography">
+<meta property="og:description" content="Smith-Wilson extrapolation of the Polish sovereign curve to 100 years: UFR 3.30%, LLP 10y, convergence at 60y.">
+<meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yieldcartography.com/lt/">
+<meta property="og:site_name" content="yieldcartography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Long-term curve (EIOPA methodology) — yieldcartography">
+<meta name="twitter:description" content="Smith-Wilson extrapolation of the Polish sovereign curve to 100 years.">
+<meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<style>
+  .plot-frame { width: 100%; height: 400px; }
+  .small-note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.3px; margin: 6px 0 0 0; }
+  details.intro { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 0 0 18px 0; }
+  details.intro > summary { cursor: pointer; font-family: var(--mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+  details.intro p, details.intro li { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0; }
+  details.intro h4 { margin: 12px 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); font-family: var(--mono); }
+  details.intro table.glossary { border-collapse: collapse; width: 100%; margin: 4px 0 6px 0; }
+  details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
+  details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 130px; white-space: nowrap; }
+  .note-amber { background: #fdf6e3; border: 1px solid #e6c877; border-left: 3px solid #d9a520; border-radius: 4px; padding: 10px 14px; color: #7a5c10; }
+</style>
+<script src="/assets/figtools.js?v=1" defer></script>
+<script src="/assets/promo.js?v=5" defer></script>
+<script src="/assets/search.js?v=1" defer></script>
+</head>
+<body data-fig-source-default="Author's own calculations: Smith-Wilson extrapolation per the EIOPA Solvency II methodology (RFR Technical Documentation EIOPA-BoS-25-599) applied to the LW-NSS zero-coupon curve built from Treasury BondSpot Poland fixings and NBP reference rates."
+ data-fig-cite-default="Dec, M. (2026). Parsimonious Yield Curve Modeling in Less-Liquid Markets. FAME|GRAPE Working Paper #53.">
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <nav>
+    <a href="/cockpit/">cockpit</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/vols/">vols</a>
+    <a href="/oracle/">oracle</a>
+    <a href="/mpc/">MPC</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/total-return/">total return</a>
+    <a href="/eh-tests/">EH tests</a>
+    <a href="/shorts/">shorts</a>
+    <a href="/movies/">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main>
+
+  <h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Long-term curve — EIOPA methodology to 100 years</h1>
+  <p style="color:var(--muted);margin:0 0 18px 0;font-size:13px">The daily LW-NSS Polish sovereign curve extrapolated to 100 years with the Smith-Wilson method under the EIOPA Solvency II parameter set for the zloty: Ultimate Forward Rate 3.30%, Last Liquid Point 10 years, convergence of the forward intensity to the UFR within 1 bp at 60 years. EIOPA itself derives the PLN risk-free curve from government bonds, the same market this site's curve fits.</p>
+
+  <div class="stats" style="margin-top:18px">
+    <div class="stat"><div class="label">UFR (PLN, 2026-27)</div><div class="value" id="stat-ufr">—</div><div class="delta">EIOPA, annual comp</div></div>
+    <div class="stat"><div class="label">Last Liquid Point</div><div class="value" id="stat-llp">—</div><div class="delta">years, EIOPA DLT</div></div>
+    <div class="stat"><div class="label">Zero 60y</div><div class="value" id="stat-y60">—</div><div class="delta">% annual comp</div></div>
+    <div class="stat"><div class="label">Zero 100y</div><div class="value" id="stat-y100">—</div><div class="delta">% annual comp</div></div>
+    <div class="stat"><div class="label">CRA applied</div><div class="value" id="stat-cra">—</div><div class="delta" id="stat-cra-src">bp, EIOPA monthly file</div></div>
+  </div>
+
+  <details class="intro">
+    <summary>How to read this page (methodology and glossary)</summary>
+    <p>EIOPA's Solvency II risk-free term structures extrapolate beyond the Last Liquid Point with the Smith-Wilson method: liquid market rates up to the LLP are fitted exactly, and the forward intensity converges to the Ultimate Forward Rate, a long-term macro equilibrium equal to an expected real rate (common to all currencies, from a 1961-onward average) plus the currency's expected inflation (the central bank target mapped into buckets). For the zloty the applicable UFR is 3.30% for 2026 and 2027, the LLP is 10 years, and the convergence point is max(LLP+40, 60) = 60 years with a 1 bp tolerance on the forward intensity; the speed parameter &alpha; is the lowest value (&ge; 0.05) meeting that tolerance. This page applies exactly that machinery to the LW-NSS curve: zero rates at tenors 1 to 10 years are converted to annual compounding, fitted exactly, and extrapolated.</p>
+    <p class="note-amber"><b>What this is not:</b> the official EIOPA PLN risk-free structure. The credit-risk adjustment from EIOPA's latest monthly file (currently 10 bp for the zloty) is deducted from the inputs as the Technical Documentation prescribes, and the official end-of-month EIOPA curve is overlaid for comparison, but EIOPA's bond inputs and monthly snapshot differ from the daily BondSpot fixings behind the LW-NSS fit. Treat the blue curve as the EIOPA methodology applied to this site's curve on today's data; the salmon overlay is the official structure at its own, older, month-end date.</p>
+    <h4>Glossary</h4>
+    <table class="glossary">
+      <tr><td class="code">UFR</td><td>Ultimate Forward Rate: expected real rate plus expected inflation, reviewed annually with a 15 bp annual change cap. PLN 3.30% (inflation bucket 2%, as for the euro; the NBP target is 2.5% &plusmn; 1 pp).</td></tr>
+      <tr><td class="code">LLP</td><td>Last Liquid Point: the longest maturity whose market EIOPA's DLT assessment deems deep, liquid and transparent. PLN: 10 years, from government bonds.</td></tr>
+      <tr><td class="code">Smith-Wilson</td><td>Exact-fit interpolation and extrapolation on discount factors, with a kernel controlled by &alpha; and an asymptotic forward intensity of ln(1+UFR).</td></tr>
+      <tr><td class="code">convergence</td><td>The forward intensity must be within 1 bp of the UFR at year 60; &alpha; is the smallest value (&ge; 0.05) achieving this.</td></tr>
+      <tr><td class="code">forward intensity</td><td>The instantaneous forward rate implied by the extrapolated discount curve, shown annualised.</td></tr>
+    </table>
+  </details>
+
+  <div class="panel" style="margin-bottom:18px">
+    <h3 style="margin:0 0 6px 0">Zero curve to 100 years</h3>
+    <p class="note">All coloured lines except the salmon one are this site's curve, drawn from one month of maturity, where EIOPA's official structure only begins at one year. Green: the LW-NSS zeros repriced exactly by Smith-Wilson up to the 10y LLP and extrapolated beyond it under the EIOPA parameters. Blue: the Smith-Wilson extrapolation beyond the LLP under the EIOPA parameters. Dotted: the same NSS parameters evaluated past 10y on their own functional form, with no regulatory anchor. Light-blue dash-dot: this site's curve on the EIOPA snapshot date, run through the identical CRA + Smith-Wilson recipe, so its gap to the salmon line isolates the bond-basket difference. Salmon: the official EIOPA PLN structure (no VA) from the latest monthly file. Annual compounding, percent.</p>
+    <div id="chart-zero" class="plot-frame"></div>
+  </div>
+
+  <div class="panel" style="margin-bottom:18px">
+    <h3 style="margin:0 0 6px 0">Forward intensity and the glide to the UFR</h3>
+    <p class="note">The instantaneous forward rate of the extrapolated curve. By construction it reaches the UFR within 1 bp at year 60 and stays there.</p>
+    <div id="chart-fwd" class="plot-frame"></div>
+  </div>
+
+  <div class="panel" style="margin-bottom:18px" data-fig-source="Author's own calculations against 48 official EIOPA monthly RFR files (August 2022 to July 2026), LW-NSS fits on Treasury BondSpot Poland fixings and NBP reference rates, both curves post-CRA, annual compounding.">
+    <h3 style="margin:0 0 6px 0">Why our curve differs from EIOPA's: a 48-month decomposition</h3>
+    <p class="note">The LW-NSS curve is glued to the money market: its short end is anchored to the NBP reference rate and fitted through the full BondSpot bond panel. EIOPA's official PLN structure effectively lets the first twelve months of the curve go unobserved, since its shortest input is the 1y benchmark bond, an instrument that persistently trades rich on switch-auction buybacks and bank collateral demand. Across the 48 month-ends from August 2022 to July 2026 (CRA at 10 bp throughout), that difference in short-end treatment costs on average <b>+38 bp at the 1y point</b> (ranging from +18 to +84 bp, widest during the 2025 short-bond squeeze). Substituting EIOPA's 1y rate for our first year while keeping our forwards shows how the effect propagates: it accounts for about <b>19 bp of the average 16 bp gap at 2y</b> (fully explaining it), <b>8 of the 15 bp at 5y</b>, but only <b>4 of the 21 bp at 10y</b>, where a steady basis of roughly 17 bp remains, attributable to the different bond baskets, venues and quote times behind the 10y input. During squeeze episodes the richness of EIOPA's inputs extends visibly to the 2y benchmark as well. Neither treatment is an error: EIOPA prioritises quote availability at benchmark tenors, the LW-NSS fit prioritises consistency with the policy rate and the full traded cross-section.</p>
+  </div>
+
+  <p class="small-note">Parameter sources: EIOPA, Report on the Calculation of the UFR for 2027 (30 March 2026); EIOPA RFR Technical Documentation EIOPA-BoS-25-599 (October 2025), Tables 2 and 7 and Section 9.4. Curve input: latest daily LW-NSS fit.</p>
+
+  <p class="small-note" style="margin-top:18px">Source-by-source observation timestamps for every input feeding this page are listed in the <a href="/#freshness">Data lineage &amp; freshness</a> block on the landing page.</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/vols/">Realised vols</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
+        <li><a href="/slides/">Seminar decks</a></li>
+        <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li><li><input id="betaCode" type="password" placeholder="beta access code" autocomplete="off" style="font-family:var(--mono);font-size:10.5px;padding:4px 8px;border:1px solid var(--rule);border-radius:4px;background:transparent;color:inherit;width:130px;margin-top:6px"></li></ul></div>
+  </div>
+  <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>
+</footer>
+
+<script>
+(async function () {
+  const r = await fetch('/data/lt_tiles.json');
+  const d = await r.json();
+  const css = getComputedStyle(document.documentElement);
+  const accent = css.getPropertyValue('--accent').trim() || '#1F4E79';
+  const salmon = css.getPropertyValue('--salmon').trim() || '#C2522D';
+  const ink = css.getPropertyValue('--ink').trim() || '#222';
+  const mk = () => ({ margin: {l: 46, r: 12, t: 8, b: 36},
+    paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+    font: {family: 'inherit', size: 11.5, color: ink},
+    legend: {orientation: 'h', y: 1.12, font: {size: 10.5}, itemwidth: 30}, hovermode: 'x unified',
+    xaxis: {gridcolor: '#eee', type: 'linear', title: {text: 'maturity, years', font: {size: 11}}, dtick: 10},
+    yaxis: {gridcolor: '#eee', ticksuffix: '%'} });
+  const cfg = { displayModeBar: false, responsive: true };
+
+  const put = (id, v) => document.getElementById(id).textContent = v;
+  put('stat-ufr', d.params.ufr_pct.toFixed(2) + '%');
+  put('stat-llp', d.params.llp + 'y');
+  put('stat-y60', d.landmarks.y60.toFixed(2));
+  put('stat-y100', d.landmarks.y100.toFixed(2));
+  if (d.params.cra_bp !== null && d.params.cra_bp !== undefined) {
+    put('stat-cra', d.params.cra_bp.toFixed(0));
+    if (d.eiopa && d.eiopa.meta) document.getElementById('stat-cra-src').textContent =
+      'bp, EIOPA file as of ' + d.eiopa.meta.asof;
+  }
+
+  const ufrLine = {x: [0, 100], y: [d.params.ufr_pct, d.params.ufr_pct],
+    mode: 'lines', name: 'UFR 3.30%', line: {color: salmon, width: 1, dash: 'dot'}};
+
+  Plotly.newPlot('chart-zero', [
+    {x: d.grid, y: d.zero_pct, name: 'LW-NSS + SW (' + d.asof + ')', mode: 'lines',
+     line: {color: '#2e7d32', width: 2.3}},
+  ].concat(d.matched ? [{x: d.grid, y: d.matched.zero_pct,
+     name: 'LW-NSS + SW (' + d.matched.asof + ')',
+     mode: 'lines', line: {color: '#7fa1c4', width: 1.6, dash: 'dashdot'}}] : [])
+   .concat(d.eiopa ? [{x: d.eiopa.curve.maturity, y: d.eiopa.curve.spot_pct,
+     name: 'EIOPA (' + d.eiopa.meta.asof + ')',
+     mode: 'lines', line: {color: salmon, width: 1.6, dash: 'dash'}}] : [])
+   .concat([ufrLine]), mk(), cfg);
+
+  Plotly.newPlot('chart-fwd', [
+    {x: d.grid, y: d.fwd_pct, name: 'forward intensity (' + d.asof + ')', mode: 'lines',
+     line: {color: '#2e7d32', width: 2.2}},
+    ufrLine
+  ], mk(), cfg);
+})();
+</script>
+
+<script src="/assets/betagate.js?v=1" defer></script>
+</body>
+</html>
