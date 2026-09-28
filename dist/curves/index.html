@@ -150,11 +150,13 @@
     <div class="panel-head-row">
       <h3 style="margin:0">Zero-coupon curve and bond panel</h3>
       <div>
+        <button class="csv-btn" id="viewZC" style="font-weight:700">Zero-coupon</button>
+        <button class="csv-btn" id="viewRC">Rich / Cheap</button>
         <button class="csv-btn" id="csvCurve">CSV — fitted curve</button>
         <button class="csv-btn" id="csvBonds">CSV — bond panel</button>
       </div>
     </div>
-    <p class="note">NSS fit (solid line) with the underlying coupon-bond panel as bubbles, sized by outstanding amount. Salmon dots are long-end bonds (&gt;7y), dark blue is the belly (1.5–7y), grey is the short end. Whiskers show the bid/offer fixing yields around the mid; the thin grey line is a polynomial fit through the bond YTMs (the "YTM curve", as distinct from the fitted zero-coupon curve). Click any bond row in the table below to highlight it on the curve and show its YTM history.</p>
+    <p class="note">NSS fit (solid line) with the underlying coupon-bond panel as bubbles, sized by outstanding amount. Salmon dots are long-end bonds (&gt;7y), dark blue is the belly (1.5–7y), grey is the short end. Whiskers show the bid/offer fixing yields around the mid; the thin grey background line is a degree-5 polynomial fit through the bond YTMs and the NBP point (the "YTM curve", as distinct from the fitted zero-coupon curve). The <b>Rich / Cheap</b> view keeps the same chart but promotes the YTM poly to the reference line and colours each bond by its residual: red = rich (YTM below the poly), green = cheap. Click any bond row in the table below to highlight it on the curve and show its YTM history.</p>
     <div id="snapCurve" class="plot-frame huge"></div>
     <div class="legend-inline">
       <span><span class="swatch" style="background:var(--accent);"></span>NSS fit</span>
@@ -387,6 +389,14 @@ function buildSlider(){
     draw();
   }
   slider.addEventListener('input', e => setIdx(+e.target.value));
+  const _setView = v => {
+    CURVE_VIEW = v;
+    document.getElementById('viewZC').style.fontWeight = v==='zc' ? '700' : '400';
+    document.getElementById('viewRC').style.fontWeight = v==='rc' ? '700' : '400';
+    if (LAST_SNAP) drawSnapCurve(LAST_SNAP);
+  };
+  document.getElementById('viewZC').addEventListener('click', () => _setView('zc'));
+  document.getElementById('viewRC').addEventListener('click', () => _setView('rc'));
   if (btnPrev)   btnPrev.addEventListener('click',   () => setIdx(curIdx - 1));
   if (btnNext)   btnNext.addEventListener('click',   () => setIdx(curIdx + 1));
   if (btnLatest) btnLatest.addEventListener('click', () => setIdx(DATA.snaps.length - 1));
@@ -566,18 +576,25 @@ function _unused_drawFreshness(){
   el.innerHTML = html;
 }
 
-function polyFitYtm(bonds, xmax){
-  // cubic OLS through the bond (ttm, ytm) cloud — the "YTM curve" as
-  // distinct from the fitted zero-coupon curve; degree 2 when few bonds
-  const pts = bonds.filter(b => b.ttm != null && b.ytm != null);
+function polyFitYtm(bonds, nbp){
+  // OLS polynomial through the bond (ttm, ytm) cloud PLUS the NBP anchor
+  // point — the "YTM curve" as distinct from the fitted zero-coupon curve.
+  // Degree 5 when the cross-section allows, lower for thin snapshots.
+  // x is normalised to [0,1] before fitting: degree-5 normal equations on
+  // raw maturities up to 12y are numerically ill-conditioned.
+  const pts = bonds.filter(b => b.ttm != null && b.ytm != null)
+                   .map(b => ({ttm: b.ttm, ytm: b.ytm}));
+  if (nbp != null) pts.push({ttm: 0.02, ytm: nbp});
   if (pts.length < 4) return null;
-  const deg = pts.length < 7 ? 2 : 3;
+  const deg = pts.length >= 10 ? 5 : pts.length >= 7 ? 3 : 2;
+  const tmax = Math.max.apply(null, pts.map(b=>b.ttm));
+  pts.forEach(b => { b.tn = b.ttm / tmax; });
   const n = deg + 1;
   const A = Array.from({length:n},()=>new Array(n).fill(0));
   const v = new Array(n).fill(0);
   pts.forEach(b=>{
     const px = []; let p = 1;
-    for (let i = 0; i < n; i++){ px.push(p); p *= b.ttm; }
+    for (let i = 0; i < n; i++){ px.push(p); p *= b.tn; }
     for (let i = 0; i < n; i++){
       v[i] += px[i]*b.ytm;
       for (let j = 0; j < n; j++) A[i][j] += px[i]*px[j];
@@ -596,49 +613,81 @@ function polyFitYtm(bonds, xmax){
     }
   }
   const coef = v.map((val,i)=>val/A[i][i]);
-  const tmin = Math.min.apply(null, pts.map(b=>b.ttm));
-  const tmaxb = Math.max.apply(null, pts.map(b=>b.ttm));
-  const xs = [], ys = [];
-  for (let t = tmin; t <= tmaxb + 1e-9; t += (tmaxb - tmin)/80){
+  const f = t => {
     let y = 0, p = 1;
-    for (let i = 0; i < n; i++){ y += coef[i]*p; p *= t; }
-    xs.push(t); ys.push(y);
+    const tn = t / tmax;
+    for (let i = 0; i < n; i++){ y += coef[i]*p; p *= tn; }
+    return y;
+  };
+  const tmin = Math.min.apply(null, pts.map(b=>b.ttm));
+  const xs = [], ys = [];
+  for (let t = tmin; t <= tmax + 1e-9; t += (tmax - tmin)/100){
+    xs.push(t); ys.push(f(t));
   }
-  return {xs, ys, deg};
+  return {xs, ys, deg, f};
 }
+let CURVE_VIEW = 'zc';
+let LAST_SNAP = null;
 
 function drawSnapCurve(s){
+  LAST_SNAP = s;
+  const rc = CURVE_VIEW === 'rc';
   const grid = curveGrid();
   const yfit = grid.map(t => nss_y(t, s.beta0, s.beta1, s.beta2, s.beta3, s.tau1, s.tau2)*100);
   const traces = [];
-  traces.push({ x: grid, y: yfit, mode:'lines', line:{color:PALETTE.accent,width:2.6}, name:'NSS', hovertemplate:'%{x:.2f}y · %{y:.2f}%<extra></extra>', showlegend:false });
+  const pf = (s.bonds && s.bonds.length) ? polyFitYtm(s.bonds, s.nbp) : null;
+  // background first: YTM poly (thin grey in ZC view, bold accent in R/C view)
+  if (pf) traces.push({ x: pf.xs, y: pf.ys, mode:'lines',
+    line:{color: rc ? PALETTE.accent : '#9a9a9a', width: rc ? 2.6 : 1.6},
+    name:'YTM poly', hovertemplate:'YTM poly (deg '+pf.deg+') %{x:.2f}y · %{y:.2f}%<extra></extra>',
+    showlegend:false });
+  traces.push({ x: grid, y: yfit, mode:'lines',
+    line:{color: rc ? '#c9c9c9' : PALETTE.accent, width: rc ? 1.6 : 2.6},
+    name:'NSS', hovertemplate:'%{x:.2f}y · %{y:.2f}%<extra></extra>', showlegend:false });
   if (s.bonds && s.bonds.length){
-    const pf = polyFitYtm(s.bonds);
-    if (pf) traces.push({ x: pf.xs, y: pf.ys, mode:'lines',
-      line:{color:'#9a9a9a', width:1.8, dash:'solid'},
-      name:'YTM poly', hovertemplate:'YTM poly (deg '+pf.deg+') %{x:.2f}y · %{y:.2f}%<extra></extra>',
-      showlegend:false });
-    const buckets = { short:[], belly:[], long:[] };
-    s.bonds.forEach(b => { const c=segClass(b.segment, b.ttm); const k=c==='seg-belly'?'belly':c==='seg-long'?'long':'short'; buckets[k].push(b); });
-    const map = { short:{color:PALETTE.short}, belly:{color:PALETTE.accent}, long:{color:PALETTE.salmon} };
-    Object.keys(buckets).forEach(k=>{
-      const arr = buckets[k]; if(!arr.length) return;
-      const sizes = arr.map(b => Math.max(8, Math.min(34, Math.sqrt(Math.max(0,b.out||0))*3.0)));
-      const opacities = arr.map(b => selectedISIN && b.isin===selectedISIN ? 1.0 : 0.6);
-      // bid/ask whiskers from the fixing: rent_k (bid side, higher yield)
-      // and rent_s (offer side, lower yield) around the mid fixing YTM
+    const bsize = b => Math.max(6, Math.min(24, Math.sqrt(Math.max(0,b.out||0))*2.2));
+    const hover = b => `<b>${b.name}</b> · ${b.isin}<br>TTM ${b.ttm.toFixed(2)}y · YTM ${b.ytm.toFixed(2)}%`+
+      (pf && b.ytm!=null ? `<br>R/C vs YTM poly ${((b.ytm - pf.f(b.ttm))*100).toFixed(0)} bp (+ = cheap)` : '')+
+      (b.yk!=null&&b.ys!=null?`<br>bid/offer yield ${b.yk.toFixed(2)}% / ${b.ys.toFixed(2)}%`:'')+
+      `<br>Outstanding ${(b.out||0).toFixed(1)} PLNbn · BondSpot ${(b.tov_bs||0).toFixed(0)} PLNmln · Min-Fin ${b.tov_mf==null?'n/a':b.tov_mf.toFixed(1)+' PLNbn'}`;
+    const wsk = arr => {
       const up   = arr.map(b => (b.yk!=null && b.ytm!=null) ? Math.max(0, Math.max(b.yk,b.ys??b.yk) - b.ytm) : 0);
       const down = arr.map(b => (b.ys!=null && b.ytm!=null) ? Math.max(0, b.ytm - Math.min(b.ys,b.yk??b.ys)) : 0);
-      const hasBA = up.some(v=>v>0) || down.some(v=>v>0);
+      return {up, down, has: up.some(v=>v>0) || down.some(v=>v>0)};
+    };
+    if (!rc){
+      const buckets = { short:[], belly:[], long:[] };
+      s.bonds.forEach(b => { const c=segClass(b.segment, b.ttm); const k=c==='seg-belly'?'belly':c==='seg-long'?'long':'short'; buckets[k].push(b); });
+      const map = { short:{color:PALETTE.short}, belly:{color:PALETTE.accent}, long:{color:PALETTE.salmon} };
+      Object.keys(buckets).forEach(k=>{
+        const arr = buckets[k]; if(!arr.length) return;
+        const w = wsk(arr);
+        traces.push({ x: arr.map(b=>b.ttm), y: arr.map(b=>b.ytm), mode:'markers',
+          error_y: w.has ? {type:'data', symmetric:false, array:w.up, arrayminus:w.down,
+            color:map[k].color, thickness:1.1, width:4, opacity:0.55} : undefined,
+          marker:{size:arr.map(bsize), color:map[k].color,
+            opacity:arr.map(b => selectedISIN && b.isin===selectedISIN ? 1.0 : 0.6),
+            line:{color:'#fff',width:1}},
+          text: arr.map(hover), hoverinfo:'text', showlegend:false });
+      });
+    } else {
+      // Rich/Cheap view: one trace, red-green scale on the residual vs the
+      // YTM poly (red = rich, YTM below the curve; green = cheap)
+      const arr = s.bonds.filter(b => b.ttm!=null && b.ytm!=null);
+      const resid = arr.map(b => pf ? (b.ytm - pf.f(b.ttm))*100 : 0);   // bp
+      const lim = Math.max(5, Math.min(40, Math.max.apply(null, resid.map(Math.abs))));
+      const w = wsk(arr);
       traces.push({ x: arr.map(b=>b.ttm), y: arr.map(b=>b.ytm), mode:'markers',
-        error_y: hasBA ? {type:'data', symmetric:false, array:up, arrayminus:down,
-          color:map[k].color, thickness:1.1, width:4, opacity:0.55} : undefined,
-        marker:{size:sizes, color:map[k].color, opacity:opacities, line:{color:'#fff',width:1}},
-        text: arr.map(b => `<b>${b.name}</b> · ${b.isin}<br>TTM ${b.ttm.toFixed(2)}y · YTM ${b.ytm.toFixed(2)}%`+
-          (b.yk!=null&&b.ys!=null?`<br>bid/offer yield ${b.yk.toFixed(2)}% / ${b.ys.toFixed(2)}%`:'')+
-          `<br>Outstanding ${(b.out||0).toFixed(1)} PLNbn · BondSpot ${(b.tov_bs||0).toFixed(0)} PLNmln · Min-Fin ${b.tov_mf==null?'n/a':b.tov_mf.toFixed(1)+' PLNbn'}`),
-        hoverinfo:'text', showlegend:false });
-    });
+        error_y: w.has ? {type:'data', symmetric:false, array:w.up, arrayminus:w.down,
+          color:'#aaa', thickness:1.1, width:4, opacity:0.6} : undefined,
+        marker:{size:arr.map(bsize), color:resid, cmin:-lim, cmax:lim,
+          colorscale:[[0,'#b02418'],[0.35,'#e08214'],[0.5,'#f2efe9'],[0.65,'#a6bd6f'],[1,'#1e7d32']],
+          opacity:arr.map(b => selectedISIN && b.isin===selectedISIN ? 1.0 : 0.85),
+          line:{color:'#999',width:0.8},
+          colorbar:{thickness:9, len:0.55, x:1.005, tickfont:{size:9},
+                    title:{text:'bp<br>+cheap<br>−rich', font:{size:9}}}},
+        text: arr.map(hover), hoverinfo:'text', showlegend:false });
+    }
   }
   if (s.nbp != null) traces.push({ x:[0.05], y:[s.nbp], mode:'markers', marker:{symbol:'diamond', size:13, color:PALETTE.green, line:{color:'#fff',width:1}}, hovertemplate:`NBP reference ${s.nbp.toFixed(2)}%<extra></extra>`, showlegend:false });
   const lay = JSON.parse(JSON.stringify(PLOT_BASE));
