@@ -56,10 +56,13 @@ def nss_zero_pct(tau, row):
 
 
 def fwd_1y(row, t_start):
-    """1-year forward starting at t_start, in percent."""
+    """1-year forward starting at t_start, in percent. Exact under the
+    fitter's annual-compounding zeros: 1+f = (1+z2)^(t+1)/(1+z1)^t
+    (the old additive z2(t+1)-z1*t is exact only for continuous
+    compounding; 2026-09-28 compounding audit)."""
     z1 = nss_y(t_start,     row.beta0, row.beta1, row.beta2, row.beta3, row.tau1, row.tau2)
     z2 = nss_y(t_start + 1, row.beta0, row.beta1, row.beta2, row.beta3, row.tau1, row.tau2)
-    f = z2 * (t_start + 1) - z1 * t_start
+    f = (1.0 + z2) ** (t_start + 1) / (1.0 + z1) ** t_start - 1.0
     return f * 100
 
 
@@ -551,13 +554,19 @@ def _build_eh():
 
 
 def _nearest_full(df, d):
+    """US/EA curve at nearest prior date, converted from the continuously
+    compounded decimals stored in gsw_us.csv / ecb_ea.csv to ANNUAL
+    compounding (y_ann = e^y_cc - 1), so the snapshot overlay is
+    like-for-like with the PL curve quoted from the fitter's AC zeros
+    (2026-09-28 compounding audit; the raw overlay understated US/EA by
+    ~y^2/2, up to ~25-30bp in 2022-23)."""
     if df is None or df.empty:
         return None
     sub = df[df['date'] <= d]
     if sub.empty:
         return None
     row = sub.iloc[-1]
-    return [round(float(row[c]) * 100, 4) if c in row and pd.notna(row[c]) else None for c in TENOR_COLS]
+    return [round((np.expm1(float(row[c]))) * 100, 4) if c in row and pd.notna(row[c]) else None for c in TENOR_COLS]
 
 
 def _nearest_fwd(df, d):

@@ -245,7 +245,9 @@ function nssZero(x){
   return b0+b1*f1+b2*f2+b3*f3;
 }
 function makeP(shiftBp){
-  return x=>{ x=Math.max(x,1e-6); return Math.exp(-(nssZero(x)+shiftBp/1e4)*x); };
+  // annual-compounding discounting: the LW-NSS params are the fitter's AC
+  // zeros, DF = (1+y)^-x (2026-09-28 compounding audit)
+  return x=>{ x=Math.max(x,1e-6); return Math.pow(1+nssZero(x)+shiftBp/1e4, -x); };
 }
 function fwdPar(P,t,tau){
   let ann=0; for(let i=1;i<=tau;i++) ann+=P(t+i);
@@ -376,7 +378,7 @@ function snapDuration(i){
   const z=x=>{const x1=x/t1,x2=x/t2,f1=(1-Math.exp(-x1))/x1,
     f2=f1-Math.exp(-x1),f3=(1-Math.exp(-x2))/x2-Math.exp(-x2);
     return b0+b1*f1+b2*f2+b3*f3;};
-  const P=x=>Math.exp(-z(Math.max(x,1e-6))*x);
+  const P=x=>Math.pow(1+z(Math.max(x,1e-6)),-x);   // annual-comp (audit 2026-09-28)
   const snapT=Date.parse(LH.dates[i]);
   const yFrac=(y,m)=>(Date.UTC(y,m-1,25)-snapT)/(365.25*864e5);
   const out=LH.out[i];
@@ -454,7 +456,7 @@ function simLadderSeries(pos){
 function simDuration(pos,shiftBp){
   const {v0,book}=pos;
   const z=x=>nssZero(Math.max(x,1e-6))+shiftBp/1e4;
-  const P=x=>Math.exp(-z(x)*x);
+  const P=x=>Math.pow(1+z(x),-x);                  // annual-comp (audit 2026-09-28)
   let pv=0,td=0;
   for(const b of book){
     for(let q=b.matQ;q>v0-1;q-=4){
