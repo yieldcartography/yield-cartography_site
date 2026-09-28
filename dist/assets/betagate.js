@@ -1,9 +1,10 @@
-/* betagate.js v2 — soft beta gate for unreleased (experimental) tabs.
+/* betagate.js v3 — soft beta gate for unreleased (experimental) tabs.
    A small code box sits in the footer Contact column on every page. Typing
    the current beta code unlocks the experimental tabs (flag in localStorage)
    and reloads the page. While unlocked, the experimental tabs appear in the
-   main nav marked with an asterisk. Client-side convenience gate, not
-   security. */
+   main nav marked with an asterisk, and their landing-page cards
+   ([data-beta-card], hidden by default) are revealed. Client-side
+   convenience gate, not security. */
 (function () {
   'use strict';
   var CODE = 'beta';
@@ -32,8 +33,13 @@
     });
   }
 
+  function revealCards() {
+    var cards = document.querySelectorAll('[data-beta-card]');
+    for (var i = 0; i < cards.length; i++) cards[i].style.display = '';
+  }
+
   function init() {
-    if (unlocked()) addNavTabs();
+    if (unlocked()) { addNavTabs(); revealCards(); }
     var box = document.getElementById('betaCode');
     if (!box) return;
     if (unlocked()) {
