@@ -6,19 +6,20 @@
 <meta name="robots" content="noindex, nofollow">
 <script>
 (function(){
+  'use strict';
   var ok=false; try{ ok=localStorage.getItem('yc_beta')==='1'; }catch(e){}
   if(ok) return;
   document.documentElement.style.visibility='hidden';
   document.addEventListener('DOMContentLoaded', function(){
     document.body.innerHTML='<div style="max-width:420px;margin:18vh auto;padding:26px;'+
       'border:1px solid #ddd;border-radius:8px;font-family:ui-monospace,monospace;text-align:center">'+
-      '<div style="font-size:13px;letter-spacing:1px;margin-bottom:14px">DEBT \u00b7 BETA</div>'+
-      '<input id="dGate" type="password" placeholder="beta access code" autocomplete="off" '+
+      '<div style="font-size:13px;letter-spacing:1px;margin-bottom:14px">DEBT · BETA</div>'+
+      '<input id="ltGate" type="password" placeholder="beta access code" autocomplete="off" '+
       'style="font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid #ccc;'+
       'border-radius:4px;width:220px;text-align:center">'+
-      '<div style="font-size:10px;color:#999;margin-top:12px"><a href="/" style="color:#999">\u2190 yieldcartography</a></div></div>';
+      '<div style="font-size:10px;color:#999;margin-top:12px"><a href="/" style="color:#999">← yieldcartography</a></div></div>';
     document.documentElement.style.visibility='visible';
-    var b=document.getElementById('dGate');
+    var b=document.getElementById('ltGate');
     b.focus();
     b.addEventListener('keydown', function(ev){
       if(ev.key!=='Enter') return;
@@ -30,14 +31,70 @@
   });
 })();
 </script>
-<title>Treasury debt: wholesale bonds — maturity profile and simulator</title>
+<title>Debt — yieldcartography</title>
+<meta name="description" content="Long-term extrapolation of the Polish sovereign curve to 100 years under the EIOPA Solvency II methodology: Smith-Wilson, UFR 3.30%, LLP 10 years, convergence at 60 years.">
+<link rel="stylesheet" href="/assets/style.css?v=9">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://yieldcartography.com/lt/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Treasury debt: wholesale bonds - maturity profile and simulator">
+<meta property="og:description" content="Maturity profile of Polish wholesale fixed-rate Treasury bonds since 2005 and a ten-year rollover simulator.">
+<meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yieldcartography.com/debt/">
+<meta property="og:site_name" content="yieldcartography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Long-term curve (EIOPA methodology) — yieldcartography">
+<meta name="twitter:description" content="Smith-Wilson extrapolation of the Polish sovereign curve to 100 years.">
+<meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
 <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<style>
+  .plot-frame { width: 100%; height: 400px; }
+  .small-note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.3px; margin: 6px 0 0 0; }
+  details.intro { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 0 0 18px 0; }
+  details.intro > summary { cursor: pointer; font-family: var(--mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+  details.intro p, details.intro li { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0; }
+  details.intro h4 { margin: 12px 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); font-family: var(--mono); }
+  details.intro table.glossary { border-collapse: collapse; width: 100%; margin: 4px 0 6px 0; }
+  details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
+  details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 130px; white-space: nowrap; }
+  .note-amber { background: #fdf6e3; border: 1px solid #e6c877; border-left: 3px solid #d9a520; border-radius: 4px; padding: 10px 14px; color: #7a5c10; }
+</style>
+<script src="/assets/figtools.js?v=1" defer></script>
+<script src="/assets/promo.js?v=5" defer></script>
+<script src="/assets/search.js?v=1" defer></script>
+</head>
+<body data-fig-source-default="Author's own calculations. Bond universe and outstanding from the Treasury BondSpot Poland fixing panel and the debt register (GPW Catalyst listed nominals for non-fixing series); coupon schedules from actual bond terms; curve from the LW-NSS daily fit; financing needs from the 2027 budget justification, Chapter X (Ministry of Finance, August 2026)."
+ data-fig-cite-default="Dec, M. (2026). Parsimonious Yield Curve Modeling in Less-Liquid Markets. FAME|GRAPE Working Paper #53.">
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <nav>
+    <a href="/cockpit/">cockpit</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/vols/">vols</a>
+    <a href="/oracle/">oracle</a>
+    <a href="/mpc/">MPC</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/total-return/">TR</a>
+    <a href="/eh-tests/">EH</a>
+    <a href="/shorts/">shorts</a>
+    <a href="/movies/">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main>
 <style>
 :root{--accent:#1F4E79;--salmon:#C2522D;--green:#2e7d32;--ink:#222;--muted:#888;
   --rule:#ddd;--panel:#f7f7f6;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
-body{font-family:-apple-system,system-ui,Segoe UI,sans-serif;color:var(--ink);
-  max-width:1180px;margin:24px auto;padding:0 16px;background:#fcfcfb}
-h1{font-size:22px;letter-spacing:-0.3px;margin:0 0 4px 0}
+
 .sub{color:var(--muted);font-size:13px;margin:0 0 16px 0}
 .panel{border:1px solid var(--rule);border-radius:6px;padding:14px 18px;margin-bottom:16px;background:#fff}
 h3{margin:0 0 8px 0;font-size:14px;color:var(--accent);text-transform:uppercase;
@@ -67,14 +124,13 @@ td:first-child,th:first-child{text-align:left}
 .src{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:10px;line-height:1.5}
 @media(max-width:900px){.tiles{grid-template-columns:repeat(2,1fr)}}
 </style>
-</head>
-<body>
-<p style="margin:0 0 6px 0;font-size:11px"><a href="/" style="color:#888;text-decoration:none">&larr; yieldcartography.com</a></p>
-
-<h1>Treasury debt: wholesale bonds <span style="color:var(--salmon)">&mdash;</span> maturity profile and simulator</h1>
-<p class="sub">Full fixed-coupon wholesale register: OK + PS + DS + WS incl. non-fixing series (PS1026, PS1031, WS0437, WS0447), coupons from actual schedules,
+<h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Treasury debt: wholesale bonds — maturity profile and simulator <span style="font-size:12px;color:var(--muted);font-weight:400">beta</span></h1>
+<p class="sub" style="margin:0 0 16px 0">Full fixed-coupon wholesale register: OK + PS + DS + WS incl. non-fixing series (PS1026, PS1031, WS0437, WS0447), coupons from actual schedules,
 new issuance priced at forward par yields off the LW-NSS curve. Deterministic expectations-hypothesis baseline,
 quarterly step (charts quarterly, table annual). Curve as of <b id="asof"></b>.</p>
+
+
+
 
 <div class="tiles">
   <div class="tile"><div class="l">Stock today</div><div class="v" id="t-s0">—</div><div class="d">PLN bn, wavg coupon <span id="t-c0"></span></div></div>
@@ -585,5 +641,19 @@ document.getElementById('csv').addEventListener('click',()=>{
 });
 render();
 </script>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/vols/">Realised vols</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
+        <li><a href="/slides/">Seminar decks</a></li>
+        <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li><li><input id="betaCode" type="password" placeholder="beta access code" autocomplete="off" style="font-family:var(--mono);font-size:10.5px;padding:4px 8px;border:1px solid var(--rule);border-radius:4px;background:transparent;color:inherit;width:130px;margin-top:6px"></li></ul></div>
+  </div>
+  <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>
+</footer>
+<script src="/assets/betagate.js?v=2" defer></script>
 </body>
 </html>
