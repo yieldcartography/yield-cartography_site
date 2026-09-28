@@ -156,7 +156,7 @@
         <button class="csv-btn" id="csvBonds">CSV — bond panel</button>
       </div>
     </div>
-    <p class="note">NSS fit (solid line) with the underlying coupon-bond panel as bubbles, sized by outstanding amount. Salmon dots are long-end bonds (&gt;7y), dark blue is the belly (1.5–7y), grey is the short end. Whiskers show the bid/offer fixing yields around the mid; the thin grey background line is a degree-5 polynomial fit through the bond YTMs and the NBP point (the "YTM curve", as distinct from the fitted zero-coupon curve). The <b>Rich / Cheap</b> view keeps the same chart but promotes the YTM poly to the reference line and colours each bond by its residual: red = rich (YTM below the poly), green = cheap. Click any bond row in the table below to highlight it on the curve and show its YTM history.</p>
+    <p class="note">NSS fit (solid line) with the underlying coupon-bond panel as bubbles, sized by outstanding amount. Salmon dots are long-end bonds (&gt;7y), dark blue is the belly (1.5–7y), grey is the short end. Whiskers show the bid/offer fixing yields around the mid; the thin grey background line is a degree-5 polynomial fit through the bond YTMs and the NBP point (the "YTM curve", as distinct from the fitted zero-coupon curve). The <b>Rich / Cheap</b> view keeps the same chart but promotes the YTM poly to the reference line and colours each bond by its rich/cheap versus the LW-NSS <i>theoretical</i> YTM (the bond's own cashflows discounted with the day's fitted curve, as on the des tab): red = rich (fixing yield below theoretical), green = cheap. Click any bond row in the table below to highlight it on the curve and show its YTM history.</p>
     <div id="snapCurve" class="plot-frame huge"></div>
     <div class="legend-inline">
       <span><span class="swatch" style="background:var(--accent);"></span>NSS fit</span>
@@ -649,10 +649,8 @@ function drawSnapCurve(s){
     name:'NSS', hovertemplate:'%{x:.2f}y · %{y:.2f}%<extra></extra>', showlegend:false });
   if (s.bonds && s.bonds.length){
     const bsize = b => Math.max(6, Math.min(24, Math.sqrt(Math.max(0,b.out||0))*2.2));
-    const inFit = b => pf && b.ytm!=null && b.ttm <= pf.tmax + 1e-9;
     const hover = b => `<b>${b.name}</b> · ${b.isin}<br>TTM ${b.ttm.toFixed(2)}y · YTM ${b.ytm.toFixed(2)}%`+
-      (inFit(b) ? `<br>R/C vs YTM poly ${((b.ytm - pf.f(b.ttm))*100).toFixed(0)} bp (+ = cheap)`
-                : (pf ? '<br>outside YTM-poly fit range' : ''))+
+      (b.rc!=null ? `<br>R/C vs NSS theoretical ${b.rc.toFixed(0)} bp (+ = cheap)` : '')+
       (b.yk!=null&&b.ys!=null?`<br>bid/offer yield ${b.yk.toFixed(2)}% / ${b.ys.toFixed(2)}%`:'')+
       `<br>Outstanding ${(b.out||0).toFixed(1)} PLNbn · BondSpot ${(b.tov_bs||0).toFixed(0)} PLNmln · Min-Fin ${b.tov_mf==null?'n/a':b.tov_mf.toFixed(1)+' PLNbn'}`;
     const wsk = arr => {
@@ -676,12 +674,14 @@ function drawSnapCurve(s){
           text: arr.map(hover), hoverinfo:'text', showlegend:false });
       });
     } else {
-      // Rich/Cheap view: one trace, red-green scale on the residual vs the
-      // YTM poly (red = rich, YTM below the curve; green = cheap)
+      // Rich/Cheap view: one trace, red-green scale on the des-method
+      // rich/cheap — fixing YTM minus the LW-NSS THEORETICAL YTM (bond
+      // cashflows discounted with the day's annual-comp curve, dirty-solve,
+      // T+2), precomputed in build.py from the des per-bond exports.
+      // Red = rich (fixing below theoretical), green = cheap. Bonds with no
+      // des value (rare) render neutral.
       const arr = s.bonds.filter(b => b.ttm!=null && b.ytm!=null);
-      // bonds outside the poly's fit range (>12y) get residual 0 = neutral
-      // colour; their hover says "outside YTM-poly fit range"
-      const resid = arr.map(b => inFit(b) ? (b.ytm - pf.f(b.ttm))*100 : 0);  // bp
+      const resid = arr.map(b => b.rc!=null ? b.rc : 0);                    // bp
       const lim = Math.max(5, Math.min(40, Math.max.apply(null, resid.map(Math.abs))));
       const w = wsk(arr);
       traces.push({ x: arr.map(b=>b.ttm), y: arr.map(b=>b.ytm), mode:'markers',
