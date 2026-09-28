@@ -582,7 +582,10 @@ function polyFitYtm(bonds, nbp){
   // Degree 5 when the cross-section allows, lower for thin snapshots.
   // x is normalised to [0,1] before fitting: degree-5 normal equations on
   // raw maturities up to 12y are numerically ill-conditioned.
-  const pts = bonds.filter(b => b.ttm != null && b.ytm != null)
+  // bonds beyond 12y (odd WS long tails) are EXCLUDED from the fit — a
+  // degree-5 polynomial extrapolated through a lone far point goes wild;
+  // the drawn line therefore also stops at the last included maturity
+  const pts = bonds.filter(b => b.ttm != null && b.ytm != null && b.ttm <= 12)
                    .map(b => ({ttm: b.ttm, ytm: b.ytm}));
   if (nbp != null) pts.push({ttm: 0.02, ytm: nbp});
   if (pts.length < 4) return null;
@@ -624,7 +627,7 @@ function polyFitYtm(bonds, nbp){
   for (let t = tmin; t <= tmax + 1e-9; t += (tmax - tmin)/100){
     xs.push(t); ys.push(f(t));
   }
-  return {xs, ys, deg, f};
+  return {xs, ys, deg, f, tmax};
 }
 let CURVE_VIEW = 'zc';
 let LAST_SNAP = null;
@@ -646,8 +649,10 @@ function drawSnapCurve(s){
     name:'NSS', hovertemplate:'%{x:.2f}y · %{y:.2f}%<extra></extra>', showlegend:false });
   if (s.bonds && s.bonds.length){
     const bsize = b => Math.max(6, Math.min(24, Math.sqrt(Math.max(0,b.out||0))*2.2));
+    const inFit = b => pf && b.ytm!=null && b.ttm <= pf.tmax + 1e-9;
     const hover = b => `<b>${b.name}</b> · ${b.isin}<br>TTM ${b.ttm.toFixed(2)}y · YTM ${b.ytm.toFixed(2)}%`+
-      (pf && b.ytm!=null ? `<br>R/C vs YTM poly ${((b.ytm - pf.f(b.ttm))*100).toFixed(0)} bp (+ = cheap)` : '')+
+      (inFit(b) ? `<br>R/C vs YTM poly ${((b.ytm - pf.f(b.ttm))*100).toFixed(0)} bp (+ = cheap)`
+                : (pf ? '<br>outside YTM-poly fit range' : ''))+
       (b.yk!=null&&b.ys!=null?`<br>bid/offer yield ${b.yk.toFixed(2)}% / ${b.ys.toFixed(2)}%`:'')+
       `<br>Outstanding ${(b.out||0).toFixed(1)} PLNbn · BondSpot ${(b.tov_bs||0).toFixed(0)} PLNmln · Min-Fin ${b.tov_mf==null?'n/a':b.tov_mf.toFixed(1)+' PLNbn'}`;
     const wsk = arr => {
@@ -674,7 +679,9 @@ function drawSnapCurve(s){
       // Rich/Cheap view: one trace, red-green scale on the residual vs the
       // YTM poly (red = rich, YTM below the curve; green = cheap)
       const arr = s.bonds.filter(b => b.ttm!=null && b.ytm!=null);
-      const resid = arr.map(b => pf ? (b.ytm - pf.f(b.ttm))*100 : 0);   // bp
+      // bonds outside the poly's fit range (>12y) get residual 0 = neutral
+      // colour; their hover says "outside YTM-poly fit range"
+      const resid = arr.map(b => inFit(b) ? (b.ytm - pf.f(b.ttm))*100 : 0);  // bp
       const lim = Math.max(5, Math.min(40, Math.max.apply(null, resid.map(Math.abs))));
       const w = wsk(arr);
       traces.push({ x: arr.map(b=>b.ttm), y: arr.map(b=>b.ytm), mode:'markers',
