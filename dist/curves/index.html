@@ -156,11 +156,11 @@
         <button class="csv-btn" id="csvBonds">CSV — bond panel</button>
       </div>
     </div>
-    <p class="note">NSS fit (solid line) with the underlying coupon-bond panel as bubbles, sized by outstanding amount. Salmon dots are long-end bonds (&gt;7y), dark blue is the belly (1.5–7y), grey is the short end. Whiskers show the bid/offer fixing yields around the mid; the thin grey background line is a degree-5 polynomial fit through the bond YTMs and the NBP point (the "YTM curve", as distinct from the fitted zero-coupon curve). The <b>Rich / Cheap</b> view keeps the same chart but promotes the YTM poly to the reference line and colours each bond by its rich/cheap versus the LW-NSS <i>theoretical</i> YTM (the bond's own cashflows discounted with the day's fitted curve, as on the des tab): red = rich (fixing yield below theoretical), green = cheap. Click any bond row in the table below to highlight it on the curve and show its YTM history.</p>
+    <p class="note">NSS fit (solid line) with the underlying coupon-bond panel as bubbles, sized by outstanding amount. Salmon dots are long-end bonds (&gt;7y), dark blue is the belly (1.5–7y), grey is the short end. Whiskers show the bid/offer fixing yields around the mid; the thin grey background line is a shape-preserving PCHIP interpolation through the bond YTMs and the NBP point (the "YTM curve", as distinct from the fitted zero-coupon curve). The <b>Rich / Cheap</b> view keeps the same chart but promotes the YTM curve to the reference line and colours each bond by its rich/cheap versus the LW-NSS <i>theoretical</i> YTM (the bond's own cashflows discounted with the day's fitted curve, as on the des tab): red = rich (fixing yield below theoretical), green = cheap. Click any bond row in the table below to highlight it on the curve and show its YTM history.</p>
     <div id="snapCurve" class="plot-frame huge"></div>
-    <div class="legend-inline">
+    <div class="legend-inline" id="curveLegend">
       <span><span class="swatch" style="background:var(--accent);"></span>NSS fit</span>
-      <span><span class="swatch" style="background:#9a9a9a;"></span>YTM poly fit</span>
+      <span><span class="swatch" style="background:#9a9a9a;"></span>YTM PCHIP fit</span>
       <span><span class="dot" style="background:#888"></span>short ≤1.5y</span>
       <span><span class="dot" style="background:var(--accent);"></span>belly 1.5-7y</span>
       <span><span class="dot" style="background:var(--salmon);"></span>long &gt;7y</span>
@@ -389,10 +389,25 @@ function buildSlider(){
     draw();
   }
   slider.addEventListener('input', e => setIdx(+e.target.value));
+  const LEGEND_ZC =
+    '<span><span class="swatch" style="background:var(--accent);"></span>NSS fit</span>'+
+    '<span><span class="swatch" style="background:#9a9a9a;"></span>YTM PCHIP fit</span>'+
+    '<span><span class="dot" style="background:#888"></span>short ≤1.5y</span>'+
+    '<span><span class="dot" style="background:var(--accent);"></span>belly 1.5-7y</span>'+
+    '<span><span class="dot" style="background:var(--salmon);"></span>long &gt;7y</span>'+
+    '<span><span class="dot" style="background:#2e7d32"></span>NBP bill rate</span>';
+  const LEGEND_RC =
+    '<span><span class="swatch" style="background:var(--accent);"></span>YTM PCHIP fit (reference)</span>'+
+    '<span><span class="swatch" style="background:#c9c9c9;"></span>NSS zero curve</span>'+
+    '<span><span class="swatch" style="background:linear-gradient(90deg,#b02418,#e08214,#f2efe9,#a6bd6f,#1e7d32);"></span>'+
+      'bond R/C vs NSS theoretical YTM (red = rich &middot; green = cheap)</span>'+
+    '<span><span class="dot" style="background:#2e7d32"></span>NBP bill rate</span>';
   const _setView = v => {
     CURVE_VIEW = v;
     document.getElementById('viewZC').style.fontWeight = v==='zc' ? '700' : '400';
     document.getElementById('viewRC').style.fontWeight = v==='rc' ? '700' : '400';
+    const lg = document.getElementById('curveLegend');
+    if (lg) lg.innerHTML = v==='rc' ? LEGEND_RC : LEGEND_ZC;
     if (LAST_SNAP) drawSnapCurve(LAST_SNAP);
   };
   document.getElementById('viewZC').addEventListener('click', () => _setView('zc'));
@@ -577,57 +592,62 @@ function _unused_drawFreshness(){
 }
 
 function polyFitYtm(bonds, nbp){
-  // OLS polynomial through the bond (ttm, ytm) cloud PLUS the NBP anchor
-  // point — the "YTM curve" as distinct from the fitted zero-coupon curve.
-  // Degree 5 when the cross-section allows, lower for thin snapshots.
-  // x is normalised to [0,1] before fitting: degree-5 normal equations on
-  // raw maturities up to 12y are numerically ill-conditioned.
-  // bonds beyond 12y (odd WS long tails) are EXCLUDED from the fit — a
-  // degree-5 polynomial extrapolated through a lone far point goes wild;
-  // the drawn line therefore also stops at the last included maturity
-  const pts = bonds.filter(b => b.ttm != null && b.ytm != null && b.ttm <= 12)
-                   .map(b => ({ttm: b.ttm, ytm: b.ytm}));
-  if (nbp != null) pts.push({ttm: 0.02, ytm: nbp});
-  if (pts.length < 4) return null;
-  const deg = pts.length >= 10 ? 5 : pts.length >= 7 ? 3 : 2;
-  const tmax = Math.max.apply(null, pts.map(b=>b.ttm));
-  pts.forEach(b => { b.tn = b.ttm / tmax; });
-  const n = deg + 1;
-  const A = Array.from({length:n},()=>new Array(n).fill(0));
-  const v = new Array(n).fill(0);
-  pts.forEach(b=>{
-    const px = []; let p = 1;
-    for (let i = 0; i < n; i++){ px.push(p); p *= b.tn; }
-    for (let i = 0; i < n; i++){
-      v[i] += px[i]*b.ytm;
-      for (let j = 0; j < n; j++) A[i][j] += px[i]*px[j];
-    }
+  // PCHIP (piecewise cubic Hermite, Fritsch-Carlson shape-preserving)
+  // through the bond (ttm, ytm) cloud plus the NBP anchor point — the
+  // "YTM curve" as distinct from the fitted zero-coupon curve. Monotone
+  // between knots, no polynomial overshoot, so long bonds beyond 12y are
+  // safe to include; no extrapolation beyond the last bond. Bonds closer
+  // than 0.05y in maturity are merged (outstanding-weighted mean yield).
+  let pts = bonds.filter(b => b.ttm != null && b.ytm != null)
+                 .map(b => ({t: b.ttm, y: b.ytm, w: Math.max(0.1, b.out || 0.1)}));
+  if (nbp != null) pts.push({t: 0.02, y: nbp, w: 10});
+  if (pts.length < 3) return null;
+  pts.sort((a,b) => a.t - b.t);
+  const m = [];
+  pts.forEach(p => {
+    const last = m[m.length-1];
+    if (last && p.t - last.t < 0.05){
+      const w = last.w + p.w;
+      last.y = (last.y*last.w + p.y*p.w) / w;
+      last.t = (last.t*last.w + p.t*p.w) / w;
+      last.w = w;
+    } else m.push({t:p.t, y:p.y, w:p.w});
   });
-  for (let c = 0; c < n; c++){                        // gaussian elimination
-    let piv = c;
-    for (let r2 = c+1; r2 < n; r2++) if (Math.abs(A[r2][c]) > Math.abs(A[piv][c])) piv = r2;
-    [A[c],A[piv]]=[A[piv],A[c]]; [v[c],v[piv]]=[v[piv],v[c]];
-    if (Math.abs(A[c][c]) < 1e-12) return null;
-    for (let r2 = 0; r2 < n; r2++){
-      if (r2 === c) continue;
-      const f = A[r2][c]/A[c][c];
-      for (let j = c; j < n; j++) A[r2][j] -= f*A[c][j];
-      v[r2] -= f*v[c];
+  const n = m.length;
+  if (n < 3) return null;
+  const x = m.map(p=>p.t), y = m.map(p=>p.y);
+  const h = [], del = [];
+  for (let i = 0; i < n-1; i++){ h.push(x[i+1]-x[i]); del.push((y[i+1]-y[i])/h[i]); }
+  const d = new Array(n).fill(0);
+  for (let i = 1; i < n-1; i++){
+    if (del[i-1]*del[i] > 0){
+      const w1 = 2*h[i] + h[i-1], w2 = h[i] + 2*h[i-1];
+      d[i] = (w1 + w2) / (w1/del[i-1] + w2/del[i]);
     }
   }
-  const coef = v.map((val,i)=>val/A[i][i]);
-  const f = t => {
-    let y = 0, p = 1;
-    const tn = t / tmax;
-    for (let i = 0; i < n; i++){ y += coef[i]*p; p *= tn; }
-    return y;
+  const endSlope = (h1, h2, d1, d2) => {
+    let s = ((2*h1 + h2)*d1 - h1*d2) / (h1 + h2);
+    if (s*d1 <= 0) s = 0;
+    else if (d1*d2 < 0 && Math.abs(s) > 3*Math.abs(d1)) s = 3*d1;
+    return s;
   };
-  const tmin = Math.min.apply(null, pts.map(b=>b.ttm));
+  d[0]   = endSlope(h[0], h[1], del[0], del[1]);
+  d[n-1] = endSlope(h[n-2], h[n-3], del[n-2], del[n-3]);
+  const f = t => {
+    if (t <= x[0]) return y[0];
+    if (t >= x[n-1]) return y[n-1];
+    let i = 0;
+    while (i < n-2 && t > x[i+1]) i++;
+    const s = (t - x[i]) / h[i], s2 = s*s, s3 = s2*s;
+    return (2*s3 - 3*s2 + 1)*y[i] + (s3 - 2*s2 + s)*h[i]*d[i]
+         + (-2*s3 + 3*s2)*y[i+1] + (s3 - s2)*h[i]*d[i+1];
+  };
   const xs = [], ys = [];
-  for (let t = tmin; t <= tmax + 1e-9; t += (tmax - tmin)/100){
+  const tmin = x[0], tmax = x[n-1];
+  for (let t = tmin; t <= tmax + 1e-9; t += (tmax - tmin)/160){
     xs.push(t); ys.push(f(t));
   }
-  return {xs, ys, deg, f, tmax};
+  return {xs, ys, f, tmax, knots: n};
 }
 let CURVE_VIEW = 'zc';
 let LAST_SNAP = null;
@@ -642,7 +662,7 @@ function drawSnapCurve(s){
   // background first: YTM poly (thin grey in ZC view, bold accent in R/C view)
   if (pf) traces.push({ x: pf.xs, y: pf.ys, mode:'lines',
     line:{color: rc ? PALETTE.accent : '#9a9a9a', width: rc ? 2.6 : 1.6},
-    name:'YTM poly', hovertemplate:'YTM poly (deg '+pf.deg+') %{x:.2f}y · %{y:.2f}%<extra></extra>',
+    name:'YTM PCHIP', hovertemplate:'YTM PCHIP %{x:.2f}y · %{y:.2f}%<extra></extra>',
     showlegend:false });
   traces.push({ x: grid, y: yfit, mode:'lines',
     line:{color: rc ? '#c9c9c9' : PALETTE.accent, width: rc ? 1.6 : 2.6},
