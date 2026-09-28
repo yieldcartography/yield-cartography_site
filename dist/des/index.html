@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<script>
+(function(){
+  'use strict';
+  var ok=false; try{ ok=localStorage.getItem('yc_beta')==='1'; }catch(e){}
+  if(ok) return;
+  document.documentElement.style.visibility='hidden';
+  document.addEventListener('DOMContentLoaded', function(){
+    document.body.innerHTML='<div style="max-width:420px;margin:18vh auto;padding:26px;'+
+      'border:1px solid #ddd;border-radius:8px;font-family:ui-monospace,monospace;text-align:center">'+
+      '<div style="font-size:13px;letter-spacing:1px;margin-bottom:14px">DES · BETA</div>'+
+      '<input id="ltGate" type="password" placeholder="beta access code" autocomplete="off" '+
+      'style="font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid #ccc;'+
+      'border-radius:4px;width:220px;text-align:center">'+
+      '<div style="font-size:10px;color:#999;margin-top:12px"><a href="/" style="color:#999">← yieldcartography</a></div></div>';
+    document.documentElement.style.visibility='visible';
+    var b=document.getElementById('ltGate');
+    b.focus();
+    b.addEventListener('keydown', function(ev){
+      if(ev.key!=='Enter') return;
+      if(b.value.trim().toLowerCase()==='beta'){
+        try{ localStorage.setItem('yc_beta','1'); }catch(e){}
+        location.reload();
+      } else { b.value=''; b.placeholder='no'; setTimeout(function(){b.placeholder='beta access code';},1200); }
+    });
+  });
+})();
+</script>
+<title>des — yieldcartography</title>
+<meta name="description" content="Long-term extrapolation of the Polish sovereign curve to 100 years under the EIOPA Solvency II methodology: Smith-Wilson, UFR 3.30%, LLP 10 years, convergence at 60 years.">
+<link rel="stylesheet" href="/assets/style.css?v=9">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://yieldcartography.com/lt/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="des - one-bond security view">
+<meta property="og:description" content="Full security view of a single Polish Treasury bond: schedule, outstanding, taps, rich/cheap vs the LW-NSS curve, bid-ask, turnover.">
+<meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yieldcartography.com/des/">
+<meta property="og:site_name" content="yieldcartography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Long-term curve (EIOPA methodology) — yieldcartography">
+<meta name="twitter:description" content="Smith-Wilson extrapolation of the Polish sovereign curve to 100 years.">
+<meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<style>
+  .plot-frame { width: 100%; height: 400px; }
+  .small-note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.3px; margin: 6px 0 0 0; }
+  details.intro { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 0 0 18px 0; }
+  details.intro > summary { cursor: pointer; font-family: var(--mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+  details.intro p, details.intro li { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0; }
+  details.intro h4 { margin: 12px 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); font-family: var(--mono); }
+  details.intro table.glossary { border-collapse: collapse; width: 100%; margin: 4px 0 6px 0; }
+  details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
+  details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 130px; white-space: nowrap; }
+  .note-amber { background: #fdf6e3; border: 1px solid #e6c877; border-left: 3px solid #d9a520; border-radius: 4px; padding: 10px 14px; color: #7a5c10; }
+</style>
+<script src="/assets/figtools.js?v=1" defer></script>
+<script src="/assets/promo.js?v=5" defer></script>
+<script src="/assets/search.js?v=1" defer></script>
+</head>
+<body data-fig-source-default="Author's own calculations. Fixing prices, yields, quotes, turnover and outstanding from the Treasury BondSpot Poland fixing panel; coupon schedules from the Ministry of Finance interest calculator workbook (updated daily); whole-market turnover from Ministry of Finance monthly statistics; theoretical pricing off the LW-NSS daily curve."
+ data-fig-cite-default="Dec, M. (2026). Parsimonious Yield Curve Modeling in Less-Liquid Markets. FAME|GRAPE Working Paper #53.">
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <nav>
+    <a href="/cockpit/">cockpit</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/vols/">vols</a>
+    <a href="/oracle/">oracle</a>
+    <a href="/mpc/">MPC</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/total-return/">TR</a>
+    <a href="/eh-tests/">EH</a>
+    <a href="/shorts/">shorts</a>
+    <a href="/movies/">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main>
+
+<style>
+.des-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:0 0 16px 0}
+.des-tile{background:var(--panel,#fff);border:1px solid var(--rule,#d8d8d8);border-radius:6px;padding:10px 12px}
+.des-tile .l{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.des-tile .v{font-size:21px;font-weight:700;color:#1F4E79;margin:2px 0}
+.des-tile .d{font-size:11px;color:var(--muted)}
+.des-sel{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel,#fff);
+  border:1px solid var(--rule,#d8d8d8);border-radius:6px;padding:12px 16px;margin:0 0 14px 0}
+.des-sel select{font-family:var(--mono);font-size:13px;padding:6px 10px;border:1px solid var(--rule,#ccc);border-radius:4px}
+.des-sel .nb{font-family:var(--mono);font-size:11px;border:1px solid var(--rule,#ccc);background:transparent;
+  border-radius:3px;padding:4px 9px;cursor:pointer}
+.des-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:980px){.des-grid2{grid-template-columns:1fr}}
+.des-kv{width:100%;border-collapse:collapse;font-size:12.5px}
+.des-kv td{padding:5px 8px;border-bottom:1px solid #eee}
+.des-kv td:first-child{font-family:var(--mono);font-size:11px;text-transform:uppercase;
+  letter-spacing:.4px;color:var(--muted);width:46%}
+.des-sch{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11.5px}
+.des-sch th,.des-sch td{padding:4px 8px;text-align:right;border-bottom:1px solid #eee}
+.des-sch th{color:var(--muted);font-weight:500;text-transform:uppercase;font-size:10px}
+.des-sch td.past{color:#aaa}
+</style>
+
+<h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">DES &mdash; one-bond security view
+  <span style="font-size:12px;color:var(--muted);font-weight:400">beta</span></h1>
+<p class="note" style="margin:0 0 14px 0;max-width:900px">Everything the panel knows about a single
+Treasury bond, current or matured: identification and coupon schedule, outstanding with tap and
+switch-buyback events, fixing YTM against the LW-NSS theoretical value with the resulting
+rich/cheap history, bid-ask spread, venue vs whole-market turnover, and rich/cheap against
+liquidity and size. Data 2005 to the last fixing. Choose a bond:</p>
+
+<div class="des-sel">
+  <button class="nb" id="dPrev">&laquo;</button>
+  <select id="dSel"></select>
+  <button class="nb" id="dNext">&raquo;</button>
+  <span id="dStatus" class="note"></span>
+</div>
+
+<div class="des-tiles" id="dTiles"></div>
+
+<div class="des-grid2">
+  <div class="panel" data-fig-nochart>
+    <h3>Security description</h3>
+    <table class="des-kv" id="dDesc"></table>
+  </div>
+  <div class="panel" data-fig-nochart>
+    <h3>Coupon schedule <span class="note" id="dSchNote"></span></h3>
+    <div style="max-height:300px;overflow-y:auto"><table class="des-sch" id="dSch"></table></div>
+  </div>
+</div>
+
+<div class="panel"><h3>Fixing YTM vs LW-NSS theoretical</h3><div id="ch-ytm" style="height:360px"></div></div>
+<div class="panel"><h3>Rich / cheap (fixing minus theoretical, bp; positive = cheap)</h3><div id="ch-rc" style="height:300px"></div></div>
+<div class="panel"><h3>Outstanding and primary-market events (taps and switch buybacks)</h3><div id="ch-out" style="height:320px"></div></div>
+<div class="panel"><h3>Bid-ask spread (price points, with 20-fixing average) and trades per fixing</h3><div id="ch-ba" style="height:300px"></div></div>
+<div class="panel"><h3>Turnover: venue (BondSpot) vs whole market (MinFin outright, monthly)</h3><div id="ch-to" style="height:320px"></div></div>
+<div class="des-grid2">
+  <div class="panel"><h3>Rich/cheap vs whole-market turnover (monthly)</h3><div id="ch-sc1" style="height:320px"></div></div>
+  <div class="panel"><h3>Rich/cheap vs outstanding (monthly)</h3><div id="ch-sc2" style="height:320px"></div></div>
+</div>
+
+<p class="src" style="font-size:11px;color:var(--muted)"><b>Source:</b> Author's own calculations. Fixing prices, yields, quotes, turnover and outstanding from the Treasury BondSpot Poland fixing panel; coupon schedules from the Ministry of Finance interest calculator workbook (updated daily); whole-market turnover from Ministry of Finance monthly statistics; theoretical pricing off the LW-NSS daily curve.<br>
+Suggested citation: Dec, M. (2026). Parsimonious Yield Curve Modeling in Less-Liquid Markets. FAME|GRAPE Working Paper #53.</p>
+
+<script>
+const NAVY='#1f4e79', SALMON='#c2522d', GREEN='#2e7d32', MUT='#9a9a9a';
+const MK={margin:{l:52,r:52,t:12,b:40},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
+  font:{size:11.5},legend:{orientation:'h',y:1.12},hovermode:'x unified'};
+let IDX=null, CUR=null;
+
+function fmt(v,nd){return v===null||v===undefined?'—':(+v).toFixed(nd===undefined?2:nd);}
+
+async function boot(){
+  IDX=await (await fetch('/data/des/index.json')).json();
+  const sel=document.getElementById('dSel');
+  const mk=(lab,arr)=>{const og=document.createElement('optgroup');og.label=lab;
+    arr.forEach(b=>{const o=document.createElement('option');o.value=b.n;
+      o.textContent=b.n+'  ('+(b.cpn*100).toFixed(2)+'%  '+b.mat+')';og.appendChild(o);});
+    sel.appendChild(og);};
+  mk('Current', IDX.bonds.filter(b=>b.alive));
+  mk('Matured', IDX.bonds.filter(b=>!b.alive));
+  sel.addEventListener('change',()=>load(sel.value,true));
+  document.getElementById('dPrev').addEventListener('click',()=>step(-1));
+  document.getElementById('dNext').addEventListener('click',()=>step(1));
+  const h=location.hash.replace('#','');
+  load(IDX.bonds.some(b=>b.n===h)?h:IDX.bonds[0].n,false);
+}
+function step(k){
+  const ns=IDX.bonds.map(b=>b.n), i=ns.indexOf(CUR);
+  const j=Math.max(0,Math.min(ns.length-1,i+k));
+  document.getElementById('dSel').value=ns[j]; load(ns[j],true);
+}
+async function load(name,push){
+  CUR=name;
+  document.getElementById('dSel').value=name;
+  if(push) history.replaceState(null,'','#'+name);
+  const B=await (await fetch('/data/des/'+name+'.json')).json();
+  render(B);
+}
+function last(a){for(let i=a.length-1;i>=0;i--) if(a[i]!==null) return a[i]; return null;}
+function render(B){
+  const m=B.meta, d=B.d;
+  document.getElementById('dStatus').textContent=(m.alive?'current':'matured')+
+    ' · panel '+m.first+' → '+m.last+' · '+m.nobs+' fixings · data as of '+IDX.asof;
+  const ttm=m.alive?((new Date(m.mat)-new Date(IDX.asof))/(365.25*864e5)):null;
+  const tiles=[
+    ['fixing YTM', fmt(last(d.ytm)), '% · last fixing'],
+    ['rich / cheap', fmt(last(d.rc),1), 'bp vs LW-NSS (+ = cheap)'],
+    ['outstanding', fmt(last(d.out),2), 'PLN bn'+(m.out_max?' · max '+m.out_max:'')],
+    ['bid-ask', fmt(last(d.ba),3), 'price points · last'],
+    ['coupon', (m.cpn*100).toFixed(2), '% annual'+(m.cpn===0?' · zero':'')],
+    ['maturity', m.mat, ttm!==null?ttm.toFixed(2)+'y to run':'matured']];
+  document.getElementById('dTiles').innerHTML=tiles.map(t=>
+    '<div class="des-tile"><div class="l">'+t[0]+'</div><div class="v">'+t[1]+
+    '</div><div class="d">'+t[2]+'</div></div>').join('');
+  const typ=m.n.slice(0,2)==='OK'?'zero-coupon (OK)':({PS:'5y fixed (PS)',DS:'10y fixed (DS)',
+    WS:'long fixed (WS)',OS:'legacy fixed (OS)'})[m.n.slice(0,2)]||'fixed';
+  document.getElementById('dDesc').innerHTML=[
+    ['Seria',m.n],['ISIN',m.isin],['Type',typ],['Coupon',(m.cpn*100).toFixed(2)+'% annual'],
+    ['Maturity',m.mat],['First panel obs',m.first],['Last panel obs',m.last],
+    ['Status',m.alive?'current (in fixing panel)':'matured / left panel'],
+    ['Outstanding, last',m.out_last+' bn'],['Outstanding, max',m.out_max+' bn'],
+    ['Primary-market events',B.ev.length+' (taps + buybacks)']]
+    .map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('');
+  const today=IDX.asof;
+  if(B.schedule){
+    document.getElementById('dSchNote').textContent='PLN per 1000 nominal, business-day adjusted';
+    document.getElementById('dSch').innerHTML=
+      '<tr><th>#</th><th>period start</th><th>period end</th><th>ex-date</th><th>payment</th><th>coupon</th></tr>'+
+      B.schedule.map(r=>{const cls=r[4]<today?' class="past"':'';
+        return '<tr><td'+cls+'>'+r[0]+'</td><td'+cls+'>'+r[1]+'</td><td'+cls+'>'+r[2]+'</td><td'+cls+'>'+
+        r[3]+'</td><td'+cls+'>'+r[4]+'</td><td'+cls+'>'+r[5].toFixed(2)+'</td></tr>';}).join('')+
+      '<tr><td></td><td colspan="3">principal redemption</td><td>'+m.mat+'</td><td>1000.00</td></tr>';
+  } else {
+    document.getElementById('dSchNote').textContent='';
+    document.getElementById('dSch').innerHTML='<tr><td style="text-align:left">Zero-coupon: single payment of 1000 per 1000 nominal at maturity '+m.mat+'.</td></tr>';
+  }
+  const x=d.dt;
+  Plotly.newPlot('ch-ytm',[
+    {x,y:d.ytm,name:'fixing YTM',line:{color:NAVY,width:1.6}},
+    {x,y:d.yth,name:'LW-NSS theoretical',line:{color:SALMON,width:1.2}}],
+    Object.assign({},MK,{yaxis:{ticksuffix:'%'}}),{displayModeBar:false,responsive:true});
+  Plotly.newPlot('ch-rc',[
+    {x,y:d.rc,name:'rich/cheap',line:{color:NAVY,width:1.2},fill:'tozeroy',
+     fillcolor:'rgba(31,78,121,0.12)'}],
+    Object.assign({},MK,{yaxis:{ticksuffix:' bp'},shapes:[{type:'line',xref:'paper',x0:0,x1:1,
+      y0:0,y1:0,line:{color:'#888',width:1,dash:'dot'}}]}),{displayModeBar:false,responsive:true});
+  const taps=B.ev.filter(e=>e[1]>0), buys=B.ev.filter(e=>e[1]<0);
+  Plotly.newPlot('ch-out',[
+    {x,y:d.out,name:'outstanding',line:{color:NAVY,width:1.8,shape:'hv'}},
+    {x:taps.map(e=>e[0]),y:taps.map(e=>e[1]),name:'taps (Δ bn)',type:'bar',
+     marker:{color:GREEN},yaxis:'y2'},
+    {x:buys.map(e=>e[0]),y:buys.map(e=>e[1]),name:'buybacks (Δ bn)',type:'bar',
+     marker:{color:SALMON},yaxis:'y2'}],
+    Object.assign({},MK,{yaxis:{title:{text:'PLN bn',font:{size:11}}},
+      yaxis2:{overlaying:'y',side:'right',title:{text:'event Δ, PLN bn',font:{size:11}}}}),
+    {displayModeBar:false,responsive:true});
+  const ma=[];let buf=[];
+  d.ba.forEach(v=>{if(v!==null&&isFinite(v)){buf.push(v);if(buf.length>20)buf.shift();}
+    ma.push(buf.length?buf.reduce((s,t)=>s+t,0)/buf.length:null);});
+  Plotly.newPlot('ch-ba',[
+    {x,y:d.ba,name:'bid-ask',mode:'markers',marker:{color:'rgba(31,78,121,0.25)',size:3}},
+    {x,y:ma,name:'20-fixing avg',line:{color:SALMON,width:1.6}},
+    {x,y:d.ntr,name:'trades (rhs)',type:'bar',marker:{color:'#bbb'},opacity:0.4,yaxis:'y2'}],
+    Object.assign({},MK,{yaxis:{title:{text:'price pts',font:{size:11}}},
+      yaxis2:{overlaying:'y',side:'right',title:{text:'trades',font:{size:11}}}}),
+    {displayModeBar:false,responsive:true});
+  Plotly.newPlot('ch-to',[
+    {x:B.m.ym,y:B.m.minfin,name:'MinFin whole market',type:'bar',marker:{color:NAVY}},
+    {x:B.m.ym,y:B.m.venue,name:'BondSpot venue',type:'bar',marker:{color:SALMON}}],
+    Object.assign({},MK,{barmode:'group',yaxis:{title:{text:'PLN mln / month',font:{size:11}}}}),
+    {displayModeBar:false,responsive:true});
+  // monthly aggregates for the scatters
+  const agg={};
+  x.forEach((dt,i)=>{const k=dt.slice(0,7);
+    (agg[k]=agg[k]||{rc:[],out:[]});
+    if(d.rc[i]!==null)agg[k].rc.push(d.rc[i]);
+    if(d.out[i]!==null)agg[k].out.push(d.out[i]);});
+  const rows=B.m.ym.map(k=>({k,mf:B.m.minfin[B.m.ym.indexOf(k)],
+    rc:agg[k]&&agg[k].rc.length?agg[k].rc.reduce((s,t)=>s+t,0)/agg[k].rc.length:null,
+    out:agg[k]&&agg[k].out.length?agg[k].out.reduce((s,t)=>s+t,0)/agg[k].out.length:null}))
+    .filter(r=>r.rc!==null);
+  scatter('ch-sc1',rows.filter(r=>r.mf!==null&&r.mf>0).map(r=>[r.mf,r.rc,r.k]),
+          'MinFin turnover, PLN mln (log)','rich/cheap, bp',true);
+  scatter('ch-sc2',rows.filter(r=>r.out!==null).map(r=>[r.out,r.rc,r.k]),
+          'outstanding, PLN bn','rich/cheap, bp',false);
+}
+function scatter(div,pts,xt,yt,logx){
+  if(pts.length<4){Plotly.newPlot(div,[],MK,{displayModeBar:false});return;}
+  const X=pts.map(p=>logx?Math.log(p[0]):p[0]), Y=pts.map(p=>p[1]);
+  const n=X.length, mx=X.reduce((s,t)=>s+t,0)/n, my=Y.reduce((s,t)=>s+t,0)/n;
+  let sxy=0,sxx=0,syy=0;
+  for(let i=0;i<n;i++){sxy+=(X[i]-mx)*(Y[i]-my);sxx+=(X[i]-mx)**2;syy+=(Y[i]-my)**2;}
+  const b=sxy/sxx, a=my-b*mx, r2=sxx*syy>0?(sxy*sxy)/(sxx*syy):0;
+  const xr=[Math.min(...pts.map(p=>p[0])),Math.max(...pts.map(p=>p[0]))];
+  const line={x:xr,y:xr.map(v=>a+b*(logx?Math.log(v):v)),mode:'lines',
+    name:'OLS (R² '+r2.toFixed(2)+')',line:{color:SALMON,width:1.6}};
+  Plotly.newPlot(div,[
+    {x:pts.map(p=>p[0]),y:Y,mode:'markers',name:'monthly',text:pts.map(p=>p[2]),
+     marker:{color:'rgba(31,78,121,0.55)',size:6}},line],
+    Object.assign({},MK,{xaxis:{title:{text:xt,font:{size:11}},type:logx?'log':'linear'},
+      yaxis:{title:{text:yt,font:{size:11}}}}),{displayModeBar:false,responsive:true});
+}
+boot();
+</script>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/vols/">Realised vols</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
+        <li><a href="/slides/">Seminar decks</a></li>
+        <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li><li><input id="betaCode" type="password" placeholder="beta access code" autocomplete="off" style="font-family:var(--mono);font-size:10.5px;padding:4px 8px;border:1px solid var(--rule);border-radius:4px;background:transparent;color:inherit;width:130px;margin-top:6px"></li></ul></div>
+  </div>
+  <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>
+</footer>
+<script src="/assets/betagate.js?v=4" defer></script>
+</body>
+</html>

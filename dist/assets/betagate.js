@@ -11,7 +11,8 @@
   var KEY = 'yc_beta';
   var BETA_TABS = [
     { href: '/lt/', label: 'LT *' },
-    { href: '/debt/', label: 'debt *' }
+    { href: '/debt/', label: 'debt *' },
+    { href: '/des/', label: 'des *' }
   ];
 
   function unlocked() {
