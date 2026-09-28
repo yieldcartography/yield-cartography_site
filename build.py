@@ -1453,6 +1453,32 @@ def _turnover_cols(isin, name, d, venue_tov, mf_long, mf_months):
 
 
 _BA_KV = {}          # (date, name) -> (bid yield, offer yield); filled in main()
+_RC_KV = {}          # (date str, name) -> rich/cheap bp vs LW-NSS theoretical
+                     # YTM (des method: cashflows discounted with the day's
+                     # annual-comp NSS curve, dirty-solve, T+2 settlement);
+                     # loaded in main() from dist/data/des/*.json, which
+                     # des_build.py refreshes in update_daily Step 12z
+
+
+def _load_des_rc(des_dir):
+    """name -> nothing; fills _RC_KV from the des per-bond exports."""
+    global _RC_KV
+    _RC_KV = {}
+    try:
+        for f in Path(des_dir).glob('[A-Z]*.json'):
+            try:
+                d = json.loads(f.read_text())
+            except Exception:
+                continue
+            name = d.get('meta', {}).get('n')
+            dd = d.get('d', {})
+            if not name or 'dt' not in dd:
+                continue
+            for dt, rc in zip(dd['dt'], dd.get('rc', [])):
+                if rc is not None:
+                    _RC_KV[(dt, name)] = rc
+    except Exception:
+        pass
 
 
 def _bond_panel(bond, d, venue_tov, mf_long, mf_months):
@@ -1475,6 +1501,7 @@ def _bond_panel(bond, d, venue_tov, mf_long, mf_months):
             'ytm':       float(b['rent_fix_pct']) if pd.notna(b.get('rent_fix_pct')) else None,
             'yk':        _BA_KV.get((d, name), (None, None))[0],   # bid-side fixing yield
             'ys':        _BA_KV.get((d, name), (None, None))[1],   # offer-side fixing yield
+            'rc':        _RC_KV.get((d.strftime('%Y-%m-%d'), name)),  # bp vs NSS theo (des)
             'out':       round(float(out_mln) / 1000.0, 2) if pd.notna(out_mln) else None,  # PLN bn
             'tov_bs':    tov_bs,     # PLN mln, BondSpot venue, prior month
             'tov_mf':    tov_mf,     # PLN bn, Min-Fin outright, latest reported month
@@ -1517,6 +1544,7 @@ def _bond_panel_from_bases(bases, d, venue_tov, mf_long, mf_months):
             'ytm':       float(ytm),
             'yk':        round(float(b['rent_k_pct']), 3) if pd.notna(b.get('rent_k_pct')) else None,
             'ys':        round(float(b['rent_s_pct']), 3) if pd.notna(b.get('rent_s_pct')) else None,
+            'rc':        _RC_KV.get((d.strftime('%Y-%m-%d'), name)),  # bp vs NSS theo (des)
             'out':       round(float(out_mln) / 1000.0, 2) if pd.notna(out_mln) else None,
             'tov_bs':    tov_bs,
             'tov_mf':    tov_mf,
@@ -1792,6 +1820,8 @@ def main(argv=None):
 
     print('building yieldcartography.com...')
     print('reading data from', YIELDS_DIR)
+    _load_des_rc(DATA_DIR / 'des')
+    print(f'des rich/cheap lookup: {len(_RC_KV)} bond-days')
     print('writing dist to ', DIST)
     data = build()
     DATA_DIR.mkdir(parents=True, exist_ok=True)
