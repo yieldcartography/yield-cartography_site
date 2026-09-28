@@ -15,7 +15,7 @@ HERE = Path(__file__).resolve().parent
 DIST = HERE / 'dist'
 OUT = DIST / 'data' / 'search_index.json'
 
-SKIP_DIRS = {'assets', 'data', 'dist', 'landing', 'dns', 'lt'}
+SKIP_DIRS = {'assets', 'data', 'dist', 'landing', 'dns', 'lt', 'debt'}
 MAX_SNIPPET = 380
 
 
