@@ -214,6 +214,20 @@ def build():
     nss['month'] = nss.tradedate.dt.to_period('M')
     month_ends = nss.sort_values('tradedate').groupby('month').last().reset_index(drop=True)
 
+    # bid/ask fixing YIELDS per (snapshot date, series name) for the bond-panel
+    # whiskers on the curves tab (rent_k_pct = bid side, rent_s_pct = offer)
+    ba_kv = {}
+    if bases is not None and not bases.empty:
+        _sd = set(month_ends['tradedate'])
+        _ba = bases[bases['date'].isin(_sd)][
+            ['date', 'Nazwa', 'rent_k_pct', 'rent_s_pct']]
+        for _d, _n, _k, _s in _ba.itertuples(index=False):
+            ba_kv[(_d, str(_n).strip())] = (
+                round(float(_k), 3) if pd.notna(_k) else None,
+                round(float(_s), 3) if pd.notna(_s) else None)
+    global _BA_KV
+    _BA_KV = ba_kv
+
     snaps = []
     last_panel_isins = set()
     for _, r in month_ends.iterrows():
@@ -1438,6 +1452,9 @@ def _turnover_cols(isin, name, d, venue_tov, mf_long, mf_months):
             round(share, 2) if share is not None else None)
 
 
+_BA_KV = {}          # (date, name) -> (bid yield, offer yield); filled in main()
+
+
 def _bond_panel(bond, d, venue_tov, mf_long, mf_months):
     if bond is None or bond.empty:
         return []
@@ -1456,6 +1473,8 @@ def _bond_panel(bond, d, venue_tov, mf_long, mf_months):
             'name':      name,
             'ttm':       float(b['ttm']) if pd.notna(b.get('ttm')) else None,
             'ytm':       float(b['rent_fix_pct']) if pd.notna(b.get('rent_fix_pct')) else None,
+            'yk':        _BA_KV.get((d, name), (None, None))[0],   # bid-side fixing yield
+            'ys':        _BA_KV.get((d, name), (None, None))[1],   # offer-side fixing yield
             'out':       round(float(out_mln) / 1000.0, 2) if pd.notna(out_mln) else None,  # PLN bn
             'tov_bs':    tov_bs,     # PLN mln, BondSpot venue, prior month
             'tov_mf':    tov_mf,     # PLN bn, Min-Fin outright, latest reported month
@@ -1496,6 +1515,8 @@ def _bond_panel_from_bases(bases, d, venue_tov, mf_long, mf_months):
             'name':      name,
             'ttm':       round(ttm, 4),
             'ytm':       float(ytm),
+            'yk':        round(float(b['rent_k_pct']), 3) if pd.notna(b.get('rent_k_pct')) else None,
+            'ys':        round(float(b['rent_s_pct']), 3) if pd.notna(b.get('rent_s_pct')) else None,
             'out':       round(float(out_mln) / 1000.0, 2) if pd.notna(out_mln) else None,
             'tov_bs':    tov_bs,
             'tov_mf':    tov_mf,
