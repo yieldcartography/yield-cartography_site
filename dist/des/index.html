@@ -146,7 +146,7 @@ liquidity and size. Data 2005 to the last fixing. Choose a bond:</p>
 <div class="panel"><h3>Fixing YTM vs LW-NSS theoretical</h3><div id="ch-ytm" style="height:360px"></div></div>
 <div class="panel"><h3>Rich / cheap (fixing minus theoretical, bp; positive = cheap)</h3><div id="ch-rc" style="height:300px"></div></div>
 <div class="panel"><h3>Outstanding and primary-market events (taps and switch buybacks)</h3><div id="ch-out" style="height:320px"></div></div>
-<div class="panel"><h3>Bid-ask spread (price points, with 20-fixing average) and trades per fixing</h3><div id="ch-ba" style="height:300px"></div></div>
+<div class="panel"><h3>Bid-ask spread (YTM bp, with 20-fixing average) and trades per fixing</h3><div id="ch-ba" style="height:300px"></div></div>
 <div class="panel"><h3>Turnover: venue (BondSpot) vs whole market (MinFin outright, monthly)</h3><div id="ch-to" style="height:320px"></div></div>
 <div class="des-grid2">
   <div class="panel"><h3>Rich/cheap vs whole-market turnover (monthly)</h3><div id="ch-sc1" style="height:320px"></div></div>
@@ -201,7 +201,7 @@ function render(B){
     ['fixing YTM', fmt(last(d.ytm)), '% · last fixing'],
     ['rich / cheap', fmt(last(d.rc),1), 'bp vs LW-NSS (+ = cheap)'],
     ['outstanding', fmt(last(d.out),2), 'PLN bn'+(m.out_max?' · max '+m.out_max:'')],
-    ['bid-ask', fmt(last(d.ba),3), 'price points · last'],
+    ['bid-ask', fmt(last(d.ba),1), 'YTM bp · last'],
     ['coupon', (m.cpn*100).toFixed(2), '% annual'+(m.cpn===0?' · zero':'')],
     ['maturity', m.mat, ttm!==null?ttm.toFixed(2)+'y to run':'matured']];
   document.getElementById('dTiles').innerHTML=tiles.map(t=>
@@ -256,7 +256,7 @@ function render(B){
     {x,y:d.ba,name:'bid-ask',mode:'markers',marker:{color:'rgba(31,78,121,0.25)',size:3}},
     {x,y:ma,name:'20-fixing avg',line:{color:SALMON,width:1.6}},
     {x,y:d.ntr,name:'trades (rhs)',type:'bar',marker:{color:'#bbb'},opacity:0.4,yaxis:'y2'}],
-    Object.assign({},MK,{yaxis:{title:{text:'price pts',font:{size:11}}},
+    Object.assign({},MK,{yaxis:{title:{text:'YTM bp',font:{size:11}}},
       yaxis2:{overlaying:'y',side:'right',title:{text:'trades',font:{size:11}}}}),
     {displayModeBar:false,responsive:true});
   Plotly.newPlot('ch-to',[
@@ -304,7 +304,7 @@ boot();
   <div class="footer-inner">
     <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/vols/">Realised vols</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
-        <li><a href="/slides/">Seminar decks</a></li>
+        <li><a href="/slides/">Seminar decks</a></li><li><a href="/alerts/">Email alerts</a></li>
         <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li><li><input id="betaCode" type="password" placeholder="beta access code" autocomplete="off" style="font-family:var(--mono);font-size:10.5px;padding:4px 8px;border:1px solid var(--rule);border-radius:4px;background:transparent;color:inherit;width:130px;margin-top:6px"></li></ul></div>
   </div>

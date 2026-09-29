@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email alerts — yieldcartography</title>
+<meta name="description" content="Long-term extrapolation of the Polish sovereign curve to 100 years under the EIOPA Solvency II methodology: Smith-Wilson, UFR 3.30%, LLP 10 years, convergence at 60 years.">
+<link rel="stylesheet" href="/assets/style.css?v=9">
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://yieldcartography.com/lt/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Email alerts - yieldcartography">
+<meta property="og:description" content="Daily PLN curve alerts with thresholds you set: zeros, slope, NBP rate.">
+<meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yieldcartography.com/alerts/">
+<meta property="og:site_name" content="yieldcartography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Long-term curve (EIOPA methodology) — yieldcartography">
+<meta name="twitter:description" content="Smith-Wilson extrapolation of the Polish sovereign curve to 100 years.">
+<meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
+<script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<style>
+  .plot-frame { width: 100%; height: 400px; }
+  .small-note { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.3px; margin: 6px 0 0 0; }
+  details.intro { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 0 0 18px 0; }
+  details.intro > summary { cursor: pointer; font-family: var(--mono); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+  details.intro p, details.intro li { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0; }
+  details.intro h4 { margin: 12px 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); font-family: var(--mono); }
+  details.intro table.glossary { border-collapse: collapse; width: 100%; margin: 4px 0 6px 0; }
+  details.intro table.glossary td { border-top: 1px solid var(--rule); padding: 5px 8px; vertical-align: top; font-size: 12.5px; }
+  details.intro table.glossary td.code { font-family: var(--mono); font-weight: 600; color: var(--accent); width: 130px; white-space: nowrap; }
+  .note-amber { background: #fdf6e3; border: 1px solid #e6c877; border-left: 3px solid #d9a520; border-radius: 4px; padding: 10px 14px; color: #7a5c10; }
+</style>
+<script src="/assets/figtools.js?v=1" defer></script>
+<script src="/assets/promo.js?v=5" defer></script>
+<script src="/assets/search.js?v=1" defer></script>
+</head>
+<body data-fig-source-default="Author's own calculations (LW-NSS fit) based on Treasury BondSpot Poland fixings and NBP reference rates."
+ data-fig-cite-default="Dec, M. (2026). Parsimonious Yield Curve Modeling in Less-Liquid Markets. FAME|GRAPE Working Paper #53.">
+
+<header class="site-header">
+  <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
+  <nav>
+    <a href="/cockpit/">cockpit</a>
+    <a href="/curves/">curves</a>
+    <a href="/term-premia/">term premia</a>
+    <a href="/vols/">vols</a>
+    <a href="/oracle/">oracle</a>
+    <a href="/mpc/">MPC</a>
+    <a href="/liquidity/">liquidity</a>
+    <a href="/total-return/">TR</a>
+    <a href="/eh-tests/">EH</a>
+    <a href="/shorts/">shorts</a>
+    <a href="/movies/">movies</a>
+    <a href="/about/">about</a>
+  </nav>
+</header>
+
+<main>
+
+<h1 style="margin:18px 0 6px 0;font-size:24px;letter-spacing:-0.3px">Email alerts</h1>
+<p class="note" style="max-width:820px">Get an email when the Polish sovereign curve moves by more
+than a threshold <b>you set</b>. Register below, confirm the link we send you, then pick your
+metrics and thresholds. Alerts are evaluated once a day, after the daily LW-NSS fit, comparing
+against the previous fitting day. Free; unsubscribe with one click in any email.</p>
+
+<div class="panel" style="max-width:560px" id="alSignup">
+  <h3>Register</h3>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <input id="alEmail" type="email" placeholder="you@example.com" autocomplete="email"
+      style="flex:1 1 240px;font-family:var(--mono);font-size:13px;padding:8px 10px;border:1px solid var(--rule);border-radius:4px">
+    <button class="csv-btn" id="alSub" style="font-weight:700">Send confirmation link</button>
+  </div>
+  <p class="note" style="margin:10px 0 0 0" id="alMsg">By registering you agree to receive
+  alert emails at the address above. We store only your email and your thresholds, use them
+  solely for these alerts, and delete them when you unsubscribe.</p>
+</div>
+
+<div class="panel" style="max-width:720px;display:none" id="alPrefs">
+  <h3>Your thresholds <span class="note" id="alWho"></span></h3>
+  <p class="note">Alert fires when the 1-day absolute change exceeds the threshold (bp).
+  Up to 12 rules.</p>
+  <table style="border-collapse:collapse" id="alRules"></table>
+  <div style="margin-top:10px">
+    <button class="csv-btn" id="alAdd">+ add rule</button>
+  </div>
+  <h3 style="margin-top:22px">Site news</h3>
+  <p class="note">Occasional emails when something new appears on the site (no fixed cadence, typically a few per month).</p>
+  <label style="display:block;font-size:13px;margin:6px 0"><input type="checkbox" id="nwTabs"> New dashboards &amp; tools</label>
+  <label style="display:block;font-size:13px;margin:6px 0"><input type="checkbox" id="nwShorts"> New shorts &amp; movies</label>
+  <label style="display:block;font-size:13px;margin:6px 0"><input type="checkbox" id="nwResearch"> Research news (papers, seminar decks)</label>
+  <div style="margin-top:16px;display:flex;gap:10px">
+    <button class="csv-btn" id="alSave" style="font-weight:700">Save all settings</button>
+    <span class="note" id="alSaved"></span>
+  </div>
+</div>
+
+<p class="src" style="font-size:11px;color:var(--muted)">Metrics from the daily LW-NSS fit on
+Treasury BondSpot Poland fixings and NBP reference rates. This is an information service, not
+investment advice.</p>
+
+<script>
+const API = '/api';
+let TOKEN = new URLSearchParams(location.search).get('t');
+let CATALOG = {z10:'10y zero yield'};
+
+document.getElementById('alSub').addEventListener('click', async () => {
+  const email = document.getElementById('alEmail').value.trim();
+  const msg = document.getElementById('alMsg');
+  if (!email){ msg.textContent = 'Enter an email address.'; return; }
+  msg.textContent = 'Sending…';
+  const r = await fetch(API + '/subscribe', {method:'POST',
+    headers:{'content-type':'application/json'}, body: JSON.stringify({email})});
+  msg.textContent = r.ok
+    ? 'Check your inbox for the confirmation link (also the spam folder).'
+    : 'Something went wrong, try again later.';
+});
+
+function ruleRow(metric, threshold){
+  const tr = document.createElement('tr');
+  const opts = Object.entries(CATALOG).map(([k,v]) =>
+    `<option value="${k}"${k===metric?' selected':''}>${v}</option>`).join('');
+  tr.innerHTML = `<td style="padding:4px 8px 4px 0">
+      <select class="alMetric" style="font-family:var(--mono);font-size:12px;padding:5px 8px;border:1px solid var(--rule);border-radius:4px">${opts}</select></td>
+    <td style="padding:4px 8px 4px 0">moves by &ge;</td>
+    <td style="padding:4px 8px 4px 0"><input class="alThr" type="number" min="1" max="500" step="1" value="${threshold}"
+      style="width:70px;font-family:var(--mono);font-size:12px;padding:5px 8px;border:1px solid var(--rule);border-radius:4px"> bp</td>
+    <td><button class="csv-btn alDel">remove</button></td>`;
+  tr.querySelector('.alDel').addEventListener('click', () => tr.remove());
+  return tr;
+}
+
+async function loadPrefs(){
+  if (!TOKEN) return;
+  const r = await fetch(API + '/prefs?t=' + encodeURIComponent(TOKEN));
+  if (!r.ok) return;
+  const p = await r.json();
+  CATALOG = p.metrics || CATALOG;
+  document.getElementById('alSignup').style.display = 'none';
+  document.getElementById('alPrefs').style.display = '';
+  document.getElementById('alWho').textContent = '· ' + p.email +
+    (p.confirmed ? '' : ' (unconfirmed)') + (p.unsubscribed ? ' (unsubscribed)' : '');
+  const tbl = document.getElementById('alRules');
+  tbl.innerHTML = '';
+  const rules = p.rules && p.rules.length ? p.rules
+    : [{metric:'z10', threshold:10}, {metric:'s2s10', threshold:10}];
+  rules.forEach(x => tbl.appendChild(ruleRow(x.metric, x.threshold)));
+  const fresh = !(p.rules && p.rules.length);
+  const nw = p.news || {};
+  document.getElementById('nwTabs').checked = fresh ? true : !!nw.tabs;
+  document.getElementById('nwShorts').checked = fresh ? true : !!nw.shorts;
+  document.getElementById('nwResearch').checked = fresh ? true : !!nw.research;
+}
+
+document.getElementById('alAdd').addEventListener('click', () =>
+  document.getElementById('alRules').appendChild(ruleRow('z10', 10)));
+
+document.getElementById('alSave').addEventListener('click', async () => {
+  const rules = [...document.querySelectorAll('#alRules tr')].map(tr => ({
+    metric: tr.querySelector('.alMetric').value,
+    threshold: +tr.querySelector('.alThr').value }));
+  const r = await fetch(API + '/prefs', {method:'POST',
+    headers:{'content-type':'application/json'},
+    body: JSON.stringify({t: TOKEN, rules, news:{
+      tabs: document.getElementById('nwTabs').checked,
+      shorts: document.getElementById('nwShorts').checked,
+      research: document.getElementById('nwResearch').checked }})});
+  document.getElementById('alSaved').textContent =
+    r.ok ? 'Saved ✓' : 'Save failed';
+  setTimeout(() => document.getElementById('alSaved').textContent = '', 2500);
+});
+
+loadPrefs();
+</script>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/vols/">Realised vols</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
+        <li><a href="/slides/">Seminar decks</a></li><li><a href="/alerts/">Email alerts</a></li>
+        <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li><li><input id="betaCode" type="password" placeholder="beta access code" autocomplete="off" style="font-family:var(--mono);font-size:10.5px;padding:4px 8px;border:1px solid var(--rule);border-radius:4px;background:transparent;color:inherit;width:130px;margin-top:6px"></li></ul></div>
+  </div>
+  <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>
+</footer>
+<script src="/assets/betagate.js?v=4" defer></script>
+</body>
+</html>
