@@ -53,7 +53,11 @@
     if (!registered) {
       a.addEventListener('click', function (ev) { ev.preventDefault(); show(true); });
     }
-    nav.appendChild(a);
+    // insert BEFORE any beta tabs injected by betagate.js — for beta users
+    // the nav is three items longer and an appended icon can overflow past
+    // the window edge; for everyone else this is equivalent to appending
+    var beta = nav.querySelector('a[href="/lt/"], a[href="/debt/"], a[href="/des/"]');
+    if (beta) nav.insertBefore(a, beta); else nav.appendChild(a);
   }
 
   // ---------------------------------------------------------------- popup
