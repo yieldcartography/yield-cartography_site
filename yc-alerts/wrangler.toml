@@ -15,11 +15,11 @@ FROM_ADDR = "alerts@yieldcartography.com"
 [[d1_databases]]
 binding = "DB"
 database_name = "yc_alerts"
-database_id = "REPLACE_AFTER_wrangler_d1_create"
+database_id = "96430e90-4000-48b9-8ef8-eb63c15dbd64"
 
 [[kv_namespaces]]
 binding = "SNAP"
-id = "REPLACE_AFTER_wrangler_kv_namespace_create"
+id = "d7a8eaaa9ffc4a4a8a9ab0669bae7f66"
 
 # secrets (set with `npx wrangler secret put NAME`):
 #   PUSH_SECRET  — shared HMAC secret; same value goes into

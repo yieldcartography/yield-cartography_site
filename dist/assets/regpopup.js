@@ -192,17 +192,24 @@
   // /api/* (so this file can ship before the Worker is deployed). The check
   // is one tiny GET per browsing session, cached in sessionStorage.
   function apiAlive() {
+    // positive verdicts are cached for the session; NEGATIVE verdicts expire
+    // after 10 minutes, so a visit that happened to precede the Worker
+    // deployment (or a transient outage) cannot lock a session out —
+    // Safari in particular restores sessionStorage for reopened tabs.
     try {
       var c = sessionStorage.getItem('yc_api');
       if (c === '1') return Promise.resolve(true);
-      if (c === '0') return Promise.resolve(false);
+      if (c && c.charAt(0) === '0') {
+        var ts = +(c.slice(2) || 0);
+        if (Date.now() - ts < 10 * 60 * 1000) return Promise.resolve(false);
+      }
     } catch (e) {}
     return fetch('/api/prefs?t=ping', { method: 'GET' }).then(function (r) {
       var ok = (r.headers.get('content-type') || '').indexOf('json') >= 0;
-      try { sessionStorage.setItem('yc_api', ok ? '1' : '0'); } catch (e) {}
+      try { sessionStorage.setItem('yc_api', ok ? '1' : '0:' + Date.now()); } catch (e) {}
       return ok;
     }).catch(function () {
-      try { sessionStorage.setItem('yc_api', '0'); } catch (e) {}
+      try { sessionStorage.setItem('yc_api', '0:' + Date.now()); } catch (e) {}
       return false;
     });
   }

@@ -268,6 +268,28 @@ async function ingestMetrics(req, env) {
   return json({ ok: true, users: users.length, sent });
 }
 
+// admin roster: HMAC-signed POST {op:"users"} -> all users with rule counts
+// and send counts. Same shared secret as the metrics push; for the owner's
+// CLI (YIELDS/alerts_admin.py), never exposed in any page.
+async function admin(req, env) {
+  const body = await req.text();
+  const sig = req.headers.get("x-yc-sig") || "";
+  if (sig !== await hmacHex(env.PUSH_SECRET, body))
+    return json({ error: "bad signature" }, 401);
+  const { op } = JSON.parse(body);
+  if (op !== "users") return json({ error: "unknown op" }, 400);
+  const users = (await env.DB.prepare(
+    `SELECT u.email, u.name, u.created_at, u.confirmed_at, u.unsub_at,
+            u.n_tabs, u.n_shorts, u.n_research,
+            (SELECT COUNT(*) FROM rules r WHERE r.user_id = u.id AND r.enabled = 1) AS n_rules,
+            (SELECT COUNT(*) FROM sends s WHERE s.user_id = u.id) AS n_sends
+     FROM users u ORDER BY u.created_at`).all()).results;
+  return json({ users, counts: {
+    total: users.length,
+    confirmed: users.filter(u => u.confirmed_at && !u.unsub_at).length,
+    unsubscribed: users.filter(u => u.unsub_at).length } });
+}
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
@@ -284,6 +306,7 @@ export default {
       if (url.pathname === "/api/unsubscribe") return unsubscribe(req, env);
       if (url.pathname === "/api/metrics" && req.method === "POST") return ingestMetrics(req, env);
       if (url.pathname === "/api/announce" && req.method === "POST") return announce(req, env);
+      if (url.pathname === "/api/admin" && req.method === "POST") return admin(req, env);
     } catch (e) {
       console.log("error", url.pathname, e.message);
       return json({ error: "internal" }, 500);

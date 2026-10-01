@@ -78,6 +78,17 @@ kind = tabs | shorts | research. The announcement id is derived from
 kind+title, and each user receives a given announcement at most once, so
 re-running is safe. Same config/secret as the metrics push.
 
+
+## Seeing who registered
+
+    python3 ~/YIELDS/alerts_admin.py          # roster in the terminal
+    python3 ~/YIELDS/alerts_admin.py --csv    # writes alerts_users.csv
+
+Shows email, name, status (pending / confirmed / unsubscribed), news flags
+(T/S/R), rule count and emails received. Raw alternative: Cloudflare
+dashboard -> D1 -> yc_alerts -> Console, or
+`npx wrangler d1 execute yc_alerts --remote --command "SELECT ..."`.
+
 ## Operations notes
 
 - Metrics catalog v1: z1, z2, z5, z10 (annual-comp zeros, %), s2s10, NBP
