@@ -83,7 +83,13 @@ against the previous fitting day. Free; unsubscribe with one click in any email.
 </div>
 
 <div class="panel" style="max-width:720px;display:none" id="alPrefs">
-  <h3>Your thresholds <span class="note" id="alWho"></span></h3>
+  <h3>Your settings <span class="note" id="alWho"></span></h3>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px 0">
+    <label for="alName" class="note" style="white-space:nowrap">Name (optional, used only in the greeting)</label>
+    <input id="alName" type="text" maxlength="60" autocomplete="given-name"
+      style="flex:0 1 220px;font-family:var(--mono);font-size:13px;padding:7px 10px;border:1px solid var(--rule);border-radius:4px">
+  </div>
+  <h3 style="margin-top:4px">Market thresholds</h3>
   <p class="note">Alert fires when the 1-day absolute change exceeds the threshold (bp).
   Up to 12 rules.</p>
   <table style="border-collapse:collapse" id="alRules"></table>
@@ -108,6 +114,10 @@ investment advice.</p>
 <script>
 const API = '/api';
 let TOKEN = new URLSearchParams(location.search).get('t');
+try {
+  if (TOKEN) { localStorage.setItem('yc_token', TOKEN); localStorage.setItem('yc_registered', '1'); }
+  else { TOKEN = localStorage.getItem('yc_token'); }
+} catch (e) {}
 let CATALOG = {z10:'10y zero yield'};
 
 document.getElementById('alSub').addEventListener('click', async () => {
@@ -156,6 +166,7 @@ async function loadPrefs(){
   document.getElementById('nwTabs').checked = fresh ? true : !!nw.tabs;
   document.getElementById('nwShorts').checked = fresh ? true : !!nw.shorts;
   document.getElementById('nwResearch').checked = fresh ? true : !!nw.research;
+  document.getElementById('alName').value = p.name || '';
 }
 
 document.getElementById('alAdd').addEventListener('click', () =>
@@ -167,7 +178,9 @@ document.getElementById('alSave').addEventListener('click', async () => {
     threshold: +tr.querySelector('.alThr').value }));
   const r = await fetch(API + '/prefs', {method:'POST',
     headers:{'content-type':'application/json'},
-    body: JSON.stringify({t: TOKEN, rules, news:{
+    body: JSON.stringify({t: TOKEN, rules,
+      name: document.getElementById('alName').value.trim(),
+      news:{
       tabs: document.getElementById('nwTabs').checked,
       shorts: document.getElementById('nwShorts').checked,
       research: document.getElementById('nwResearch').checked }})});
@@ -192,5 +205,6 @@ loadPrefs();
   <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>
 </footer>
 <script src="/assets/betagate.js?v=4" defer></script>
+<script src="/assets/regpopup.js?v=2" defer></script>
 </body>
 </html>

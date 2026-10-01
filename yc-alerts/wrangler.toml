@@ -1,0 +1,27 @@
+name = "yc-alerts"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+# Route: serve the API on the main domain so the /alerts/ page can call it
+# same-origin. Adjust zone_name if the site zone differs.
+routes = [
+  { pattern = "yieldcartography.com/api/*", zone_name = "yieldcartography.com" }
+]
+
+[vars]
+SITE = "https://yieldcartography.com"
+FROM_ADDR = "alerts@yieldcartography.com"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "yc_alerts"
+database_id = "REPLACE_AFTER_wrangler_d1_create"
+
+[[kv_namespaces]]
+binding = "SNAP"
+id = "REPLACE_AFTER_wrangler_kv_namespace_create"
+
+# secrets (set with `npx wrangler secret put NAME`):
+#   PUSH_SECRET  — shared HMAC secret; same value goes into
+#                  YIELDS/alerts_config.json on the Mac
+#   RESEND_KEY   — Resend API key for the verified sending domain
