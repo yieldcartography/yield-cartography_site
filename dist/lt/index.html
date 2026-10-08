@@ -3,34 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<script>
-(function(){
-  'use strict';
-  var ok=false; try{ ok=localStorage.getItem('yc_beta')==='1'; }catch(e){}
-  if(ok) return;
-  document.documentElement.style.visibility='hidden';
-  document.addEventListener('DOMContentLoaded', function(){
-    document.body.innerHTML='<div style="max-width:420px;margin:18vh auto;padding:26px;'+
-      'border:1px solid #ddd;border-radius:8px;font-family:ui-monospace,monospace;text-align:center">'+
-      '<div style="font-size:13px;letter-spacing:1px;margin-bottom:14px">LT · BETA</div>'+
-      '<input id="ltGate" type="password" placeholder="beta access code" autocomplete="off" '+
-      'style="font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid #ccc;'+
-      'border-radius:4px;width:220px;text-align:center">'+
-      '<div style="font-size:10px;color:#999;margin-top:12px"><a href="/" style="color:#999">← yieldcartography</a></div></div>';
-    document.documentElement.style.visibility='visible';
-    var b=document.getElementById('ltGate');
-    b.focus();
-    b.addEventListener('keydown', function(ev){
-      if(ev.key!=='Enter') return;
-      if(b.value.trim().toLowerCase()==='beta'){
-        try{ localStorage.setItem('yc_beta','1'); }catch(e){}
-        location.reload();
-      } else { b.value=''; b.placeholder='no'; setTimeout(function(){b.placeholder='beta access code';},1200); }
-    });
-  });
-})();
-</script>
 <title>LT — yieldcartography</title>
 <meta name="description" content="Long-term extrapolation of the Polish sovereign curve to 100 years under the EIOPA Solvency II methodology: Smith-Wilson, UFR 3.30%, LLP 10 years, convergence at 60 years.">
 <link rel="stylesheet" href="/assets/style.css?v=10">
@@ -83,6 +55,8 @@
     <a href="/mpc/" data-tip="Text-mining of NBP MPC minutes since 2007: hawk-dove tone, topics, lexical evolution">MPC</a>
     <a href="/liquidity/" data-tip="Microstructure liquidity measures and a composite index for the Treasury bond panel">liquidity</a>
     <a href="/total-return/" data-tip="Total return: seven-component decomposition of every Treasury bond and the TBSP index">TR</a>
+    <a href="/lt/" class="active" data-tip="Smith-Wilson extrapolation of the curve to 100 years under EIOPA Solvency II">LT</a>
+    <a href="/lt/" class="active" data-tip="Smith-Wilson extrapolation of the curve to 100 years under EIOPA Solvency II">LT</a>
     <a href="/eh-tests/" data-tip="Expectations-hypothesis tests on the Polish, US and euro-area curves">EH</a>
     <a href="/media/" data-tip="Shorts (two-page paper summaries) and 4K yield-curve time-lapse movies">media</a>
     <a href="/about/" data-tip="Methodology, data sources, publications with DOIs, and contact">about</a>
@@ -199,7 +173,7 @@
 })();
 </script>
 
-<script src="/assets/betagate.js?v=5" defer></script>
-<script src="/assets/account.js?v=2" defer></script>
+<script src="/assets/betagate.js?v=6" defer></script>
+<script src="/assets/account.js?v=3" defer></script>
 </body>
 </html>

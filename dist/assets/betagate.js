@@ -10,7 +10,6 @@
   var CODE = 'beta';
   var KEY = 'yc_beta';
   var BETA_TABS = [
-    { href: '/lt/', label: 'LT *', tip: 'Beta: Smith-Wilson extrapolation of the curve to 100 years under EIOPA Solvency II' },
     { href: '/debt/', label: 'debt *', tip: 'Beta: Treasury wholesale bonds, maturity profile since 2005 and a ten-year rollover simulator' },
     { href: '/des/', label: 'des *', tip: 'Beta: one bond under the microscope, schedule, auctions, turnover, rich/cheap, bid-ask' }
   ];
