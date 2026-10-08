@@ -1,0 +1,7 @@
+  /* site mode (macrocartography.com): header, main column and footer; standalone copies show none of it */
+  body:not(.site) .mc-sh, body:not(.site) .mc-sf, body:not(.site) #view_about { display:none; }
+  body.site { padding:0; background:var(--yc-bg); }
+  body.site .mc-bar, body.site .mc-ctl, body.site #tabs { display:none !important; }
+  body.site .mc-main { display:block; max-width:1180px; margin:0 auto; padding:22px 32px 0; }
+  body.site.v-about .mc-main > h1, body.site.v-about .mc-main > .subtitle, body.site.v-about .mc-main > .status { display:none; }
+  @media (max-width:720px){ body.site .mc-main { padding:16px 14px 0; } }

@@ -1,0 +1,18 @@
+  /* macrocartography brand bar: logo, country flags (data), language switch (EN / PL) */
+  .mc-bar { display:flex; align-items:center; gap:12px; margin:0 0 8px 0; flex-wrap:wrap; }
+  .mc-brand { display:inline-flex; align-items:flex-start; gap:2px; }
+  .mc-logo { display:inline-flex; align-items:center; gap:6px; text-decoration:none; }
+  .mc-mark { width:30px; height:30px; flex:none; }
+  .mc-word { font-family:'JetBrains Mono','Fira Code','Source Code Pro',Menlo,Consolas,monospace; font-weight:700; font-size:19px; letter-spacing:-0.5px; line-height:1; }
+  .mc-word .w1 { color:var(--text); } .mc-word .w2 { color:#c2522d; } .mc-word .w3 { color:#1f4e79; }
+  body:not(.light) .mc-word .w3 { color:#74a7d6; }
+  .mc-flags { display:inline-flex; gap:4px; margin:-5px 0 0 4px; }
+  .mc-flag { display:inline-flex; border-radius:2px; line-height:0; opacity:0.38; filter:saturate(0.6); transition:opacity 0.12s, filter 0.12s; box-shadow:0 0 0 1px rgba(0,0,0,0.18); }
+  .mc-flag svg { border-radius:2px; display:block; }
+  .mc-flag:hover { opacity:0.9; filter:none; }
+  .mc-flag.on { opacity:1; filter:none; box-shadow:0 0 0 1.5px var(--accent); cursor:default; }
+  .mc-lang { margin-left:auto; display:inline-flex; border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+  .mc-lang button { background:var(--panel2); color:var(--muted); border:none; padding:3px 9px; font-size:11px; font-weight:700; letter-spacing:0.5px; cursor:pointer; }
+  .mc-lang button + button { border-left:1px solid var(--border); }
+  .mc-lang button.on { background:var(--accent); color:#fff; cursor:default; }
+  .mc-lang button:not(.on):hover { color:var(--accent); }
