@@ -33,7 +33,7 @@
 </script>
 <title>Debt — yieldcartography</title>
 <meta name="description" content="Long-term extrapolation of the Polish sovereign curve to 100 years under the EIOPA Solvency II methodology: Smith-Wilson, UFR 3.30%, LLP 10 years, convergence at 60 years.">
-<link rel="stylesheet" href="/assets/style.css?v=9">
+<link rel="stylesheet" href="/assets/style.css?v=10">
 <link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
@@ -75,18 +75,17 @@
 <header class="site-header">
   <a href="/" class="logo-link"><img src="/assets/logo.svg?v=7" alt="yieldcartography"></a>
   <nav>
-    <a href="/cockpit/">cockpit</a>
-    <a href="/curves/">curves</a>
-    <a href="/term-premia/">term premia</a>
-    <a href="/vols/">vols</a>
-    <a href="/oracle/">oracle</a>
-    <a href="/mpc/">MPC</a>
-    <a href="/liquidity/">liquidity</a>
-    <a href="/total-return/">TR</a>
-    <a href="/eh-tests/">EH</a>
-    <a href="/shorts/">shorts</a>
-    <a href="/movies/">movies</a>
-    <a href="/about/">about</a>
+    <a href="/cockpit/" data-tip="Daily mainboard: curve, term premia, policy signals and cross-market benchmarks on one page">cockpit</a>
+    <a href="/curves/" data-tip="Zero-coupon yield curves 2005-2026: daily LW-NSS fit, bond bubbles, forwards, rich/cheap">curves</a>
+    <a href="/term-premia/" data-tip="Term premia: ACM and BRW decompositions of PLN yields, with US and euro-area comparison">TP</a>
+    <a href="/vols/" data-tip="Realised normal volatilities of the curve, plus a swaption pricer">vols</a>
+    <a href="/oracle/" data-tip="The next NBP move: bias-corrected market path, forecaster survey and minutes tone in one score">oracle</a>
+    <a href="/mpc/" data-tip="Text-mining of NBP MPC minutes since 2007: hawk-dove tone, topics, lexical evolution">MPC</a>
+    <a href="/liquidity/" data-tip="Microstructure liquidity measures and a composite index for the Treasury bond panel">liquidity</a>
+    <a href="/total-return/" data-tip="Total return: seven-component decomposition of every Treasury bond and the TBSP index">TR</a>
+    <a href="/eh-tests/" data-tip="Expectations-hypothesis tests on the Polish, US and euro-area curves">EH</a>
+    <a href="/media/" data-tip="Shorts (two-page paper summaries) and 4K yield-curve time-lapse movies">media</a>
+    <a href="/about/" data-tip="Methodology, data sources, publications with DOIs, and contact">about</a>
   </nav>
 </header>
 
@@ -648,7 +647,7 @@ render();
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/vols/">Realised vols</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/shorts/">Shorts</a></li><li><a href="/movies/">Movies</a></li></ul></div>
+    <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/vols/">Realised vols</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/media/">Media</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
         <li><a href="/slides/">Seminar decks</a></li><li><a href="/alerts/">Email alerts</a></li>
         <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li></ul></div>
@@ -656,7 +655,7 @@ render();
   </div>
   <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>
 </footer>
-<script src="/assets/betagate.js?v=4" defer></script>
+<script src="/assets/betagate.js?v=5" defer></script>
 <script src="/assets/account.js?v=2" defer></script>
 </body>
 </html>

@@ -3,28 +3,39 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shorts — yieldcartography</title>
-<meta name="description" content="Two-page summaries of the four working papers behind the yieldcartography dashboards. Catchy titles, key tables, comments enabled on every short.">
+<title>Media — yieldcartography</title>
+<meta name="description" content="Shorts (two-page summaries of the papers behind the dashboards) and 4K daily time-lapses of the Polish sovereign yield curve, term premia and liquidity, 2005-2026.">
 <link rel="stylesheet" href="/assets/style.css?v=10">
 <link rel="icon" type="image/svg+xml" href="/assets/logo.svg?v=7">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link rel="shortcut icon" href="/assets/favicon.ico">
-<link rel="canonical" href="https://yieldcartography.com/shorts/">
+<link rel="canonical" href="https://yieldcartography.com/media/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Shorts — yieldcartography">
-<meta property="og:description" content="Two-page summaries of the four working papers behind the yieldcartography dashboards. One short per fortnight.">
+<meta property="og:title" content="Media - yieldcartography">
+<meta property="og:description" content="Shorts summarising the research and 4K yield-curve time-lapse movies.">
 <meta property="og:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:url" content="https://yieldcartography.com/shorts/">
+<meta property="og:url" content="https://yieldcartography.com/media/">
 <meta property="og:site_name" content="yieldcartography">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Shorts — yieldcartography">
-<meta name="twitter:description" content="Two-page summaries of the four working papers behind the yieldcartography dashboards. One short per fortnight.">
+<meta name="twitter:title" content="Media - yieldcartography">
+<meta name="twitter:description" content="Shorts summarising the research and 4K yield-curve time-lapse movies.">
 <meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
 <style>
+  .movie-block { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 22px 24px; margin: 18px 0; }
+  .movie-block h3 { font-size: 20px; margin: 0 0 6px 0; color: var(--ink); letter-spacing: -0.2px; }
+  .movie-block .sub { font-family: var(--mono); font-size: 11.5px; color: var(--muted); letter-spacing: 0.4px; margin: 0 0 14px 0; text-transform: uppercase; }
+  .movie-frame { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 4px; overflow: hidden; margin: 12px 0; }
+  .movie-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+  .movie-block p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; margin: 10px 0; }
+  .ep-list { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); columns: 2; column-gap: 32px; margin: 12px 0; line-height: 1.8; }
+  .ep-list li { break-inside: avoid; }
+  .yt-link { display: inline-block; padding: 6px 12px; border: 1px solid var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 11px; color: var(--muted); text-decoration: none; margin: 8px 8px 0 0; border-bottom: 1px solid var(--rule); }
+  .yt-link:hover { border-color: var(--accent); color: var(--accent); }
+
   .shorts-list { margin: 28px 0; }
   .short-row { display: grid; grid-template-columns: 170px 1fr auto; gap: 22px; padding: 22px 26px; align-items: center; text-decoration: none; color: inherit; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; margin-bottom: 16px; transition: background 0.15s; }
   .short-row:last-child { margin-bottom: 0; }
@@ -41,6 +52,10 @@
     .short-row { grid-template-columns: 1fr; gap: 10px; padding: 18px 20px; }
     .short-row .arrow { display: none; }
   }
+
+  .media-section-head { margin: 34px 0 6px 0; display: flex; align-items: baseline; gap: 14px; }
+  .media-section-head h2 { font-size: 22px; margin: 0; letter-spacing: -0.3px; }
+  .media-section-head .jump { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 </style>
 <script src="/assets/promo.js?v=5" defer></script>
 <script src="/assets/search.js?v=1" defer></script>
@@ -66,8 +81,70 @@
 
 <main>
 
-  <h1 style="margin:18px 0 6px 0;font-size:26px;letter-spacing:-0.3px">Shorts</h1>
-  <p style="color:var(--muted);margin:0 0 18px 0;font-size:14px;line-height:1.55">Two-page summaries of the four working papers behind the yieldcartography dashboards. Each short carries a catchy title, ~200 words of setup, one headline figure, one key table, ~200 words of interpretation, and a 50-word "what this means for practitioners" line. Comments are open at the bottom of every short. Cadence: roughly one new short per fortnight.</p>
+  <h1 style="margin:18px 0 6px 0;font-size:26px;letter-spacing:-0.3px">Media</h1>
+  <p style="color:var(--muted);margin:0 0 10px 0;font-size:14px;line-height:1.55">The research behind the dashboards in two watchable and readable formats: <a href="#movies">movies</a>, daily 4K time-lapses of twenty-one years of the Polish sovereign curve, and <a href="#shorts">shorts</a>, two-page summaries of the underlying papers with one headline figure and one key table each.</p>
+
+  <div class="media-section-head" id="movies"><h2>Movies</h2><span class="jump"><a href="#shorts">jump to shorts &darr;</a></span></div>
+  <p style="color:var(--muted);margin:0 0 6px 0;font-size:13.5px;line-height:1.55">Daily 4K time-lapses of the Polish sovereign zero-coupon yield curve, ACM/BRW term premia, fit diagnostics and the NSS/SPF forecast family, plus a lexical-evolution time-lapse of NBP MPC minute language. Built from the same data behind the dashboards. Watch on YouTube for full quality.</p>
+
+
+  <div class="movie-block">
+    <h3>Lexical evolution of NBP MPC minutes — 19-year time-lapse</h3>
+    <p class="sub">2007-04 → 2026-04 · 212 meeting frames at 2 fps · 1m46s · 1080p</p>
+    <div class="movie-frame">
+      <iframe src="https://www.youtube.com/embed/wN67Qlh9Cd4" title="Lexical evolution of NBP MPC minutes 2007-2026" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <p><strong>What you see on each frame.</strong> Top section: TF-IDF-weighted top terms aggregated over the trailing six MPC meetings — roughly six months of distinctive Polish central-bank vocabulary. Bottom strip: per-meeting net tone, (hawkish − dovish) / (hawkish + dovish), with the 3-meeting moving average as the heavy line and a navy playhead line that sweeps left-to-right marking the current frame's meeting. Background bands derive mechanically from the 6-month change in the NBP reference rate (green accommodation, salmon tightening, grey neutral). The interactive version of the same panels lives on the <a href="/mpc/">MPC</a> tab.</p>
+    <p><strong>Episodes to watch for:</strong></p>
+    <ul class="ep-list">
+      <li>2008-09 — GFC vocabulary forms</li>
+      <li>2012-15 — deep-cuts era</li>
+      <li>2020-03 — COVID vocabulary spike</li>
+      <li>2022-02 — Ukraine war language</li>
+      <li>2022-09 — inflation hike-cycle peak</li>
+      <li>2024-26 — post-hike pause</li>
+    </ul>
+    <a class="yt-link" href="https://youtu.be/wN67Qlh9Cd4" target="_blank" rel="noopener">YouTube ↗</a>
+    <a class="yt-link" href="https://www.youtube.com/channel/UC-29-qN5mndj7OEKTj8aVQQ" target="_blank" rel="noopener">Subscribe @yieldcartography ↗</a>
+  </div>
+
+  <div class="movie-block">
+    <h3>Polish Sovereign Yield Curve &amp; Term Premia — 21-year time-lapse</h3>
+    <p class="sub">2005-01-07 → 2026-04-21 · 5,290 daily frames at 30 fps · 4K</p>
+    <div class="movie-frame">
+      <iframe src="https://www.youtube.com/embed/qgtoqriiFsE" title="Polish Sovereign Yield Curve 21-year time-lapse" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <p><strong>What you see on each frame.</strong> Top-left: LW-NSS-fitted zero-coupon curve with the underlying coupon-bond panel as bubbles sized by outstanding amount and coloured by curve segment. Top-right: Adrian-Crump-Moench and Bauer-Rudebusch-Wu term premia at 1y/2y/5y/10y horizons. Bottom-left: daily fit diagnostics — MAE in bp, number of bonds in the daily fit, NSS β and τ parameters. Bottom-right: forecast family — NSS 1-year forwards, ACM and BRW expected-rate paths, and the NBP Survey of Professional Forecasters implied path.</p>
+    <p><strong>Episodes to watch for:</strong></p>
+    <ul class="ep-list">
+      <li>2008-09 — GFC</li>
+      <li>2013-05 — taper tantrum</li>
+      <li>2015-16 — ECB QE drift</li>
+      <li>2020-03 — COVID dislocation</li>
+      <li>2021-22 — inflation surge</li>
+      <li>2023-26 — normalisation</li>
+    </ul>
+    <a class="yt-link" href="https://youtu.be/qgtoqriiFsE" target="_blank" rel="noopener">YouTube ↗</a>
+    <a class="yt-link" href="https://www.youtube.com/channel/UC-29-qN5mndj7OEKTj8aVQQ" target="_blank" rel="noopener">Subscribe @yieldcartography ↗</a>
+  </div>
+
+  <div class="movie-block">
+    <h3>Polish Sovereign Curve, Term Premia &amp; Liquidity — Last 5 Years</h3>
+    <p class="sub">2021-04 → 2026-04 · ~1,300 daily frames at 30 fps · 4K</p>
+    <div class="movie-frame">
+      <iframe src="https://www.youtube.com/embed/bPG7pdK1gW4" title="Polish Sovereign Curve 5-year time-lapse" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <p>Same four-panel layout as the full 21-year version, zoomed onto the most recent five years. This is the most expensive window in twenty-one years of Polish term-structure data: the fastest steepening in the sample, a clean Greenwood-Vayanos-Vila supply-pressure episode at the long end, the survey-versus-model horizon split visible in real time, and a venue-cap-bound bid-ask spread that hides the actual liquidity stress in 2022. The 10-year term premium is the cleaner stress signal here.</p>
+    <a class="yt-link" href="https://youtu.be/bPG7pdK1gW4" target="_blank" rel="noopener">YouTube ↗</a>
+    <a class="yt-link" href="https://www.youtube.com/channel/UC-29-qN5mndj7OEKTj8aVQQ" target="_blank" rel="noopener">Subscribe @yieldcartography ↗</a>
+  </div>
+
+  <p style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:20px">Both movies render the same daily slides served behind the <a href="/curves/">curves</a> and <a href="/term-premia/">term-premia</a> dashboards. New videos are uploaded as the dataset extends. Subscribe to the YouTube channel for notifications.</p>
+
+
+  <div class="media-section-head" id="shorts"><h2>Shorts</h2><span class="jump"><a href="#movies">back to movies &uarr;</a></span></div>
+  <p style="color:var(--muted);margin:0 0 6px 0;font-size:13.5px;line-height:1.55">Two-page summaries of the working papers behind the yieldcartography dashboards. Each short carries a catchy title, ~200 words of setup, one headline figure, one key table, ~200 words of interpretation, and a 50-word &quot;what this means for practitioners&quot; line. Comments are open at the bottom of every short.</p>
+
 
   <div class="shorts-list">
 
@@ -213,6 +290,7 @@
 
   <p style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:20px">Each short is one self-contained letter-format page. The underlying working papers are linked from the about page with full DOIs and abstracts.</p>
 
+
 </main>
 
 <footer class="site-footer">
@@ -220,7 +298,7 @@
     <div><h4>Dashboards</h4><ul><li><a href="/">Cockpit</a></li><li><a href="/curves/">Yield curves</a></li><li><a href="/term-premia/">Term premia</a></li><li><a href="/vols/">Realised vols</a></li><li><a href="/oracle/">Oracle</a></li><li><a href="/mpc/">MPC minutes</a></li><li><a href="/liquidity/">Liquidity measures</a></li><li><a href="/total-return/">Total return</a></li><li><a href="/eh-tests/">EH tests</a></li><li><a href="/media/">Media</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="/about/">About</a></li>
         <li><a href="/slides/">Seminar decks</a></li><li><a href="/alerts/">Email alerts</a></li>
-        <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li></ul></div>
+        <li><a href="https://learn.finacademy.ai/?ref=yc-footer">FinAcademy (free courses)</a></li><li><a href="https://www.youtube.com/channel/UC-29-qN5mndj7OEKTj8aVQQ">YouTube channel</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="mailto:mdec@kozminski.edu.pl">mdec@kozminski.edu.pl</a></li><li><input id="betaCode" type="password" placeholder="beta access code" autocomplete="off" style="font-family:var(--mono);font-size:10.5px;padding:4px 8px;border:1px solid var(--rule);border-radius:4px;background:transparent;color:inherit;width:130px;margin-top:6px"></li></ul></div>
   </div>
   <div class="footer-inner copyright"><span>yieldcartography.com · Marcin Dec · all data and code released for academic and personal use</span><span id="buildBadge"></span></div>

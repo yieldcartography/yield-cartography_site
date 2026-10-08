@@ -228,3 +228,42 @@ table.diag td.lbl, table.diag th.lbl { text-align: left; }
   .panel.full { grid-column: 1; }
   .site-footer .footer-inner { grid-template-columns: 1fr; }
 }
+
+/* Nav tooltips (v10): chip below the tab from data-tip. The active underline
+   uses ::after, so the tooltip lives on ::before. Hover-only, slight delay. */
+.site-header nav a[data-tip]::before {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  line-height: 1.5;
+  padding: 7px 11px;
+  border-radius: 4px;
+  width: max-content;
+  max-width: 270px;
+  white-space: normal;
+  text-align: center;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0s linear 0.5s;
+}
+.site-header nav a[data-tip]:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.35s, 0.35s;
+}
+.site-header nav a:last-child[data-tip]::before,
+.site-header nav a:nth-last-child(2)[data-tip]::before {
+  left: auto;
+  right: 0;
+  transform: none;
+}
