@@ -30,6 +30,7 @@ rep("<title>Macro Radar 3: US macroeconomic dashboard</title>", "<title>Macro Ra
 rep("</style>\n</head>", rd("brand.css") + rd("site.css") + rd("site_page.css") + "</style>\n</head>")
 rep('<body class="light">\n', '<body class="light">\n<header class="mc-sh" id="mcHeader" data-notr="1"></header>\n' + rd("brand.html") + '<main class="mc-main">\n')
 rep('<div class="fig-modal" id="figModal">', '<div id="view_about"></div>\n</main>\n<footer class="mc-sf" id="mcFooter" data-notr="1"></footer>\n\n<div class="fig-modal" id="figModal">')
+rep('<span style="font-size:11px;color:var(--dim);font-weight:400;letter-spacing:1px;">by MARCIN DEC</span>', '<span class="mc-by" style="font-size:11px;color:var(--dim);font-weight:400;letter-spacing:1px;">by MARCIN DEC</span>')
 rep('<span style="margin-left:auto;display:inline-flex;gap:8px;align-items:center;">\n    <label class="toggle"', '<span class="mc-ctl" style="margin-left:auto;display:inline-flex;gap:8px;align-items:center;">\n    <label class="toggle"')
 rep('title="Click to edit; saved with the HTML snapshot">Macro Radar</span>', 'title="Click to edit; saved with the HTML snapshot">Macro Radar</span>')
 rep_re(r'(<span id="subtitleText"[^>]*>)US macroeconomic radar from public FRED data:[^<]*(</span>)', r"\1\2")

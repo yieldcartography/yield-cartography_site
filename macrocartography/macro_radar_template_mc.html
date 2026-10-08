@@ -330,7 +330,7 @@
   /* site mode (macrocartography.com): header, main column and footer; standalone copies show none of it */
   body:not(.site) .mc-sh, body:not(.site) .mc-sf, body:not(.site) #view_about { display:none; }
   body.site { padding:0; background:var(--yc-bg); }
-  body.site .mc-bar, body.site .mc-ctl, body.site #tabs { display:none !important; }
+  body.site .mc-bar, body.site .mc-ctl, body.site .mc-by, body.site #tabs { display:none !important; }
   body.site .mc-main { display:block; max-width:1180px; margin:0 auto; padding:22px 32px 0; }
   body.site.v-about .mc-main > h1, body.site.v-about .mc-main > .subtitle, body.site.v-about .mc-main > .status { display:none; }
   @media (max-width:720px){ body.site .mc-main { padding:16px 14px 0; } }
@@ -358,7 +358,7 @@
 <main class="mc-main">
 
 <h1><!--LOGO--><span id="titleText" contenteditable="true" spellcheck="false" title="Click to edit; saved with the HTML snapshot">Macro Radar</span>
-  <span style="font-size:11px;color:var(--dim);font-weight:400;letter-spacing:1px;">by MARCIN DEC</span>
+  <span class="mc-by" style="font-size:11px;color:var(--dim);font-weight:400;letter-spacing:1px;">by MARCIN DEC</span>
   <span class="mc-ctl" style="margin-left:auto;display:inline-flex;gap:8px;align-items:center;">
     <label class="toggle" title="Off leaves only the Radar tab and hides Latest, Data health, Assumptions and the Technical appendix. Saved with the snapshot."><input type="checkbox" id="detailsT" checked/> details</label>
     <button class="theme-btn" id="themeBtn" title="Switch between light and dark mode (saved with the snapshot)">&#9789; Dark</button>
