@@ -21,6 +21,12 @@ SCHEMA = "macro_radar/v1"
 COUNTRY_MARK = 'const mk=(/*__MC_COUNTRY__*/"us")'
 SITE_MARK = "const MC_SITE_MODE = (/*__MC_SITE__*/false);"   # site pages: menu header, About, no expert tabs, no snapshot or theme switch
 BODY_MARK = '<body class="light">'
+ICON_RE = re.compile(r'<link rel="icon" type="image/png" href="data:image/png;base64,[^"]*"\s*/?>')
+ICONS = """<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">"""   # the site's own icons from assets/ (the standalone copies keep the embedded one)
 DEMO_RE = re.compile(r"const DEMO = /\*__MACRO_DEMO__\*/.*?;\n", re.S)
 
 def die(msg):
@@ -177,6 +183,9 @@ def main():
     if tpl.count(SITE_MARK) != 1 or tpl.count(BODY_MARK) != 1:
         die("the template must carry the site-mode marker and %s exactly once (rebuild it with src/build_mc.py)" % BODY_MARK)
     tpl_site = DEMO_RE.sub("const DEMO = null;\n", tpl, count=1)   # the site never shows the US demo copy
+    tpl_site, n_icon = ICON_RE.subn(lambda m: ICONS, tpl_site, count=1)
+    if n_icon != 1:
+        die("the template's embedded icon link was not found")
     tpl_site = tpl_site.replace(SITE_MARK, SITE_MARK.replace("false", "true"), 1).replace(BODY_MARK, '<body class="light site">', 1)
     docs = {"us": load(a.us), "pl": load(a.pl)}
     if str(docs["pl"].get("country", "PL")).upper() != "PL":
@@ -200,6 +209,8 @@ def main():
     if os.path.isdir(a.assets):
         for fn in os.listdir(a.assets):
             shutil.copyfile(os.path.join(a.assets, fn), os.path.join(out, "assets", fn))
+        if os.path.exists(os.path.join(a.assets, "favicon.ico")):   # browsers also ask for /favicon.ico
+            shutil.copyfile(os.path.join(a.assets, "favicon.ico"), os.path.join(out, "favicon.ico"))
     for c in ("us", "pl"):
         h = summ[c]["headline"]
         print("OK  %s: data as of %s, %d series · economy %.1f · prices %.1f · policy %.1f (blend) · conditions %.1f%s"
