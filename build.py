@@ -1801,6 +1801,45 @@ def _tp_xcountry_corr(xtp, other='us'):
 
 # ------------------------------ entry ------------------------------ #
 
+def _export_pca3d():
+    """dist/data/pca3d.json for the curves tab's 3D PCA ribbons panel.
+    PCA on centred (not scaled) zero yields at fixed tenors from the daily
+    LW-NSS fit, scores every 5th trading day, raw in percentage points and
+    standardised to unit variance, with explained-variance shares and
+    loadings. Sign convention: PC1 loadings sum positive, PC2-PC4 loading
+    rising from the shortest to the longest tenor."""
+    nss = pd.read_csv(YIELDS_DIR / 'nss_params_history.csv', parse_dates=['tradedate'])
+    nss = nss.dropna(subset=['beta0', 'beta1', 'beta2', 'beta3', 'tau1', 'tau2']).reset_index(drop=True)
+    tenors = [0.5, 1, 2, 3, 4, 5, 7, 10]
+    Z = np.array([[nss_zero_pct(t, r) for t in tenors] for r in nss.itertuples()])
+    X = Z - Z.mean(axis=0)
+    w, V = np.linalg.eigh(np.cov(X, rowvar=False))
+    order = np.argsort(w)[::-1]
+    w, V = w[order], V[:, order]
+    if V[:, 0].sum() < 0:
+        V[:, 0] = -V[:, 0]
+    for k in (1, 2, 3):
+        if V[-1, k] - V[0, k] < 0:
+            V[:, k] = -V[:, k]
+    S = X @ V[:, :4]
+    sd = S.std(axis=0)
+    ev = (w[:4] / w.sum() * 100.0)
+    step = slice(None, None, 5)
+    out = {
+        'asof': str(nss.tradedate.iloc[-1].date()),
+        'tenors': tenors,
+        'explained_pct': [round(float(v), 3) for v in ev],
+        'loadings': [[round(float(x), 4) for x in V[:, k]] for k in range(4)],
+        'dates': [str(d.date()) for d in nss.tradedate.iloc[step]],
+        'raw': [[round(float(x), 4) for x in S[step, k]] for k in range(4)],
+        'std': [[round(float(x), 4) for x in (S[step, k] / sd[k])] for k in range(4)],
+    }
+    p = DATA_DIR / 'pca3d.json'
+    p.write_text(json.dumps(out, separators=(',', ':')))
+    print(f'  wrote {p.name} ({p.stat().st_size/1024:.1f} KB, '
+          f'explained {ev[0]:.1f}/{ev[1]:.1f}/{ev[2]:.2f}/{ev[3]:.2f}%)')
+
+
 def main(argv=None):
     global YIELDS_DIR, DIST, DATA_DIR
     ap = argparse.ArgumentParser(description='Build yieldcartography.com yields.json')
@@ -1833,6 +1872,14 @@ def main(argv=None):
         rel = out_path  # absolute path is fine when writing to an external repo
     print(f'  wrote {rel} ({out_path.stat().st_size/1024:.1f} KB)')
     print(f'  meta: {data["meta"]}')
+
+    # 3D PCA ribbons for the curves tab: four principal components of the
+    # centred LW-NSS zero yields at 0.5-10y tenors over the full history,
+    # weekly-thinned, exported both raw (pp) and standardised. Non-fatal.
+    try:
+        _export_pca3d()
+    except Exception as e:
+        print(f'  WARNING: pca3d.json not written ({type(e).__name__}: {e})')
 
     # Regenerate the Oracle tab from the same YIELDS CSVs so it tracks every
     # data refresh alongside yields.json. Non-fatal: a failure here must not
