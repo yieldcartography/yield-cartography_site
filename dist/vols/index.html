@@ -25,6 +25,7 @@
 <meta name="twitter:description" content="Realised normal volatility of the Polish sovereign curve: vol surface, term structure and probability plane.">
 <meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
 <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<script src="/assets/ridge3d.js?v=1"></script>
 <style>
   .plot-frame { width: 100%; height: 360px; }
   .plot-frame.tall { height: 440px; }
@@ -147,6 +148,22 @@
       <span class="pill" data-w="36">36 months</span>
     </div>
     <div id="chart-roll" class="plot-frame tall"></div>
+  </div>
+
+  <div class="panel" style="margin-bottom:18px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+      <h3 style="margin:0 0 6px 0">Realised vol by tenor in 3D</h3>
+      <span>
+        <button class="csv-btn" id="r3dW12" style="font-weight:700">12m window</button>
+        <button class="csv-btn" id="r3dW24">24m</button>
+        <button class="csv-btn" id="r3dW36">36m</button>
+      </span>
+    </div>
+    <div id="vol3dChart" style="height:520px"></div>
+    <p class="note">The same rolling realised normal volatility as above, the three tenors stacked as
+    filled ribbons: 2y in front, 5y and 10y behind. Short-tenor vol spikes hardest in the hiking
+    episodes (2008, 2021-22) while the 10y ribbon carries the duration-risk base level. The window
+    buttons switch the rolling estimation length. Drag to rotate, scroll to zoom.</p>
   </div>
 
   <div class="two-col">
@@ -327,6 +344,26 @@
       yaxis: {gridcolor: '#eee', title: {text: 'bp per year', font: {size: 11}}}}), cfg);
   }
   drawRoll('12');
+
+  // ---- 3D ribbons: tenors stacked, window toggle ----
+  function drawVol3d(w) {
+    const rw = d.rolling[w];
+    ycRidge3d('vol3dChart', {
+      dates: rw.date,
+      series: [
+        { label: '2y',  values: rw['2y'],  color: '#8e9fc5' },
+        { label: '5y',  values: rw['5y'],  color: '#e9b8ab' },
+        { label: '10y', values: rw['10y'], color: '#d06b58' }
+      ],
+      zTitle: 'bp per year', height: 520, yearStep: 3,
+      aspect: { x: 2.6, y: 0.9, z: 0.75 }, hoverUnit: 'bp/y'
+    });
+    ['12','24','36'].forEach(x =>
+      document.getElementById('r3dW' + x).style.fontWeight = x === w ? '700' : '400');
+  }
+  drawVol3d('12');
+  ['12','24','36'].forEach(x =>
+    document.getElementById('r3dW' + x).addEventListener('click', () => drawVol3d(x)));
   document.getElementById('rollPills').addEventListener('click', ev => {
     const p = ev.target.closest('.pill'); if (!p) return;
     document.querySelectorAll('#rollPills .pill').forEach(x => x.classList.remove('active'));

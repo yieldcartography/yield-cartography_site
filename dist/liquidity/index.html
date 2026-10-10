@@ -25,6 +25,7 @@
 <meta name="twitter:description" content="Six microstructure liquidity measures plus a composite z-index across the BondSpot panel, 2005-2026, with the aggregate price-of-liquidity regressions.">
 <meta name="twitter:image" content="https://yieldcartography.com/assets/yc_og_1200x630.png">
 <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<script src="/assets/ridge3d.js?v=1"></script>
 <style>
   .plot-frame { width: 100%; height: 360px; }
   .plot-frame.tall { height: 420px; }
@@ -164,6 +165,25 @@
       <h3>Cross-section size — bonds in the monthly panel</h3>
       <p class="note">Number of distinct ISINs included in the BondSpot panel each month. Drives the precision of the cross-sectional medians and means above.</p>
       <div id="nbondsChart" class="plot-frame"></div>
+    </div>
+
+    <div class="panel full">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+        <h3>Six measures in 3D &mdash; standardised, stacked by estimator</h3>
+        <span>
+          <button class="csv-btn" id="lq3dZ" style="font-weight:700">z-scores</button>
+          <button class="csv-btn" id="lq3dP">percentile ranks</button>
+        </span>
+      </div>
+      <div id="liq3dChart" style="height:560px"></div>
+      <p class="note">The six monthly cross-sectional medians stacked as filled ribbons, each series
+      standardised on its own full 2005-to-today sample so they share one axis despite their different
+      units. The Pastor-Stambaugh gamma is sign-flipped before standardising, so on every ribbon up
+      means less liquid. The z-score view shows deviations from each measure's sample mean in standard
+      deviations. The percentile view ranks each month within its own history (50 = that measure's
+      median month), which tames the fat-tailed Amihud and gamma spikes. Episodes to look for: the 2008-09
+      freeze on every ribbon, the venue-capped bid-ask flatness against rising Amihud after 2020, and the
+      year-end turns. Drag to rotate, scroll to zoom.</p>
     </div>
 
   </div>
@@ -685,6 +705,44 @@ function sliceWindow(dates, ...arrs){
   return [dates.slice(start), ...arrs.map(a => a.slice(start))];
 }
 
+let LIQ3D_VIEW = 'z';
+
+function drawLiq3d(liq, view){
+  // six estimators, PS gamma sign-flipped so up = less liquid on every ribbon
+  const defs = [
+    { key:'bas_bp_med', label:'bid-ask',   flip:false },
+    { key:'ztd_pct',    label:'ZTD',       flip:false },
+    { key:'amihud_med', label:'Amihud',    flip:false },
+    { key:'roll_med',   label:'Roll',      flip:false },
+    { key:'gamma_med',  label:'PS gamma',  flip:true  },
+    { key:'cs_med',     label:'Corwin-Schultz', flip:false }
+  ];
+  const colors = ['#8e9fc5','#aebdd6','#e9b8ab','#e3a294','#de9385','#d06b58'];
+  const series = defs.map((df, k) => {
+    const raw = liq[df.key].map(v => v == null ? null : (df.flip ? -v : +v));
+    const vals = raw.filter(v => v != null);
+    let out;
+    if (view === 'p'){
+      const sorted = vals.slice().sort((a,b) => a-b);
+      out = raw.map(v => v == null ? null :
+        100 * sorted.findIndex(x => x >= v) / (sorted.length - 1));
+    } else {
+      const m = vals.reduce((a,b) => a+b, 0) / vals.length;
+      const sd = Math.sqrt(vals.reduce((a,b) => a + (b-m)*(b-m), 0) / vals.length) || 1;
+      out = raw.map(v => v == null ? null : (v - m) / sd);
+    }
+    return { label: df.label, values: out, color: colors[k] };
+  });
+  ycRidge3d('liq3dChart', {
+    dates: liq.dates, series,
+    zTitle: view === 'p' ? 'percentile (own history)' : 'z-score (own sample)',
+    height: 560, yearStep: 3, aspect: { x: 2.7, y: 1.5, z: 0.7 },
+    hoverUnit: view === 'p' ? 'pct' : 'sd'
+  });
+  document.getElementById('lq3dZ').style.fontWeight = view === 'z' ? '700' : '400';
+  document.getElementById('lq3dP').style.fontWeight = view === 'p' ? '700' : '400';
+}
+
 function drawAll(){
   const liq = DATA.liquidity;
   if (liq){
@@ -695,6 +753,14 @@ function drawAll(){
     drawSimple('rollChart', liq, 'roll_med', 'Roll (median)', PALETTE.salmon);
     drawSimple('csChart', liq, 'cs_med', 'Corwin-Schultz (median)', PALETTE.green);
     drawSimple('nbondsChart', liq, 'n_bonds', 'bonds', PALETTE.short);
+    drawLiq3d(liq, LIQ3D_VIEW);
+    if (!window._liq3dBound){
+      window._liq3dBound = true;
+      document.getElementById('lq3dZ').addEventListener('click', () => {
+        LIQ3D_VIEW = 'z'; drawLiq3d(DATA.liquidity, 'z'); });
+      document.getElementById('lq3dP').addEventListener('click', () => {
+        LIQ3D_VIEW = 'p'; drawLiq3d(DATA.liquidity, 'p'); });
+    }
   }
   if (DATA.turnover_panel){
     drawTurnoverSeg();
