@@ -114,10 +114,12 @@
       }
     }
 
-    if (NOW < CUT) return;
-
-    /* ---- registered wall on reserved tabs ---- */
-    if (on(RESERVED) && !registered) {
+    /* ---- registered wall ---- */
+    // des left beta on 2026-10-27 (nov1_flip ran early), so its wall arms
+    // immediately; the other reserved tabs wait for the cut date
+    var wallNow = on(RESERVED) && !registered &&
+                  (NOW >= CUT || PATH.indexOf('/des/') === 0);
+    if (wallNow) {
       var main = document.querySelector('main');
       if (main) {
         var tab = PATH.split('/')[1];
@@ -165,6 +167,8 @@
       }
       return;
     }
+
+    if (NOW < CUT) return;
 
     /* ---- amber delayed-data banner on delayed tabs ---- */
     if (on(DELAYED) && !registered) {
