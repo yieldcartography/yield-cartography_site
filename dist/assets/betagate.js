@@ -10,7 +10,6 @@
   var CODE = 'beta';
   var KEY = 'yc_beta';
   var BETA_TABS = [
-    { href: '/des/', label: 'des *', tip: 'Beta: one bond under the microscope, schedule, auctions, turnover, rich/cheap, bid-ask' }
   ];
 
   function unlocked() {
