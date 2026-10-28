@@ -335,7 +335,7 @@ export default {
       return new Response(null, { headers: {
         "access-control-allow-origin": "*",
         "access-control-allow-methods": "GET,POST,OPTIONS",
-        "access-control-allow-headers": "content-type" } });
+        "access-control-allow-headers": "content-type, x-yc-sig" } });
     try {
       if (url.pathname === "/api/subscribe" && req.method === "POST") return subscribe(req, env);
       if (url.pathname === "/api/verify") return verify(req, env);
