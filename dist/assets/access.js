@@ -130,8 +130,8 @@
           'letter-spacing:2px;color:#c2522d;margin-bottom:12px">REGISTERED AREA &middot; FREE</div>' +
           '<h1 style="font-size:22px;margin:0 0 10px 0;letter-spacing:-0.3px">This dashboard is ' +
           'for registered users</h1>' +
-          '<p style="font-size:14px;color:#3a3a3a;line-height:1.6;margin:0 0 14px 0">Since ' +
-          '1 November 2026 the <b>' + tab + '</b> tab, like the other reserved dashboards ' +
+          '<p style="font-size:14px;color:#3a3a3a;line-height:1.6;margin:0 0 14px 0">' +
+          (NOW >= CUT ? 'Since' : 'From') + ' 1 November 2026 the <b>' + tab + '</b> tab, like the other reserved dashboards ' +
           '(vols, oracle, LT, debt, des), is part of the free registered area. Registration is one email, no password, ' +
           'no payment. Registered users also get daily data on every tab and optional ' +
           'email alerts with thresholds they set themselves.</p>' +
