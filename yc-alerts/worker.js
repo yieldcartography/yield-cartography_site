@@ -116,18 +116,15 @@ function alertHtml(env, fired, asof, prevDate, token, name) {
 async function subscribe(req, env) {
   const { email } = await req.json().catch(() => ({}));
   if (!okEmail(email)) return json({ error: "invalid email" }, 400);
-  let row = await env.DB.prepare("SELECT token FROM users WHERE email=?")
+  // race-safe: a double-click used to fire two INSERTs for the same email,
+  // the second hit the UNIQUE constraint and the user saw a 500
+  await env.DB.prepare(
+    "INSERT INTO users (email, token, created_at) VALUES (?,?,?) " +
+    "ON CONFLICT(email) DO UPDATE SET unsub_at=NULL")
+    .bind(email.toLowerCase(), randToken(), now()).run();
+  const row = await env.DB.prepare("SELECT token FROM users WHERE email=?")
     .bind(email.toLowerCase()).first();
-  let token = row?.token;
-  if (!token) {
-    token = randToken();
-    await env.DB.prepare(
-      "INSERT INTO users (email, token, created_at) VALUES (?,?,?)")
-      .bind(email.toLowerCase(), token, now()).run();
-  } else {
-    await env.DB.prepare("UPDATE users SET unsub_at=NULL WHERE token=?")
-      .bind(token).run();
-  }
+  const token = row.token;
   const link = `${new URL(req.url).origin}/api/verify?t=${token}`;
   await sendEmail(env, email, "Confirm your yieldcartography alerts",
     `<p>Click to confirm and set your thresholds:</p>
