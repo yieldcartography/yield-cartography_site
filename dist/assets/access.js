@@ -54,6 +54,23 @@
   function init() {
     var registered = claimsRegistered;
 
+    // anonymous usage beacon: (day, tab, registered-flag) counter only —
+    // no user id, no IP, nothing joinable to an account (see worker hit())
+    try {
+      var seg = '/' + (PATH.split('/')[1] || '') + (PATH === '/' ? '' : '/');
+      if (PATH === '/') seg = '/';
+      var payload = JSON.stringify({ p: seg, r: claimsRegistered ? 1 : 0 });
+      if (!sessionStorage.getItem('yc_hit_' + seg)) {
+        sessionStorage.setItem('yc_hit_' + seg, '1');
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/hit', new Blob([payload], { type: 'application/json' }));
+        } else {
+          fetch('/api/hit', { method: 'POST', body: payload,
+            headers: { 'content-type': 'application/json' }, keepalive: true }).catch(function () {});
+        }
+      }
+    } catch (e) {}
+
     // one revalidation per session; a bad token demotes the device
     if (claimsRegistered && !sessionStorage.getItem('yc_me')) {
       fetch('/api/prefs?t=' + encodeURIComponent(ls('yc_token')))

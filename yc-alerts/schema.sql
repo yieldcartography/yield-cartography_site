@@ -29,3 +29,13 @@ CREATE TABLE IF NOT EXISTS sends (
   sent_at TEXT NOT NULL
 );
 CREATE UNIQUE INDEX IF NOT EXISTS sends_once ON sends(user_id, asof);
+
+-- anonymous page-view aggregates (admin dashboard): day x path x reg only,
+-- deliberately NOT joinable to users
+CREATE TABLE IF NOT EXISTS hits (
+  day  TEXT NOT NULL,
+  path TEXT NOT NULL,
+  reg  INTEGER NOT NULL DEFAULT 0,
+  n    INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (day, path, reg)
+);

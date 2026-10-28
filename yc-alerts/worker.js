@@ -271,12 +271,50 @@ async function ingestMetrics(req, env) {
 // admin roster: HMAC-signed POST {op:"users"} -> all users with rule counts
 // and send counts. Same shared secret as the metrics push; for the owner's
 // CLI (YIELDS/alerts_admin.py), never exposed in any page.
+
+const HIT_PATHS = ["/", "/curves/", "/cockpit/", "/term-premia/", "/vols/",
+  "/oracle/", "/mpc/", "/liquidity/", "/total-return/", "/eh-tests/",
+  "/lt/", "/debt/", "/des/", "/media/", "/about/", "/alerts/", "/slides/"];
+
+// Anonymous page-view aggregates for the admin dashboard. By design this
+// stores ONLY (day, path, registered-flag) counters: no user id, no IP, no
+// user agent, nothing joinable to the users table, so the published
+// "we store only your email and your thresholds" promise stays true.
+async function hit(req, env) {
+  let body;
+  try { body = JSON.parse(await req.text()); } catch (e) { return json({ ok: true }); }
+  const path = HIT_PATHS.includes(body.p) ? body.p : null;
+  if (!path) return json({ ok: true });
+  const reg = body.r === 1 ? 1 : 0;
+  const day = new Date().toISOString().slice(0, 10);
+  await env.DB.prepare(
+    `INSERT INTO hits (day, path, reg, n) VALUES (?1, ?2, ?3, 1)
+     ON CONFLICT(day, path, reg) DO UPDATE SET n = n + 1`)
+    .bind(day, path, reg).run();
+  return json({ ok: true });
+}
+
 async function admin(req, env) {
   const body = await req.text();
   const sig = req.headers.get("x-yc-sig") || "";
   if (sig !== await hmacHex(env.PUSH_SECRET, body))
     return json({ error: "bad signature" }, 401);
   const { op } = JSON.parse(body);
+  if (op === "stats") {
+    const hits = (await env.DB.prepare(
+      `SELECT day, path, reg, n FROM hits
+       WHERE day >= date('now', '-90 day') ORDER BY day`).all()).results;
+    const regs = (await env.DB.prepare(
+      `SELECT substr(created_at, 1, 10) AS day, COUNT(*) AS n
+       FROM users GROUP BY 1 ORDER BY 1`).all()).results;
+    const sends = (await env.DB.prepare(
+      `SELECT asof AS day, COUNT(*) AS n, SUM(n_fired) AS fired
+       FROM sends GROUP BY 1 ORDER BY 1`).all()).results;
+    const rules = (await env.DB.prepare(
+      `SELECT metric, COUNT(*) AS n FROM rules WHERE enabled = 1
+       GROUP BY 1 ORDER BY 2 DESC`).all()).results;
+    return json({ hits, registrations: regs, sends, rules });
+  }
   if (op !== "users") return json({ error: "unknown op" }, 400);
   const users = (await env.DB.prepare(
     `SELECT u.email, u.name, u.created_at, u.confirmed_at, u.unsub_at,
@@ -306,6 +344,7 @@ export default {
       if (url.pathname === "/api/unsubscribe") return unsubscribe(req, env);
       if (url.pathname === "/api/metrics" && req.method === "POST") return ingestMetrics(req, env);
       if (url.pathname === "/api/announce" && req.method === "POST") return announce(req, env);
+      if (url.pathname === "/api/hit" && req.method === "POST") return hit(req, env);
       if (url.pathname === "/api/admin" && req.method === "POST") return admin(req, env);
     } catch (e) {
       console.log("error", url.pathname, e.message);
