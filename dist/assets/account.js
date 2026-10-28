@@ -13,6 +13,7 @@
    The icon can always open it on demand (force). */
 (function () {
   'use strict';
+  function ycPostCut(){ return new Date() >= new Date('2026-11-01T00:00:00+01:00'); }
   var K_VIEWS = 'yc_reg_views';
   var K_LAST = 'yc_reg_last';
   var WEEK = 7 * 24 * 3600 * 1000;
@@ -87,12 +88,18 @@
       '<button id="ycRegX" aria-label="Close" style="position:absolute;top:10px;right:12px;border:none;' +
       'background:none;font-size:20px;line-height:1;color:var(--muted,#6a6a6a);cursor:pointer">×</button>' +
       '<div style="font-family:var(--mono,monospace);font-size:10.5px;letter-spacing:1.2px;' +
-      'color:var(--salmon,#c2522d);margin-bottom:10px">FROM 1 NOVEMBER 2026</div>' +
+      'color:var(--salmon,#c2522d);margin-bottom:10px">' + (ycPostCut() ?
+      'SINCE 1 NOVEMBER 2026' : 'FROM 1 NOVEMBER 2026') + '</div>' +
       '<div style="font-size:19px;font-weight:700;letter-spacing:-0.2px;margin-bottom:6px">' +
-      'Register free — keep the daily updates</div>' +
+      (ycPostCut() ? 'Register free — switch to the daily data'
+                   : 'Register free — keep the daily updates') + '</div>' +
       '<p style="font-size:13px;color:var(--soft,#3a3a3a);margin:0 0 14px 0;line-height:1.5">' +
-      'The curves tab stays live for everyone. The rest of the site moves to a ' +
-      'one-month delay for unregistered visitors. Registration is free and takes one email.</p>' +
+      (ycPostCut()
+        ? 'You are browsing with a one-month data delay. Registered users see daily ' +
+          'updates on every dashboard. Registration is free and takes one email.'
+        : 'From 1 November the dashboards move to a one-month data delay for ' +
+          'unregistered visitors. Registration is free and takes one email.') +
+      '</p>' +
       '<div style="font-size:13px;line-height:1.55;margin:0 0 18px 0">' +
       row('Daily-updated data on every dashboard') +
       row('Email alerts with thresholds you set (e.g. 10y moves ≥ 10 bp)') +
