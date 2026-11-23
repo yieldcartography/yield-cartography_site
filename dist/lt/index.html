@@ -109,6 +109,33 @@
     <p class="note">The LW-NSS curve is glued to the money market: its short end is anchored to the NBP reference rate and fitted through the full BondSpot bond panel. EIOPA's official PLN structure effectively lets the first twelve months of the curve go unobserved, since its shortest input is the 1y benchmark bond, an instrument that persistently trades rich on switch-auction buybacks and bank collateral demand. Across the 48 month-ends from August 2022 to July 2026 (both curves post-CRA at 10 bp, both annual compounding), that difference in short-end treatment costs on average <b>+24 bp at the 1y point</b> (0 to +71 bp, widest during the 2025 short-bond squeeze). Beyond the first year the two curves essentially agree: the average gap is <b>+2 bp at 2y</b>, <b>0 bp at 5y</b> and <b>+4 bp at 10y</b> (standard deviations 2 to 6 bp), so once the first-year treatment is accounted for there is no residual basis between the LW-NSS fit and EIOPA's inputs worth naming. Substituting EIOPA's 1y rate for our first year while keeping our forwards confirms the mechanism: it moves the 2y point by about 17 bp and the effect fades by construction along the curve. Neither treatment is an error: EIOPA prioritises quote availability at benchmark tenors, the LW-NSS fit prioritises consistency with the policy rate and the full traded cross-section. (Recomputed 2026-09-28 after a compounding-convention audit; an earlier version of this box overstated our side by the annual-vs-continuous wedge and reported spurious 15-21 bp mid-curve gaps.)</p>
   </div>
 
+  <div class="panel" style="margin-bottom:18px" data-fig-source="Author's own calculations. Inputs: CRA-adjusted annual-compounding LW-NSS zeros (1y to the chosen LLP) from the latest daily fit of the Treasury BondSpot Poland panel. Smith-Wilson per EIOPA RFR Technical Documentation: convergence point max(LLP+40, 60) years, tolerance 1 bp, alpha scanned from 0.05.">
+    <h3 style="margin:0 0 6px 0">Smith-Wilson sandbox: move the LLP and the UFR yourself</h3>
+    <p class="note">Everything the long end of a regulatory or DSA curve says is decided by two
+    assumptions, the last liquid point and the ultimate forward rate. This sandbox recomputes the
+    full Smith-Wilson extrapolation in your browser from today's CRA-adjusted LW-NSS zeros:
+    pick an LLP, set a UFR (presets: EIOPA 3.30%, Commission DSA anchor for Poland 4.50%),
+    and alpha is re-scanned per the EIOPA rule (convergence to the UFR within 1 bp at
+    max(LLP+40, 60) years, floor 0.05). Grey: today's official-parameter curve. Salmon: the
+    official EIOPA PLN structure from the latest monthly file. Accent: your sandbox curve.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-family:var(--mono);font-size:11px;margin:8px 0 10px 0">
+      <label>LLP
+        <select id="sbLlp" style="font-family:inherit;font-size:11px;padding:3px 6px;margin-left:4px">
+          <option value="5">5y</option><option value="10" selected>10y</option>
+          <option value="15">15y</option><option value="20">20y</option>
+        </select>
+      </label>
+      <label>UFR <input id="sbUfr" type="range" min="2" max="6.5" step="0.05" value="3.30"
+        style="vertical-align:middle;width:160px;margin-left:4px">
+        <span id="sbUfrV" style="color:var(--accent);font-weight:600">3.30%</span>
+      </label>
+      <button class="navBtn" id="sbEiopa" style="font-family:inherit;font-size:10.5px;padding:3px 8px;border:1px solid var(--rule);background:transparent;border-radius:4px;cursor:pointer">EIOPA 3.30</button>
+      <button class="navBtn" id="sbDsa" style="font-family:inherit;font-size:10.5px;padding:3px 8px;border:1px solid var(--rule);background:transparent;border-radius:4px;cursor:pointer">DSA PL 4.50</button>
+      <span id="sbStats" style="color:var(--muted)"></span>
+    </div>
+    <div id="chart-sandbox" class="plot-frame"></div>
+  </div>
+
   <p class="small-note">Parameter sources: EIOPA, Report on the Calculation of the UFR for 2027 (30 March 2026); EIOPA RFR Technical Documentation EIOPA-BoS-25-599 (October 2025), Tables 2 and 7 and Section 9.4. Curve input: latest daily LW-NSS fit.</p>
 
   <p class="small-note" style="margin-top:18px">Source-by-source observation timestamps for every input feeding this page are listed in the <a href="/#freshness">Data lineage &amp; freshness</a> block on the landing page.</p>
@@ -175,6 +202,126 @@
 })();
 </script>
 
+<script>
+(async () => {
+  const r = await fetch('/data/lt_tiles.json');
+  const d = await r.json();
+  if (!d.sandbox) return;
+  const omegaOf = u => Math.log(1 + u);
+  function hmat(a, tv, uv) {
+    const H = [];
+    for (let i = 0; i < tv.length; i++) {
+      H.push([]);
+      for (let j = 0; j < uv.length; j++) {
+        const mn = Math.min(tv[i], uv[j]), mx = Math.max(tv[i], uv[j]);
+        H[i].push(a * mn - Math.exp(-a * mx) * Math.sinh(a * mn));
+      }
+    }
+    return H;
+  }
+  function solve(A, b) {                       // Gaussian elimination, partial pivot
+    const n = b.length, M = A.map((row, i) => row.concat([b[i]]));
+    for (let c = 0; c < n; c++) {
+      let p = c;
+      for (let rI = c + 1; rI < n; rI++) if (Math.abs(M[rI][c]) > Math.abs(M[p][c])) p = rI;
+      [M[c], M[p]] = [M[p], M[c]];
+      for (let rI = c + 1; rI < n; rI++) {
+        const f = M[rI][c] / M[c][c];
+        for (let k = c; k <= n; k++) M[rI][k] -= f * M[c][k];
+      }
+    }
+    const x = new Array(n).fill(0);
+    for (let i = n - 1; i >= 0; i--) {
+      let s = M[i][n];
+      for (let k = i + 1; k < n; k++) s -= M[i][k] * x[k];
+      x[i] = s / M[i][i];
+    }
+    return x;
+  }
+  function fit(a, u, prices, om) {
+    const W = hmat(a, u, u).map((row, i) =>
+      row.map((h, j) => Math.exp(-om * (u[i] + u[j])) * h));
+    const rhs = prices.map((p, i) => p - Math.exp(-om * u[i]));
+    return solve(W, rhs);
+  }
+  function priceAt(tv, a, u, zeta, om) {
+    const H = hmat(a, tv, u);
+    return tv.map((tt, i) => {
+      let s = Math.exp(-om * tt);
+      for (let j = 0; j < u.length; j++)
+        s += Math.exp(-om * (tt + u[j])) * H[i][j] * zeta[j];
+      return s;
+    });
+  }
+  function fwdInt(tt, a, u, zeta, om) {
+    const h = 1e-4;
+    const p = priceAt([tt - h, tt + h], a, u, zeta, om);
+    return (Math.log(p[0]) - Math.log(p[1])) / (2 * h);
+  }
+  function solveAlpha(u, prices, om, cp) {
+    let a = 0.05;
+    while (a < 2.0) {
+      const z = fit(a, u, prices, om);
+      if (Math.abs(fwdInt(cp, a, u, z, om) - om) * 1e4 <= 1.0)
+        return [Math.round(a * 1e6) / 1e6, z];
+      a = a < 0.1 ? Math.round((a + 0.00005) * 1e6) / 1e6
+                  : Math.round((a + 0.001) * 1e6) / 1e6;
+    }
+    return [2.0, fit(2.0, u, prices, om)];
+  }
+  const GRID = d.grid.filter(x => x >= 1);
+  function runSW(llp, ufrPct) {
+    const u = d.sandbox.tenor.filter(x => x <= llp);
+    const rin = d.sandbox.rate_pct.slice(0, u.length).map(x => x / 100);
+    const prices = rin.map((rr, i) => Math.pow(1 + rr, -u[i]));
+    const om = omegaOf(ufrPct / 100);
+    const cp = Math.max(llp + 40, 60);
+    const [a, z] = solveAlpha(u, prices, om, cp);
+    const P = priceAt(GRID, a, u, z, om);
+    const zero = P.map((p, i) => (Math.pow(p, -1 / GRID[i]) - 1) * 100);
+    const at = m => zero[GRID.indexOf(m)];
+    return { a, zero, y30: at(30), y60: at(60), y100: at(100),
+             f60: (Math.exp(fwdInt(60, a, u, z, om)) - 1) * 100 };
+  }
+  const css = getComputedStyle(document.documentElement);
+  const C = { accent: css.getPropertyValue('--accent').trim() || '#1F4E79',
+              salmon: '#C2522D', grey: '#9a9a9a' };
+  function draw() {
+    const llp = +document.getElementById('sbLlp').value;
+    const ufr = +document.getElementById('sbUfr').value;
+    document.getElementById('sbUfrV').textContent = ufr.toFixed(2) + '%';
+    const s = runSW(llp, ufr);
+    document.getElementById('sbStats').textContent =
+      'alpha ' + s.a.toFixed(3) + ' · 30y ' + s.y30.toFixed(2) +
+      '% · 60y ' + s.y60.toFixed(2) + '% · 100y ' + s.y100.toFixed(2) +
+      '% · fwd(60y) ' + s.f60.toFixed(2) + '%';
+    const traces = [
+      { x: d.grid, y: d.zero_pct, name: 'official parameters (today)',
+        mode: 'lines', line: { color: C.grey, width: 1.3 } },
+      { x: GRID, y: s.zero, name: 'sandbox: LLP ' + llp + 'y, UFR ' +
+        ufr.toFixed(2) + '%', mode: 'lines',
+        line: { color: C.accent, width: 2.2 } }];
+    if (d.eiopa && d.eiopa.curve)
+      traces.push({ x: d.eiopa.curve.maturity, y: d.eiopa.curve.spot_pct,
+        name: 'EIOPA official (monthly file)', mode: 'lines',
+        line: { color: C.salmon, width: 1.1, dash: 'dot' } });
+    Plotly.react('chart-sandbox', traces, {
+      margin: { l: 46, r: 12, t: 8, b: 34 }, hovermode: 'x unified',
+      paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { size: 11 }, xaxis: { title: 'maturity, years' },
+      yaxis: { title: '% annual comp' },
+      legend: { orientation: 'h', y: -0.22, font: { size: 10 } } },
+      { responsive: true, displayModeBar: false });
+  }
+  document.getElementById('sbLlp').addEventListener('change', draw);
+  document.getElementById('sbUfr').addEventListener('input', draw);
+  document.getElementById('sbEiopa').addEventListener('click',
+    () => { document.getElementById('sbUfr').value = 3.30; draw(); });
+  document.getElementById('sbDsa').addEventListener('click',
+    () => { document.getElementById('sbUfr').value = 4.50; draw(); });
+  draw();
+})();
+</script>
 <script src="/assets/betagate.js?v=8" defer></script>
 <script src="/assets/account.js?v=6" defer></script>
 </body>
